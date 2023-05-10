@@ -1,9 +1,14 @@
-import { Client, GatewayIntentBits } from 'discord.js';
+import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { TOKEN } from './src/config';
 import { getCommands } from './src/commands';
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+import { ContentController } from './src/ContentController';
+const client = new Client({
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+});
 
-client.on('ready', () => {
+const controller = new ContentController()
+
+client.on(Events.ClientReady, () => {
   console.log(`Logged in as ${client.user!.tag}!`);
 });
 
@@ -16,20 +21,22 @@ client.on("interactionCreate", async interaction => {
   }
 });
 
-client.on("message", async message => {
-    if (message.author.bot) return;
+client.on(Events.ThreadCreate, thrc => {
+    console.log(`Thread created with ID ${thrc.id}`)
 
-  // Ignore messages not sent in a text channel
-    if (message.channel.type !== 'text') return;
-
-  // Log the message content and author to the console
-    console.log(`[${message.guild.name}][${message.channel.name}] ${message.author.tag}: ${message.content}`);
 })
 
-/*client.on('threadCreate', async () => {
-    console.log('Thread has been created')
-})*/
+client.on(Events.MessageCreate, message => {
+    //console.log('Message received with content ' + message.content + 'with ID ' + message.id)
+    //console.log(message)
+    //if (Object.keys(message.attachments).length === 0){
+     //   console.log("no attathcments")
+     //   return
+    //}
+    controller.createNewTask(message.channelId, 'TestGroupName')
+    controller.processQueue();
 
+})
 
 client.login(TOKEN);
 getCommands();
