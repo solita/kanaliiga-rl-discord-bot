@@ -18,7 +18,7 @@ export class ContentController {
         return 1
     }
 
-    async createNewTask(threadId: string, groupName: string){
+    async createNewTask(threadId: string, groupName: string): Promise<string | void>{
         if (this.tasks.find(queue => queue.threadId === threadId)) {
             log.info(`Content queue with an ID of ${threadId} already exists.`)
             return
@@ -33,6 +33,7 @@ export class ContentController {
 
         this.tasks.push(new ContentQueue(threadId, groupId))
         log.info(`New queue created with ID ${threadId}`)
+        return `New queue created with ID ${threadId}`
     }
     removeTask(threadId:string){
         this.tasks === this.tasks.filter(task => task.threadId !== threadId)

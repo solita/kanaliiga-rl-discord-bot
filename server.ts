@@ -26,16 +26,17 @@ client.on(Events.ThreadCreate, thrc => {
 
 })
 
-client.on(Events.MessageCreate, message => {
+client.on(Events.MessageCreate, async message => {
     //console.log('Message received with content ' + message.content + 'with ID ' + message.id)
     //console.log(message)
     //if (Object.keys(message.attachments).length === 0){
      //   console.log("no attathcments")
      //   return
     //}
-    controller.createNewTask(message.channelId, 'TestGroupName')
+    const task = await controller.createNewTask(message.channelId, 'TestGroupName')
+    const channel = message.channel
     controller.processQueue();
-
+    task && channel.send(task)
 })
 
 client.login(TOKEN);
