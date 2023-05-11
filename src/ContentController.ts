@@ -39,6 +39,9 @@ export class ContentController {
         this.tasks === this.tasks.filter(task => task.threadId !== threadId)
         //todo: make task deleting work
     }
+    clearTasks(){
+        this.tasks = []
+    }
 
     async processQueue() {
 
