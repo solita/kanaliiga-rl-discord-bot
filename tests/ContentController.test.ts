@@ -1,11 +1,13 @@
 import { ContentController } from "../src/ContentController";
+import { PostJob } from "../src/PostJob";
 
 const controller = new ContentController()
 
 describe("Content controller", () => {
 
     const threadId_Test = "Test_ThreadID"
-    const groupId_Test = "Test_GroupID"
+    //groupId_test should be a number
+    const groupId_Test = 10
     const groupName_Test = "Test_GroupName"
 
     beforeEach(()=>{
@@ -46,6 +48,23 @@ describe("Content controller", () => {
     })
 
     // TODO: Test for adding new items to a specific ContentQueues queue (URL'S)
+    it("Add URLs to a specific PostJob's queue", async () => {
+        const firstMockController = new ContentController();
+        const secondMockController = new ContentController();
+
+        await firstMockController.createNewTask(threadId_Test, groupName_Test);
+        await secondMockController.createNewTask(threadId_Test, groupName_Test);
+
+        firstMockController.tasks[0].addToQueue('A url');
+        secondMockController.tasks[0].addToQueue('Another url');
+
+        expect(firstMockController.tasks[0].queue[0]).toBe('A url');
+        expect(secondMockController.tasks[0].queue[0]).toBe('Another url');
+
+        /*await controller.createNewTask(threadId_Test, groupId_Test)
+        controller.tasks[0].addToQueue('A url')
+        expect(controller.tasks[0].queue[0]).toBe('A url')*/
+    })
     
     // TODO: Test for adding new items to a ContentQueue 
     // that does not exists (expect a new ContentQueue to be created on the fly)
@@ -53,7 +72,6 @@ describe("Content controller", () => {
     // TODO: Test for processing all the ContentQueues
 
     // TODO: Test for removing a ContentQueue from tasks list if its empty and old enough
-
 
 })
 

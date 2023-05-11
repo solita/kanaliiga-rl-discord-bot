@@ -1,0 +1,21 @@
+name: Workflow Kanaliiga RL Discord Bot
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run tests upon push or pull requests
+        run: |
+          npm i
+          npm run test

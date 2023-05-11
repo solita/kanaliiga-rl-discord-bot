@@ -33,7 +33,8 @@ client.on(Events.MessageCreate, async message => {
      //   console.log("no attathcments")
      //   return
     //}
-    if (message.author.bot) {
+    if (message.author.bot || !message.channel.isThread()) {
+        //do nothing if the message is from a bot, or is outside a thread
         return
     }
     const task = await controller.createNewTask(message.channelId, 'TestGroupName')
@@ -41,6 +42,7 @@ client.on(Events.MessageCreate, async message => {
     controller.processQueue();
     task && channel.send(task)
 })
+
 
 client.login(TOKEN);
 getCommands();
