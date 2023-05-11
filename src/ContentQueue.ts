@@ -28,6 +28,10 @@ export class ContentQueue{
         return this.queue.shift()
     }
 
+    clearQueue(){
+        this.queue = []
+    }
+
     size(): number {
         return this.queue.length
     }
