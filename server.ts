@@ -33,6 +33,9 @@ client.on(Events.MessageCreate, async message => {
      //   console.log("no attathcments")
      //   return
     //}
+    if (message.author.bot) {
+        return
+    }
     const task = await controller.createNewTask(message.channelId, 'TestGroupName')
     const channel = message.channel
     controller.processQueue();

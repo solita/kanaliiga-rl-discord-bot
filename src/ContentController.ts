@@ -33,10 +33,11 @@ export class ContentController {
 
         this.tasks.push(new PostJob(threadId, groupId))
         log.info(`New queue created with ID ${threadId}`)
-        return `New queue created with ID ${threadId}`
+        return `New queue created with ID \`${threadId}\``
     }
     removeTask(threadId:string){
         this.tasks = this.tasks.filter(task => task.threadId !== threadId)
+        return
         //todo: make task deleting work
     }
     clearTasks(){
@@ -56,7 +57,7 @@ export class ContentController {
                     this.processor.upload(file)
                 })
             })
-            console.log("After deletion lenght is ", this.tasks.length)
-        }
-    //}
+            console.log("After deletion length is ", this.tasks.length)
+        //}
+    }
 }
