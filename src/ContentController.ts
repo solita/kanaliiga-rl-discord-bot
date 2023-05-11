@@ -36,7 +36,7 @@ export class ContentController {
         return `New queue created with ID ${threadId}`
     }
     removeTask(threadId:string){
-        this.tasks === this.tasks.filter(task => task.threadId !== threadId)
+        this.tasks = this.tasks.filter(task => task.threadId !== threadId)
         //todo: make task deleting work
     }
     clearTasks(){

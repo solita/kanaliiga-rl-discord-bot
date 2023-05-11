@@ -34,16 +34,16 @@ describe("Content controller", () => {
 
     })
 
-    // it("Removes a ContentQueue with a specific thread id from the tasks list", async ()=>{
-    //     await controller.createNewTask(threadId_Test, groupName_Test)
-    //     expect(controller.tasks.length).toBe(1)
+    it("Removes a ContentQueue with a specific thread id from the tasks list", async ()=>{
+        await controller.createNewTask(threadId_Test, groupName_Test)
+        await controller.createNewTask(threadId_Test+"1", groupName_Test)
+        expect(controller.tasks.length).toBe(2)
 
 
-    //     controller.removeTask(threadId_Test)
-    //     expect(controller.tasks.length).toBe(1)
+        controller.removeTask(threadId_Test)
+        expect(controller.tasks.length).toBe(1)
 
-
-    // })
+    })
 
     // TODO: Test for adding new items to a specific ContentQueues queue (URL'S)
     
