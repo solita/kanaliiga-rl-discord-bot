@@ -1,7 +1,7 @@
 import log from './log'
 
 
-export class ContentQueue{
+export class PostJob{
 
     groupId: number // Ballchasing groupID
     threadId: string // Thread Id from discord Post

@@ -1,11 +1,11 @@
-import { ContentQueue } from "./ContentQueue"
+import { PostJob } from "./PostJob"
 import { DocumentProcessor } from "./DocumentProcessor"
 import log from "./log"
 
 const TIMELIMIT = 2000 //add this to .env
 
 export class ContentController {
-    tasks: ContentQueue[]
+    tasks: PostJob[]
     processor: DocumentProcessor
 
     constructor() {
@@ -31,7 +31,7 @@ export class ContentController {
             return
         }
 
-        this.tasks.push(new ContentQueue(threadId, groupId))
+        this.tasks.push(new PostJob(threadId, groupId))
         log.info(`New queue created with ID ${threadId}`)
         return `New queue created with ID ${threadId}`
     }

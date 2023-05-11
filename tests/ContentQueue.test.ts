@@ -1,4 +1,4 @@
-import { ContentQueue } from "../src/ContentQueue";
+import { PostJob } from "../src/PostJob";
 import log from "../src/log";
 
 
@@ -9,7 +9,7 @@ describe("Content queue for each discord post which holds attachment url's in a 
 
     
 
-    const contentQueue = new ContentQueue(threadId_Test, groupId_Test)
+    const contentQueue = new PostJob(threadId_Test, groupId_Test)
 
     beforeEach(()=>{
         contentQueue.clearQueue()
