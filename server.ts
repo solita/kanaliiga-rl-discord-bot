@@ -29,14 +29,17 @@ client.on(Events.ThreadCreate, async thrc => {
 
 client.on(Events.MessageCreate, async message => {
 
+    const channel = message.channel;
+
   if (message.author.bot || !message.channel.isThread()) {
     //do nothing if the message is from a bot, or is outside a thread
     return
   }
 
   if (message.attachments.size > 0) {
-    message.attachments.forEach(att => {
-      controller.addToPostQueue(att.url, message.channelId, message.channel['name'])
+    message.attachments.forEach(async att => {
+      await controller.addToPostQueue(att.url, message.channelId, message.channel['name'])
+      channel.send(`\`${att.contentType}\` file added to task \`${message.channelId}\` in \`${message.channel['name']}\``);
     })
   }
 
