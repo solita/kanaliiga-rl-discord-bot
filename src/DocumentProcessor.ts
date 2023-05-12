@@ -4,6 +4,7 @@ export class DocumentProcessor {
         return true
     }
     async download(url: string) {
-        return 'video.mp4'
+        console.log(`Downloading:  ${url}`)
+        return url
     }
 }

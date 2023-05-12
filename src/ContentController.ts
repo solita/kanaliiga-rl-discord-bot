@@ -1,64 +1,58 @@
 import { PostJob } from "./PostJob"
-import { DocumentProcessor } from "./DocumentProcessor"
 import log from "./log"
 
-const TIMELIMIT = 2000 //add this to .env
+// const TIMELIMIT = 2000 //add this to .env
 
 export class ContentController {
     tasks: PostJob[]
-    processor: DocumentProcessor
 
     constructor() {
         this.tasks = []
-        this.processor = new DocumentProcessor()
     }
 
-    async findGroupId (groupName: string):Promise<number | null> {
+    async findGroupId(): Promise<number | null> {
         // try catch, return null if not found
+        
         return 1
     }
 
-    async createNewTask(threadId: string, groupName: string): Promise<string | void>{
-        if (this.tasks.find(queue => queue.threadId === threadId)) {
+    async createNewTask(threadId: string, groupName: string): Promise<PostJob> {
+
+        const existingTask = this.tasks.find(queue => queue.threadId === threadId)
+        if (existingTask) {
             log.info(`Content queue with an ID of ${threadId} already exists.`)
-            return
+            return existingTask
         }
 
-        const groupId = await this.findGroupId(groupName)
+        const groupId = await this.findGroupId()
 
-        if (!groupId){
+        if (!groupId) {
             log.error(`Group ID for ${groupName} not found`)
             return
         }
 
-        this.tasks.push(new PostJob(threadId, groupId))
-        const newQueueMessage = `New queue created with ID \`${threadId}\``
-        log.info(newQueueMessage)
-        return newQueueMessage
+        const task = new PostJob(threadId, groupId)
+        this.tasks.push(task)
+        return task
     }
-    removeTask(threadId:string){
+    removeTask(threadId: string) {
         this.tasks = this.tasks.filter(task => task.threadId !== threadId)
         return
         //todo: make task deleting work
     }
-    clearTasks(){
+    clearTasks() {
         this.tasks = []
     }
 
     async processQueue() {
 
-        //if (this.tasks.length > 0) {
-            this.tasks.forEach(task => {
-                if (this.tasks.length > 0){
-                    this.removeTask(task.threadId)
-                    return
-                }
-                task.queue.forEach(async url => {
-                    const file = await this.processor.download(url)
-                    this.processor.upload(file)
-                })
-            })
-            console.log("After deletion length is ", this.tasks.length)
-        //}
+        this.tasks.forEach(async task => {
+            await task.process()
+        })
+    }
+
+    async addToPostQueue(url: string, threadId: string, groupName: string) {
+        const task = await this.createNewTask(threadId, groupName)
+        task.addToQueue(url)
     }
 }

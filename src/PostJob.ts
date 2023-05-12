@@ -1,3 +1,4 @@
+import { DocumentProcessor } from './DocumentProcessor'
 import log from './log'
 
 
@@ -7,12 +8,14 @@ export class PostJob{
     threadId: string // Thread Id from discord Post
     queue: string[] // array of URL's
     createdAt: number
+    processor: DocumentProcessor
 
     constructor(threadId:string, groupId:number){
         this.groupId = groupId
         this.threadId = threadId
         this.createdAt = Date.now()
         this.queue = []
+        this.processor = new DocumentProcessor()
     }
 
     addToQueue(url:string){
@@ -20,7 +23,7 @@ export class PostJob{
             log.error('Item exists in queue: ' + this.threadId)
             return
         }
-
+        log.info(`New URL: ${url} added to task ${this.threadId}`)
         this.queue.push(url)
     }
 
@@ -34,5 +37,14 @@ export class PostJob{
 
     size(): number {
         return this.queue.length
+    }
+
+    async process() {
+        while (this.size() > 0) {
+            const url = this.removeFromQueue()
+            const file = await this.processor.download(url)
+            await this.processor.upload(file)
+        }
+        
     }
 }

@@ -9,7 +9,7 @@ const client = new Client({
 const controller = new ContentController()
 
 client.on(Events.ClientReady, () => {
-  console.log(`Logged in as ${client.user!.tag}!`);
+  console.log(`Logged in as ${client.user?.tag}!`);
 });
 
 client.on("interactionCreate", async interaction => {
@@ -21,26 +21,29 @@ client.on("interactionCreate", async interaction => {
   }
 });
 
-client.on(Events.ThreadCreate, thrc => {
-    console.log(`Thread created with ID ${thrc.id}`)
+client.on(Events.ThreadCreate, async thrc => {
 
+    const newTask = await controller.createNewTask(thrc.id, thrc.name)
+    thrc.send(`New task created ${newTask.threadId}`)
 })
 
 client.on(Events.MessageCreate, async message => {
-    //console.log('Message received with content ' + message.content + 'with ID ' + message.id)
-    //console.log(message)
-    //if (Object.keys(message.attachments).length === 0){
-     //   console.log("no attathcments")
-     //   return
-    //}
+
+  // console.log(message.attachments)
     if (message.author.bot || !message.channel.isThread()) {
         //do nothing if the message is from a bot, or is outside a thread
         return
     }
-    const task = await controller.createNewTask(message.channelId, 'TestGroupName')
-    const channel = message.channel
+    
+    if (message.attachments.size > 0){
+      message.attachments.forEach(att =>{
+        controller.addToPostQueue(att.url, message.channelId, message.channel['name'])
+      })
+
+    }
+  
     controller.processQueue();
-    task && channel.send(task)
+    
 })
 
 
