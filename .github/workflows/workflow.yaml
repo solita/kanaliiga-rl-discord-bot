@@ -20,5 +20,5 @@ jobs:
           npm i
           npm run test
       
-      -name: Run lint upon push or pull requests
+      - name: Run lint upon push or pull requests
         run: npm run lint
