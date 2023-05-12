@@ -42,9 +42,10 @@ export class PostJob{
     async process() {
         while (this.size() > 0) {
             const url = this.removeFromQueue()
-            const file = await this.processor.download(url)
-            await this.processor.upload(file)
+            if (url) {
+                const file = await this.processor.download(url)
+                await this.processor.upload(file)
+            }
         }
-        
     }
 }

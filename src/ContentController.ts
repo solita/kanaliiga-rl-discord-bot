@@ -16,7 +16,7 @@ export class ContentController {
         return 1
     }
 
-    async createNewTask(threadId: string, groupName: string): Promise<PostJob> {
+    async createNewTask(threadId: string, groupName: string): Promise<PostJob | undefined> {
 
         const existingTask = this.tasks.find(queue => queue.threadId === threadId)
         if (existingTask) {
@@ -53,6 +53,6 @@ export class ContentController {
 
     async addToPostQueue(url: string, threadId: string, groupName: string) {
         const task = await this.createNewTask(threadId, groupName)
-        task.addToQueue(url)
+        task?.addToQueue(url)
     }
 }

@@ -24,7 +24,7 @@ client.on("interactionCreate", async interaction => {
 client.on(Events.ThreadCreate, async thrc => {
 
   const newTask = await controller.createNewTask(thrc.id, thrc.name)
-  thrc.send(`New task created ${newTask.threadId}`)
+  newTask && thrc.send(`New task created ${newTask?.threadId}`)
 })
 
 client.on(Events.MessageCreate, async message => {
