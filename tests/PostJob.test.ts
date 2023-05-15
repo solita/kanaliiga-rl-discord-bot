@@ -5,12 +5,12 @@ import { DocumentProcessor } from "../src/DocumentProcessor";
 import { ACCEPTABLE_FILE_EXTENSION } from "../src/util";
 
 
-export const mockMessage = (messageId: string, attchmntCount = 1, channelID = 'channelId0') => {
+export const mockMessage = (messageId: string, attchmntCount = 1, channelID = 'channelId0', faulExtension = false) => {
 
     const files = new Map<string, object>()
 
     for (let j = 0; j < attchmntCount; j++) {
-        files.set('File ' + j, { url: 'URL /' + j +ACCEPTABLE_FILE_EXTENSION })
+        files.set('File ' + j, { url: 'URL /' + j + (faulExtension ? '.test' : ACCEPTABLE_FILE_EXTENSION) })
     }
     return {
         id: messageId,
@@ -62,8 +62,8 @@ describe("Each postjob contains an array of discords Message objects", () => {
 
         expect(postJob.queue[0].id).toBe('0')
         expect(postJob.queue[2].id).toBe('2')
-        expect(postJob.queue[0].attachments.get('File 0').url).toBe("URL /0"+ACCEPTABLE_FILE_EXTENSION)
-        expect(postJob.queue[2].attachments.get('File 2').url).toBe("URL /2"+ACCEPTABLE_FILE_EXTENSION)
+        expect(postJob.queue[0].attachments.get('File 0').url).toBe("URL /0" + ACCEPTABLE_FILE_EXTENSION)
+        expect(postJob.queue[2].attachments.get('File 2').url).toBe("URL /2" + ACCEPTABLE_FILE_EXTENSION)
 
     })
 

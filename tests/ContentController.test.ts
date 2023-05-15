@@ -66,6 +66,20 @@ describe("Content controller", () => {
 
     })
 
+    it("Does not add messages with wrong file extensions", async () => {
+
+        await controller.createNewTask(mockThread('mock1'))
+
+
+        for (let i = 0; i < 3; i++) {
+            await controller.addToPostQueue(mockMessage('first' + String(i), 1, 'mock1', true))
+        }
+
+        expect(controller.tasks[0].size()).toBe(0)
+
+
+    })
+
 
     it("New postjob is created if it doesnt exist when adding new new message to its queue", async () => {
 
