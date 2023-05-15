@@ -1,30 +1,53 @@
 import { Message, ThreadChannel } from "discord.js";
 import { PostJob } from "../src/PostJob";
 import log from "../src/log";
+import { DocumentProcessor } from "../src/DocumentProcessor";
 
 
-describe("Each postjob contains an array of discords Message objects", ()=>{
+const mockMessage = (messageId: string, attchmntCount: number = 1) => {
+
+    const files = new Map<string, object>()
+
+    for (let j = 0; j < attchmntCount; j++) {
+        files.set('File ' + j, { url: 'URL /' + j })
+    }
+    return {
+        id: messageId,
+        attachments: files,
+        channel: {
+            sendTyping: jest.fn(() => Promise<void>),
+            send: jest.fn(() => Promise<void>)
+        },
+        react: jest.fn(() => Promise<void>)
+    } as unknown as Message
+}
+
+
+describe("Each postjob contains an array of discords Message objects", () => {
 
     const groupId_Test = 'Test_groupId'
     const threadId_Test = "Test_threadId"
+    
 
     const mockThread = {
-        id : threadId_Test,
-        
+        id: threadId_Test,
+
     } as ThreadChannel
-
-
 
     const postJob = new PostJob(mockThread, groupId_Test)
 
-    beforeEach(()=>{
+
+    beforeAll(() => {
+
+    });
+
+    beforeEach(() => {
         postJob.clearQueue()
     })
 
-    
 
-    it("Creating of an empty new queue worked", ()=>{
-        
+    it("Creating of an empty new queue worked", () => {
+
         expect(postJob.size()).toBe(0)
         expect(postJob.groupId).toBe(groupId_Test)
         expect(postJob.thread.id).toBe(threadId_Test)
@@ -32,62 +55,80 @@ describe("Each postjob contains an array of discords Message objects", ()=>{
 
     })
 
-    it("Adds new Messages to queue", ()=>{
+    it("Adds new Messages to queue", () => {
 
-        for (let i = 0; i< 3 ; i++){
-            
-            const mockMessage = {
-                id: i,
-                url: `File ${i}`
-            } as unknown as Message
-
-            postJob.addToQueue(mockMessage)
+        // Adding 3 mockMessages, attachments is a Map {attachments: {'File i':'URL i'}}
+        for (let i = 0; i < 3; i++) {
+            postJob.addToQueue(mockMessage(String(i), 3))
         }
-        
+
         expect(postJob.size()).toBe(3)
 
-        expect(postJob.queue[0].id).toBe(0)
-        expect(postJob.queue[2].id).toBe(2)
-        expect(postJob.queue[0].url).toBe("File 0")
-        expect(postJob.queue[2].url).toBe("File 2")
+        expect(postJob.queue[0].id).toBe('0')
+        expect(postJob.queue[2].id).toBe('2')
+        expect(postJob.queue[0].attachments.get('File 0').url).toBe("URL /0")
+        expect(postJob.queue[2].attachments.get('File 2').url).toBe("URL /2")
 
     })
 
 
-    // it("Does not add a new URL to the queue if one already exists, and logs it", ()=>{
+    it("Does not add a new Message to the queue if one already exists, and logs it", () => {
+
+
+
+        const errorSpy = jest.spyOn(log, 'error')
+
+        postJob.addToQueue(mockMessage('messageId'))
+        expect(postJob.size()).toBe(1)
+        postJob.addToQueue(mockMessage('messageId'))
+
+        expect(errorSpy).toHaveBeenCalled()
+        expect(postJob.size()).toBe(1)
+
+        expect(postJob.queue[0].id).toBe('messageId')
+
+
+    })
+
+    it("Dequeueing removes first from the queue and returns it", () => {
+
+
+        for (let i = 0; i < 3; i++) {
+            postJob.addToQueue(mockMessage(String(i)))
+        }
+
+        postJob.removeFromQueue()
+        expect(postJob.size()).toBe(2)
+
+        postJob.removeFromQueue()
+        expect(postJob.size()).toBe(1)
+
+    })
+
+    it("Processing dequeues messages, calls the upload and download function in the postjob", async () => {
+
+
+        jest.spyOn(DocumentProcessor.prototype, 'download').mockImplementation(
+            () => new Promise((r) => setTimeout(()=> r('ok'), 10)));
+        jest.spyOn(DocumentProcessor.prototype, 'upload').mockImplementation(
+            () => new Promise((r) => setTimeout(()=> r(true), 10)));
+
+
+        for (let i = 0; i < 3; i++) {
+            postJob.addToQueue(mockMessage(String(i), 3))
+        }
+
+        expect(postJob.size()).toBe(3)
+
+        postJob.process()
+
+        await new Promise((r) => setTimeout(r, 10))
+
+        expect(postJob.size()).toBe(0)
+        expect(postJob.processor.download).toBeCalledTimes(9)
+        expect(postJob.processor.upload).toBeCalledTimes(9)
         
-    //     const errorSpy = jest.spyOn(log, 'error')
-
-    //     postJob.addToQueue("URL1")
-    //     expect(postJob.size()).toBe(1)
-
-    //     postJob.addToQueue("URL1")
-    //     expect(errorSpy).toHaveBeenCalled()
-    //     expect(postJob.size()).toBe(1)
-
-    //     expect(postJob.queue[0]).toBe("URL1")
-
-
-    // })
-
-    // it("Dequeueing removes first from the queue and returns it", ()=>{
-
-
-    //     postJob.addToQueue("URL1")
-    //     postJob.addToQueue("URL2")
-    //     postJob.addToQueue("URL3")
-
-    //     const url1 = postJob.removeFromQueue()
-    //     expect(postJob.size()).toBe(2)
-    //     expect(url1).toBe("URL1")
-
-    //     const url2 = postJob.removeFromQueue()
-    //     expect(postJob.size()).toBe(1)
-    //     expect(url2).toBe("URL2")
-
-    //     expect(postJob.queue[0]).toBe("URL3")
-
-    // })
+    })
 
 
 
