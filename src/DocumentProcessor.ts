@@ -1,5 +1,5 @@
 export class DocumentProcessor {
-    async upload(file:string, filenam:string) {
+    async upload(file:string) {
         console.log(`Uploading:  ${file}`)
         return true
     }

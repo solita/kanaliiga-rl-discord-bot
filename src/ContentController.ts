@@ -48,15 +48,20 @@ export class ContentController {
         this.tasks = []
     }
 
-    async processQueue() {
+    processQueue() {
 
-        this.tasks.forEach(async task => {
-            await task.process()
+        this.tasks.forEach(task => {
+            task.process()
         })
     }
 
     async addToPostQueue(message:Message) {
+            
         const task = await this.createNewTask(message.channel as ThreadChannel)
-        task.addToQueue(message)
+        if (task){
+            task.addToQueue(message)
+            
+        } 
+
     }
 }

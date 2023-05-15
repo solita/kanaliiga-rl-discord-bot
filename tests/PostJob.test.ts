@@ -4,7 +4,7 @@ import log from "../src/log";
 import { DocumentProcessor } from "../src/DocumentProcessor";
 
 
-const mockMessage = (messageId: string, attchmntCount: number = 1) => {
+export const mockMessage = (messageId: string, attchmntCount = 1, channelID = 'channelId0') => {
 
     const files = new Map<string, object>()
 
@@ -15,6 +15,7 @@ const mockMessage = (messageId: string, attchmntCount: number = 1) => {
         id: messageId,
         attachments: files,
         channel: {
+            id: channelID,
             sendTyping: jest.fn(() => Promise<void>),
             send: jest.fn(() => Promise<void>)
         },
@@ -22,12 +23,11 @@ const mockMessage = (messageId: string, attchmntCount: number = 1) => {
     } as unknown as Message
 }
 
-
 describe("Each postjob contains an array of discords Message objects", () => {
 
     const groupId_Test = 'Test_groupId'
     const threadId_Test = "Test_threadId"
-    
+
 
     const mockThread = {
         id: threadId_Test,
@@ -35,11 +35,6 @@ describe("Each postjob contains an array of discords Message objects", () => {
     } as ThreadChannel
 
     const postJob = new PostJob(mockThread, groupId_Test)
-
-
-    beforeAll(() => {
-
-    });
 
     beforeEach(() => {
         postJob.clearQueue()
@@ -109,15 +104,15 @@ describe("Each postjob contains an array of discords Message objects", () => {
 
 
         jest.spyOn(DocumentProcessor.prototype, 'download').mockImplementation(
-            () => new Promise((r) => setTimeout(()=> r('ok'), 10)));
+            () => new Promise((r) => setTimeout(() => r('ok'), 10)));
         jest.spyOn(DocumentProcessor.prototype, 'upload').mockImplementation(
-            () => new Promise((r) => setTimeout(()=> r(true), 10)));
+            () => new Promise((r) => setTimeout(() => r(true), 10)));
 
         const message1 = mockMessage('id1', 3)
         const message2 = mockMessage('id2', 3)
         const message3 = mockMessage('id3', 3)
 
-        
+
         postJob.addToQueue(message1)
         postJob.addToQueue(message2)
         postJob.addToQueue(message3)
@@ -132,8 +127,8 @@ describe("Each postjob contains an array of discords Message objects", () => {
         expect(postJob.size()).toBe(0)
         expect(postJob.processor.download).toBeCalledTimes(9)
         expect(postJob.processor.upload).toBeCalledTimes(9)
- 
-        
+
+
     })
 
 

@@ -1,8 +1,8 @@
-import { Client, GatewayIntentBits, Events, ThreadChannel } from 'discord.js';
+import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { TOKEN } from './src/config';
 import { getCommands } from './src/commands';
 import { ContentController } from './src/ContentController';
-import { memoryUsage } from 'node:process';
+
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
@@ -26,15 +26,14 @@ client.on("interactionCreate", async interaction => {
 
 
 client.on(Events.ThreadCreate, async thrc => {
-  const ch = thrc
+
   const newTask = await controller.createNewTask(thrc)
   newTask && thrc.send(`New task created id: ${newTask.thread.id}`)
 })
 
 client.on(Events.MessageCreate, async message => {
 
-    const channel = message.channel;
-    const mes = message
+  const channel = message.channel;
 
   if (message.author.bot || !message.channel.isThread()) {
     //do nothing if the message is from a bot, or is outside a thread
@@ -45,7 +44,7 @@ client.on(Events.MessageCreate, async message => {
 
     await controller.addToPostQueue(message)
     channel.send(`\`${message.attachments.size}\` file(s) added to task \`${message.channelId}\` in \`${message.channel['name']}\``);
- 
+
   }
 
   controller.processQueue();
