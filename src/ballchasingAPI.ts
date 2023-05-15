@@ -3,7 +3,8 @@ import { BALL_CHASING_API_KEY, BC_SEASON_PARENT_GROUP_ID } from "./config"
 
 const BALLCHASING_BASEURL = 'https://ballchasing.com/api'
 
-export const ping = () =>{
+export const pingBCApi = () =>{
+    
 
     return fetch(BALLCHASING_BASEURL,{
         headers: {
