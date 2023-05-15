@@ -39,16 +39,50 @@ export class PostJob{
         return this.queue.length
     }
 
-    async process() {
+
+    process() {
+
+        
+
         while (this.size() > 0) {
+
             const message = this.removeFromQueue()
-            
+
+            const arrayOfMultifileEmojies = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣']
+
             message.attachments.forEach(async attachment => {
+
                 const file = await this.processor.download(attachment.url)
-                await this.processor.upload(file)
+                const fileName = attachment.url.split("/").at(-1)
+
+                try {
+                    const response = await this.processor.upload(file, fileName)
+                    await message.channel.sendTyping()
+
+                    setTimeout(() => {
+                        message.channel.send(`Heres a link for you! ${response}`)
+                    }, 3000);
+
+                }
+                catch (err) {
+                    await message.channel.sendTyping()
+                    setTimeout(() => {
+                        message.channel.send(`There was an error uploading file: ${fileName} \nError: ${err}`)
+                    }, 3000);
+
+                    await message.react('🚫')
+                    arrayOfMultifileEmojies.shift()
+                    return
+                }
+
+                await message.react('✅')
+                await message.react(arrayOfMultifileEmojies.shift())
+
+
+
             })
-            message.react('✅')
         }
+
     }
 
 
