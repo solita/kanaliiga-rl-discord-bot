@@ -2,6 +2,7 @@ import { Message, ThreadChannel } from "discord.js"
 
 import { PostJob } from "./PostJob"
 import log from "./log"
+import { ACCEPTABLE_FILE_EXTENSION, allAttahcmentsAreCorrectType } from "./util"
 
 
 // const TIMELIMIT = 2000 //add this to .env
@@ -56,12 +57,14 @@ export class ContentController {
     }
 
     async addToPostQueue(message:Message) {
-            
-        const task = await this.createNewTask(message.channel as ThreadChannel)
-        if (task){
-            task.addToQueue(message)
-            
-        } 
+        if (allAttahcmentsAreCorrectType(message.attachments)){
+            const task = await this.createNewTask(message.channel as ThreadChannel)
+            if (task) task.addToQueue(message)
+            return
+        }
+
+        message.channel.send(`Only acceptable filetype is ${ACCEPTABLE_FILE_EXTENSION}`)
+        message.react('🚫')
 
     }
 }
