@@ -113,20 +113,26 @@ describe("Each postjob contains an array of discords Message objects", () => {
         jest.spyOn(DocumentProcessor.prototype, 'upload').mockImplementation(
             () => new Promise((r) => setTimeout(()=> r(true), 10)));
 
+        const message1 = mockMessage('id1', 3)
+        const message2 = mockMessage('id2', 3)
+        const message3 = mockMessage('id3', 3)
 
-        for (let i = 0; i < 3; i++) {
-            postJob.addToQueue(mockMessage(String(i), 3))
-        }
+        
+        postJob.addToQueue(message1)
+        postJob.addToQueue(message2)
+        postJob.addToQueue(message3)
+
 
         expect(postJob.size()).toBe(3)
 
         postJob.process()
 
-        await new Promise((r) => setTimeout(r, 10))
+        await new Promise((r) => setTimeout(r, 40))
 
         expect(postJob.size()).toBe(0)
         expect(postJob.processor.download).toBeCalledTimes(9)
         expect(postJob.processor.upload).toBeCalledTimes(9)
+ 
         
     })
 
