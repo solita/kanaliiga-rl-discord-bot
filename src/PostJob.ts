@@ -1,33 +1,33 @@
+import { ThreadChannel, Message } from 'discord.js'
 import { DocumentProcessor } from './DocumentProcessor'
 import log from './log'
 
 
 export class PostJob{
 
-    groupId: number // Ballchasing groupID
-    threadId: string // Thread Id from discord Post
-    queue: string[] // array of URL's
-    createdAt: number
+    groupId: string // Ballchasing groupID
+    thread: ThreadChannel 
+    queue: Message[] // array of Messages's
     processor: DocumentProcessor
+    
 
-    constructor(threadId:string, groupId:number){
+    constructor(thread:ThreadChannel, groupId:string){
         this.groupId = groupId
-        this.threadId = threadId
-        this.createdAt = Date.now()
+        this.thread = thread
         this.queue = []
         this.processor = new DocumentProcessor()
     }
 
-    addToQueue(url:string){
-        if(this.queue.find(item => item === url)){
-            log.error('Item exists in queue: ' + this.threadId)
+    addToQueue(newMessage:Message){
+        if(this.queue.find(mes => mes.id === newMessage.id)){
+            log.error('Message exists in queue already: ' + newMessage.id)
             return
         }
-        log.info(`New URL: ${url} added to task ${this.threadId}`)
-        this.queue.push(url)
+        log.info(`A new message was added to task ${this.thread.id}`)
+        this.queue.push(newMessage)
     }
 
-    removeFromQueue(): string | undefined {
+    removeFromQueue(): Message | undefined {
         return this.queue.shift()
     }
 
@@ -39,13 +39,52 @@ export class PostJob{
         return this.queue.length
     }
 
-    async process() {
+
+    process() {
+
+        
+
         while (this.size() > 0) {
-            const url = this.removeFromQueue()
-            if (url) {
-                const file = await this.processor.download(url)
-                await this.processor.upload(file)
-            }
+
+            const message = this.removeFromQueue()
+
+            const arrayOfMultifileEmojies = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣']
+
+            message.attachments.forEach(async attachment => {
+
+                const file = await this.processor.download(attachment.url)
+                const fileName = attachment.url.split("/").at(-1)
+
+                try {
+                    const response = await this.processor.upload(file)
+                    await message.channel.sendTyping()
+
+                    
+                    message.channel.send(`Heres a link for you! ${response}`)
+                    
+
+                }
+                catch (err) {
+                    await message.channel.sendTyping()
+                    
+                    message.channel.send(`There was an error uploading file: ${fileName} \nError: ${err}`)
+                    
+                    await message.react('🚫')
+                    arrayOfMultifileEmojies.shift()
+                    return
+                }
+
+                await message.react('✅')
+                await message.react(arrayOfMultifileEmojies.shift())
+
+
+
+            })
         }
+
     }
+
+
+
+
 }
