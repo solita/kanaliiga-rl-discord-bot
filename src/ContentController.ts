@@ -3,6 +3,7 @@ import { Message, ThreadChannel } from "discord.js"
 import { PostJob } from "./PostJob"
 import log from "./log"
 import { ACCEPTABLE_FILE_EXTENSION, allAttahcmentsAreCorrectType } from "./util"
+import { searchGroupId } from "./ballchasingAPI"
 
 
 // const TIMELIMIT = 2000 //add this to .env
@@ -14,11 +15,6 @@ export class ContentController {
         this.tasks = []
     }
 
-    async findGroupId(): Promise<string | null> {
-        // try catch, return null if not found
-        
-        return '1'
-    }
 
     async createNewTask(thread: ThreadChannel) {
 
@@ -28,9 +24,12 @@ export class ContentController {
             return existingTask
         }
 
-        const groupId = await this.findGroupId()
+        const [groupId, allRecords] = await searchGroupId(thread.name)
         if (!groupId) {
             log.error(`Group ID for ${thread.name} not found`)
+            thread.send(`Your post did not make too much sense to me, maybe theres a typo?\n`+
+            `I tried with '${thread.name}'\n`+
+            `but only found groups named: \n${allRecords.list.map(record => record.name).join("\n")}`)
             return
         }
 
