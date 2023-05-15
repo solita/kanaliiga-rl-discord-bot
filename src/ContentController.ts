@@ -13,10 +13,10 @@ export class ContentController {
         this.tasks = []
     }
 
-    async findGroupId(): Promise<number | null> {
+    async findGroupId(): Promise<string | null> {
         // try catch, return null if not found
         
-        return 1
+        return '1'
     }
 
     async createNewTask(thread: ThreadChannel) {

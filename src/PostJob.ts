@@ -5,13 +5,13 @@ import log from './log'
 
 export class PostJob{
 
-    groupId: number // Ballchasing groupID
+    groupId: string // Ballchasing groupID
     thread: ThreadChannel 
     queue: Message[] // array of Messages's
     processor: DocumentProcessor
     
 
-    constructor(thread:ThreadChannel, groupId:number){
+    constructor(thread:ThreadChannel, groupId:string){
         this.groupId = groupId
         this.thread = thread
         this.queue = []

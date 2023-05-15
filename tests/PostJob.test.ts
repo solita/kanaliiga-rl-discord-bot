@@ -3,9 +3,9 @@ import { PostJob } from "../src/PostJob";
 import log from "../src/log";
 
 
-describe("Content queue for each discord post which holds attachment url's in a list", ()=>{
+describe("Each postjob contains an array of discords Message objects", ()=>{
 
-    const groupId_Test = 10
+    const groupId_Test = 'Test_groupId'
     const threadId_Test = "Test_threadId"
 
     const mockThread = {
