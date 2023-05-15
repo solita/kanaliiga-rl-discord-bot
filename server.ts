@@ -2,6 +2,8 @@ import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { TOKEN } from './src/config';
 import { getCommands } from './src/commands';
 import { ContentController } from './src/ContentController';
+
+
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });
@@ -21,15 +23,17 @@ client.on("interactionCreate", async interaction => {
   }
 });
 
+
+
 client.on(Events.ThreadCreate, async thrc => {
 
-  const newTask = await controller.createNewTask(thrc.id, thrc.name)
-  newTask && thrc.send(`New task created ${newTask?.threadId}`)
+  const newTask = await controller.createNewTask(thrc)
+  newTask && thrc.send(`New task created id: ${newTask.thread.id}`)
 })
 
 client.on(Events.MessageCreate, async message => {
 
-    const channel = message.channel;
+  const channel = message.channel;
 
   if (message.author.bot || !message.channel.isThread()) {
     //do nothing if the message is from a bot, or is outside a thread
@@ -37,10 +41,10 @@ client.on(Events.MessageCreate, async message => {
   }
 
   if (message.attachments.size > 0) {
-    message.attachments.forEach(async att => {
-      await controller.addToPostQueue(att.url, message.channelId, message.channel['name'])
-      channel.send(`\`${att.contentType}\` file added to task \`${message.channelId}\` in \`${message.channel['name']}\``);
-    })
+
+    await controller.addToPostQueue(message)
+    channel.send(`\`${message.attachments.size}\` file(s) added to task \`${message.channelId}\` in \`${message.channel['name']}\``);
+
   }
 
   controller.processQueue();
@@ -50,3 +54,4 @@ client.on(Events.MessageCreate, async message => {
 
 client.login(TOKEN);
 getCommands();
+
