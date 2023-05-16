@@ -2,6 +2,7 @@ import { ThreadChannel } from "discord.js";
 import { ContentController } from "../src/ContentController";
 import { mockMessage } from "./PostJob.test";
 import { ACCEPTABLE_FILE_EXTENSION } from "../src/util";
+import { searchGroupId } from "../src/ballchasingAPI";
 
 
 
@@ -18,6 +19,16 @@ describe("Content controller", () => {
         } as ThreadChannel
 
     }
+
+    
+    jest.mock("../src/ballchasingAPI", ()=>{
+        return function () {
+            return {searchGroupId: ()=> ['testGroup', [{}]]}
+        }
+    })
+
+    
+
 
     beforeEach(() => {
         controller.clearTasks()
@@ -84,7 +95,7 @@ describe("Content controller", () => {
     it("New postjob is created if it doesnt exist when adding new new message to its queue", async () => {
 
         await controller.addToPostQueue(mockMessage('messageid1', 2, 'channeldId1'))
-
+        // TODO: add comments of what these do
         expect(controller.tasks.length).toBe(1)
         expect(controller.tasks[0].size()).toBe(1)
         expect(controller.tasks[0].thread.id).toBe('channeldId1')
@@ -96,6 +107,8 @@ describe("Content controller", () => {
     
 
     it("Processing of each PostJobs queue of URL's", async () => {
+
+
 
         await controller.createNewTask(mockThread('mock1'))
         await controller.createNewTask(mockThread('mock2'))
@@ -116,6 +129,7 @@ describe("Content controller", () => {
     })
 
     // // TODO: Test for removing a PostJob from tasks list if its empty and old enough
+    // TODO: Make tests where bad behaviour is being tested, "graceful error handling"
 
 })
 

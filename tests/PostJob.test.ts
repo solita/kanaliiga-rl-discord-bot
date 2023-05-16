@@ -132,7 +132,7 @@ describe("Each postjob contains an array of discords Message objects", () => {
 
     })
 
-
+    // TODO: Make tests where bad behaviour is being tested, "graceful error handling"
 
 
 

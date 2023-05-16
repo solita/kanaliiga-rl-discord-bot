@@ -3,7 +3,7 @@ import { Message, ThreadChannel } from "discord.js"
 import { PostJob } from "./PostJob"
 import log from "./log"
 import { ACCEPTABLE_FILE_EXTENSION, allAttahcmentsAreCorrectType } from "./util"
-import { searchGroupId } from "./ballchasingAPI"
+import { fetchGroups, searchGroupId } from "./ballchasingAPI"
 
 
 // const TIMELIMIT = 2000 //add this to .env
@@ -15,8 +15,7 @@ export class ContentController {
         this.tasks = []
     }
 
-
-    async createNewTask(thread: ThreadChannel) {
+    async createNewTask(thread: ThreadChannel): Promise<PostJob> {
 
         const existingTask = this.tasks.find(th => th.thread.id === thread.id)
         if (existingTask) {
@@ -24,18 +23,25 @@ export class ContentController {
             return existingTask
         }
 
-        const [groupId, allRecords] = await searchGroupId(thread.name)
-        if (!groupId) {
-            log.error(`Group ID for ${thread.name} not found`)
-            thread.send(`Your post did not make too much sense to me, maybe theres a typo?\n`+
-            `I tried with '${thread.name}'\n`+
-            `but only found groups named: \n${allRecords.list.map(record => record.name).join("\n")}`)
+        const response = await fetchGroups().then(data => data).catch(error =>{
+            thread.send(`Error with Ballchasing api! ${error.status} ${error.statusText}`)
             return
+        })
+        if (response) {
+            const [groupId, allRecords] = searchGroupId(thread.name, response)
+            if (!groupId) {
+                log.error(`Group ID for ${thread.name} not found`)
+                thread.send(`Your post did not make too much sense to me, maybe theres a typo?\n`+
+                `I tried with '${thread.name}'\n`+
+                `but only found groups named: \n${allRecords.join("\n")}`)
+                return
+            }
+            
+            const task = new PostJob(thread, groupId)
+            this.tasks.push(task)
+            return task
         }
-
-        const task = new PostJob(thread, groupId)
-        this.tasks.push(task)
-        return task
+        
     }
 
     // removeTask(threadId: string) {
