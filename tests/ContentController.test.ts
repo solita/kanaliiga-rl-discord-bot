@@ -79,7 +79,7 @@ describe("Content controller", () => {
 
     })
     
-    /*it("Processing of each PostJobs queue of URL's", async ()=> {
+    it("Processing of each PostJobs queue of URL's", async ()=> {
 
         await controller.createNewTask(threadId_Test, groupName_Test)
         await controller.createNewTask(threadId_Test+'1', groupName_Test)
@@ -97,7 +97,7 @@ describe("Content controller", () => {
         expect(controller.tasks[0].size()).toBe(0)
         expect(controller.tasks[1].size()).toBe(0)
 
-    })*/
+    })
 
     // TODO: Test for removing a ContentQueue from tasks list if its empty and old enough
 

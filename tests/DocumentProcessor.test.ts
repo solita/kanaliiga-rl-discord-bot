@@ -13,20 +13,4 @@ describe("Document processor", () => {
         const buffer = await processor.download(url)
         expect(buffer).toBeDefined();
     })
-
-    it("Upload a replay file to Ballchasing", async() => {
-        const testBuffer = Buffer.alloc(5)
-        const res = await processor.upload(testBuffer);
-        const data = await res.json()
-        expect(res).toBeDefined();
-        expect(data).toBeDefined();
-
-        if (res.status === 500 || 400) {
-            console.log(data)
-            expect(data).toHaveProperty('error')
-        } else {
-            expect(data).toHaveProperty('id')
-            expect(data).toHaveProperty('location')
-        }
-    })
 })

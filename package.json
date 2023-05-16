@@ -7,11 +7,12 @@
     "test": "jest",
     "start": "tsc && node dist/server.js",
     "lint": "eslint . --ext .ts",
-    "dev": "nodemon server.ts"
+    "dev": "nodemon server.ts",
+    "build:production": "tsc"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "discord.js": "^14.11.0",
     "dotenv": "^16.0.3",

@@ -40,4 +40,6 @@ jobs:
     - name: Run build upon push or pull requests
       run: |
           npm ci
-          tsc
+          npm run build:production
+
+#Add prettier scripts

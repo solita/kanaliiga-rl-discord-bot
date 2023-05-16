@@ -10,12 +10,12 @@ export class DocumentProcessor {
         this.filePath = './temp'
     }
 
-    upload(file: Buffer, fileName: string): Promise<any> {
+    upload(file: Buffer, fileName: string): Promise<string> {
         const BC_UPLOAD_URL = 'https://ballchasing.com/api/v2/upload?visibility=private'
 
         return new Promise((resolve, reject) => {
 
-            let form = new FormData()
+            const form = new FormData()
             form.append('name', 'file')
             form.append('Content-Type', 'binary/octet-stream')
             form.append('file', file, {filename: fileName})
@@ -59,7 +59,7 @@ export class DocumentProcessor {
 
     }
 
-    async download(url: string): Promise<any> {
+    async download(url: string): Promise<Buffer> {
         log.info(`Downloading file ${url}....`)
         return new Promise((resolve, reject) => {
             https.get(url, res => {
