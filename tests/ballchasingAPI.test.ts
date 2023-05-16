@@ -1,5 +1,5 @@
-import { searchGroupId, fetchGroups } from "../src/ballchasingAPI";
-import https from 'https'
+import { fetchGroups } from "../src/ballchasingAPI";
+
 
 export const mockResponse = {
     status: 200,

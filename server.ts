@@ -35,8 +35,6 @@ client.on(Events.ThreadCreate, async thrc => {
 
 client.on(Events.MessageCreate, async message => {
 
-  const channel = message.channel;
-
   if (message.author.bot || !message.channel.isThread()) {
     //do nothing if the message is from a bot, or is outside a thread
     return

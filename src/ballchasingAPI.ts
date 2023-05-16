@@ -13,7 +13,7 @@ export type TBallchasingGroup = {
 
 
 
-export const pingBCApi = (): Promise<String> => {
+export const pingBCApi = (): Promise<string> => {
 
     return fetch(BALLCHASING_BASEURL, {
         headers: {
