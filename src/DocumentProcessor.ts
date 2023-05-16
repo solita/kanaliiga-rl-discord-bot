@@ -1,8 +1,7 @@
 import { BALL_CHASING_API_KEY } from "./config";
 import log from "./log"
 import https from 'https'
-//import fs from 'fs'
-//import path from 'path'
+import FormData from 'form-data';
 
 export class DocumentProcessor {
     filePath: string
@@ -11,29 +10,56 @@ export class DocumentProcessor {
         this.filePath = './temp'
     }
 
-    async upload(replay: Buffer): Promise<any> {
-        log.info(`Uploading....`)
-        const url = 'https://ballchasing.com/api/v2/upload?visibility=private';
-        const form = new FormData();
-        form.append('data', new Blob([replay]), 'something.replay',)
-        try {
-            const res = await fetch(url, {
+    upload(file: Buffer, fileName: string): Promise<string> {
+        const BC_UPLOAD_URL = 'https://ballchasing.com/api/v2/upload?visibility=private'
+
+        return new Promise((resolve, reject) => {
+
+            const form = new FormData()
+            form.append('name', 'file')
+            form.append('Content-Type', 'binary/octet-stream')
+            form.append('file', file, {filename: fileName})
+
+
+            const options = {
                 method: 'POST',
                 headers: {
-                    'Authorization': BALL_CHASING_API_KEY,
-                    'Content-Type':' multipart/form-data; boundary=---BOUNDARY'
+                    "Authorization": BALL_CHASING_API_KEY,
+                    'Content-Type': 'multipart/form-data; boundary=' + form.getBoundary()
                 },
-                body: form
+                timeout: 1000
+            }
+
+            const req = https.request(BC_UPLOAD_URL, options, (res) => {
+                let data = '';
+                res.on('data', (chunk) => {
+                    data = data + chunk.toString();
+                });
+
+                res.on('end', () => {
+                    const body = JSON.parse(data);
+                    
+                    if(res.statusCode === 201){
+                        resolve(body.location)
+                    }
+                    else{
+                        reject(`${body.error}  ${body.location || ''}`)
+                    }
+                });
             })
 
-            const data = await res.json()
-            return data
-        } catch (err) {
-            console.log(err)
-        }
+            req.on('error', (err: { message: string }) => {
+                reject(err.message)
+            })
+
+            form.pipe(req)
+            req.end()
+
+        })
+
     }
 
-    async download(url: string): Promise<any> {
+    async download(url: string): Promise<Buffer> {
         log.info(`Downloading file ${url}....`)
         return new Promise((resolve, reject) => {
             https.get(url, res => {
