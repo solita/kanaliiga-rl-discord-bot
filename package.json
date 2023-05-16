@@ -7,15 +7,17 @@
     "test": "jest",
     "start": "tsc && node dist/server.js",
     "lint": "eslint . --ext .ts",
-    "dev": "nodemon server.ts"
+    "dev": "nodemon server.ts",
+    "build:production": "tsc"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "discord-api-types": "^0.37.42",
     "discord.js": "^14.11.0",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "form-data": "^4.0.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
