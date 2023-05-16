@@ -3,11 +3,12 @@ import { PostJob } from "../src/PostJob";
 import log from "../src/log";
 import { DocumentProcessor } from "../src/DocumentProcessor";
 import { ACCEPTABLE_FILE_EXTENSION } from "../src/util";
+import * as BCAPI from "../src/ballchasingAPI";
 
-
-export const mockMessage = (messageId: string, attchmntCount = 1, channelID = 'channelId0', faulExtension = false) => {
+export const mockMessage = (messageId: string, attchmntCount = 1, channelID = 'channelId0', faulExtension = false, ballchasingGroupId = 'group1') => {
 
     const files = new Map<string, object>()
+    jest.spyOn(BCAPI, 'searchGroupId').mockImplementationOnce(()=> [ballchasingGroupId, []])
 
     for (let j = 0; j < attchmntCount; j++) {
         files.set('File ' + j, { url: 'URL /' + j + (faulExtension ? '.test' : ACCEPTABLE_FILE_EXTENSION) })
@@ -105,9 +106,9 @@ describe("Each postjob contains an array of discords Message objects", () => {
 
 
         jest.spyOn(DocumentProcessor.prototype, 'download').mockImplementation(
-            () => new Promise((r) => setTimeout(() => r('ok'), 10)));
+            () => new Promise((r) => setTimeout(() => r(Buffer.from([])), 10)));
         jest.spyOn(DocumentProcessor.prototype, 'upload').mockImplementation(
-            () => new Promise((r) => setTimeout(() => r(true), 10)));
+            () => new Promise((r) => setTimeout(() => r('Location.com'), 10)));
 
         const message1 = mockMessage('id1', 3)
         const message2 = mockMessage('id2', 3)
@@ -132,7 +133,7 @@ describe("Each postjob contains an array of discords Message objects", () => {
 
     })
 
-
+    // TODO: Make tests where bad behaviour is being tested, "graceful error handling"
 
 
 

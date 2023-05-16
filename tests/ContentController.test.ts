@@ -2,6 +2,8 @@ import { ThreadChannel } from "discord.js";
 import { ContentController } from "../src/ContentController";
 import { mockMessage } from "./PostJob.test";
 import { ACCEPTABLE_FILE_EXTENSION } from "../src/util";
+import * as BCAPI from "../src/ballchasingAPI";
+import { mockResponse } from "./ballchasingAPI.test";
 
 
 
@@ -10,14 +12,19 @@ describe("Content controller", () => {
 
     const controller = new ContentController()
 
-    const mockThread = (id: string) => {
-
+    const mockThread = (id: string, ballchasingGroupId = 'group1') => {
+        jest.spyOn(BCAPI, 'searchGroupId').mockImplementationOnce(()=> [ballchasingGroupId, []])
         return {
             id: id,
-            name: 'postTitle'
-        } as ThreadChannel
+            name: 'postTitle',
+            send: jest.fn(()=> Promise.resolve())
+        } as unknown as ThreadChannel
 
     }
+
+    
+    jest.spyOn(BCAPI, 'fetchGroups').mockImplementation(()=> Promise.resolve(mockResponse.list))
+
 
     beforeEach(() => {
         controller.clearTasks()
@@ -29,6 +36,7 @@ describe("Content controller", () => {
 
 
     it("New PostJobs are created and added to controllers queue", async () => {
+        
 
         const TASK_COUNT = 4
 
@@ -51,8 +59,9 @@ describe("Content controller", () => {
 
     it("Add Messages to a specific PostJob's queue", async () => {
 
-        await controller.createNewTask(mockThread('mock1'))
-        await controller.createNewTask(mockThread('mock2'))
+        
+        await controller.createNewTask(mockThread('mock1','Group1'))
+        await controller.createNewTask(mockThread('mock2', 'Group2'))
 
         for (let i = 0; i < 3; i++) {
             await controller.addToPostQueue(mockMessage('first' + String(i), 3, 'mock1'))
@@ -67,6 +76,7 @@ describe("Content controller", () => {
     })
 
     it("Does not add messages with wrong file extensions", async () => {
+
 
         await controller.createNewTask(mockThread('mock1'))
 
@@ -84,7 +94,7 @@ describe("Content controller", () => {
     it("New postjob is created if it doesnt exist when adding new new message to its queue", async () => {
 
         await controller.addToPostQueue(mockMessage('messageid1', 2, 'channeldId1'))
-
+        // TODO: add comments of what these do
         expect(controller.tasks.length).toBe(1)
         expect(controller.tasks[0].size()).toBe(1)
         expect(controller.tasks[0].thread.id).toBe('channeldId1')
@@ -97,8 +107,10 @@ describe("Content controller", () => {
 
     it("Processing of each PostJobs queue of URL's", async () => {
 
-        await controller.createNewTask(mockThread('mock1'))
-        await controller.createNewTask(mockThread('mock2'))
+
+
+        await controller.createNewTask(mockThread('mock1', 'bcGroupId1'))
+        await controller.createNewTask(mockThread('mock2','bcGroupId2'))
 
         for (let i = 0; i < 3; i++) {
             await controller.addToPostQueue(mockMessage('first' + String(i), 3, 'mock1'))
@@ -116,6 +128,7 @@ describe("Content controller", () => {
     })
 
     // // TODO: Test for removing a PostJob from tasks list if its empty and old enough
+    // TODO: Make tests where bad behaviour is being tested, "graceful error handling"
 
 })
 

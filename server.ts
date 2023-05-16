@@ -2,6 +2,7 @@ import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { TOKEN } from './src/config';
 import { getCommands } from './src/commands';
 import { ContentController } from './src/ContentController';
+import { pingBCApi } from './src/ballchasingAPI';
 
 
 const client = new Client({
@@ -10,8 +11,9 @@ const client = new Client({
 
 const controller = new ContentController()
 
-client.on(Events.ClientReady, () => {
+client.on(Events.ClientReady, async () => {
   console.log(`Logged in as ${client.user?.tag}!`);
+  console.log(await pingBCApi())
 });
 
 client.on("interactionCreate", async interaction => {
@@ -32,8 +34,6 @@ client.on(Events.ThreadCreate, async thrc => {
 })
 
 client.on(Events.MessageCreate, async message => {
-
-  const channel = message.channel;
 
   if (message.author.bot || !message.channel.isThread()) {
     //do nothing if the message is from a bot, or is outside a thread
