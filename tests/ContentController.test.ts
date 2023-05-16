@@ -1,6 +1,7 @@
 import { ThreadChannel } from "discord.js";
 import { ContentController } from "../src/ContentController";
 import { mockMessage } from "./PostJob.test";
+import { ACCEPTABLE_FILE_EXTENSION } from "../src/util";
 
 
 
@@ -48,7 +49,7 @@ describe("Content controller", () => {
     })
 
 
-    it("Add URLs to a specific PostJob's queue", async () => {
+    it("Add Messages to a specific PostJob's queue", async () => {
 
         await controller.createNewTask(mockThread('mock1'))
         await controller.createNewTask(mockThread('mock2'))
@@ -60,8 +61,22 @@ describe("Content controller", () => {
 
         expect(controller.tasks[0].size()).toBe(3)
         expect(controller.tasks[1].size()).toBe(3)
-        expect(controller.tasks[0].queue[0].attachments.get('File 0').url).toBe("URL /0")
-        expect(controller.tasks[1].queue[2].attachments.get('File 2').url).toBe("URL /2")
+        expect(controller.tasks[0].queue[0].attachments.get('File 0').url).toBe("URL /0"+ACCEPTABLE_FILE_EXTENSION)
+        expect(controller.tasks[1].queue[2].attachments.get('File 2').url).toBe("URL /2"+ACCEPTABLE_FILE_EXTENSION)
+
+    })
+
+    it("Does not add messages with wrong file extensions", async () => {
+
+        await controller.createNewTask(mockThread('mock1'))
+
+
+        for (let i = 0; i < 3; i++) {
+            await controller.addToPostQueue(mockMessage('first' + String(i), 1, 'mock1', true))
+        }
+
+        expect(controller.tasks[0].size()).toBe(0)
+
 
     })
 
@@ -74,7 +89,7 @@ describe("Content controller", () => {
         expect(controller.tasks[0].size()).toBe(1)
         expect(controller.tasks[0].thread.id).toBe('channeldId1')
         expect(controller.tasks[0].queue[0].attachments.size).toBe(2)
-        expect(controller.tasks[0].queue[0].attachments.get('File 1').url).toBe("URL /1")
+        expect(controller.tasks[0].queue[0].attachments.get('File 1').url).toBe("URL /1"+ACCEPTABLE_FILE_EXTENSION)
 
 
     })

@@ -41,10 +41,7 @@ client.on(Events.MessageCreate, async message => {
   }
 
   if (message.attachments.size > 0) {
-
     await controller.addToPostQueue(message)
-    channel.send(`\`${message.attachments.size}\` file(s) added to task \`${message.channelId}\` in \`${message.channel['name']}\``);
-
   }
 
   controller.processQueue();
