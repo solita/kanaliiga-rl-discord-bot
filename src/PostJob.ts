@@ -56,7 +56,7 @@ export class PostJob{
                 const fileName = attachment.url.split("/").at(-1)
 
                 try {
-                    const response = await this.processor.upload(file)
+                    const response = await this.processor.upload(file, fileName)
                     await message.channel.sendTyping()
 
                     
