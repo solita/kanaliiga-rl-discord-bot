@@ -1,9 +1,9 @@
 const log = {
     info: (message: string, code?: number) => {
-        console.log(`Info: ${message} ${code || ''}`)
+        // console.log(`Info: ${message} ${code || ''}`)
     },
     error: (message: string, code?: number) => {
-        console.log(`Error: ${message} ${code || ''}`)
+        // console.log(`Error: ${message} ${code || ''}`)
     }
 }
 

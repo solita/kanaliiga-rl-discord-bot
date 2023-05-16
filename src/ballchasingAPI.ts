@@ -3,7 +3,7 @@ import { BALL_CHASING_API_KEY, BC_SEASON_PARENT_GROUP_ID } from "./config"
 
 const BALLCHASING_BASEURL = 'https://ballchasing.com/api'
 
-type TBallchasingGroup = {
+export type TBallchasingGroup = {
     name: string,
     id: string,
     created: string,

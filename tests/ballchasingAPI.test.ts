@@ -1,40 +1,41 @@
-import { searchGroupId } from "../src/ballchasingAPI";
+import { searchGroupId, fetchGroups } from "../src/ballchasingAPI";
+import https from 'https'
 
-
+export const mockResponse = {
+    status: 200,
+    json: jest.fn(()=> mockResponse),
+    list: [{
+        name: "league1",
+        id: "12345Test",
+        created: '2023-05-09T16:00:50.682781Z',
+        link: 'https://ballchasing.com/api/groups/xxxxy',
+    }, {
+        name: "league2",
+        id: "56789Test",
+        created: '2023-02-09T16:00:50.682781Z',
+        link: 'https://ballchasing.com/api/groups/yyyyyx',
+    }]
+} 
 
 describe("Ballchasing Api", () => {
 
+    
 
-    it("Searches for the groupID andreturn both the match and all other results", () => {
+    it("Fetches the groups from ballchasing API", async () => {
 
-        const json = () => {
-            return {
-                list: [
-                    { 
-                        id: 'testId1',
-                        name: "testGroup1",
-                    },
-                    { 
-                        id: 'testId2',
-                        name: "testGroup2",
-                    },
-                    { 
-                        id: 'testId3',
-                        name: "testGroup3",
-                    }
-                ]
-            }
-        }
+        global.fetch = jest.fn().mockImplementationOnce(() => {
+            return Promise.resolve(mockResponse)
+        })
 
 
-        expect(json).toBeDefined()
+        const response = await fetchGroups()
+
+        expect(response).toBeDefined()
+        expect(response[0].id).toBe("12345Test")
 
     })
 
-
-
-
-
+    // TODO: more tests
 
 
 })

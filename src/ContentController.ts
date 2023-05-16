@@ -22,6 +22,7 @@ export class ContentController {
             log.info(`Content queue with an ID of ${thread.id} already exists.`)
             return existingTask
         }
+        
 
         const response = await fetchGroups().then(data => data).catch(error =>{
             thread.send(`Error with Ballchasing api! ${error.status} ${error.statusText}`)
