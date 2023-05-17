@@ -10,9 +10,17 @@ export const parseFileExtension = (fileName: string) => {
 
 export const allAttahcmentsAreCorrectType =
     (attachments: Collection<string, Attachment>): boolean => {
-        return attachments.some(att => parseFileExtension(att.url) !== ACCEPTABLE_FILE_EXTENSION)
-    }
 
+        
+        for (const value of attachments) {
+            
+            if (parseFileExtension(value[1].url) !== ACCEPTABLE_FILE_EXTENSION) {
+                return false
+            }
+        }
+
+        return true
+    }
 
 
 export const getDivisionName = (postTitle: string) => {
