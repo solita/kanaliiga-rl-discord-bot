@@ -2,7 +2,7 @@ import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { TOKEN } from './src/config';
 import { getCommands } from './src/commands';
 import { ContentController } from './src/ContentController';
-import { pingBCApi } from './src/ballchasingAPI';
+import { reportBcApiConnection } from './src/ballchasingAPI';
 
 
 const client = new Client({
@@ -13,7 +13,7 @@ const controller = new ContentController()
 
 client.on(Events.ClientReady, async () => {
   console.log(`Logged in as ${client.user?.tag}!`);
-  console.log(await pingBCApi())
+  console.log(await reportBcApiConnection())
 });
 
 client.on("interactionCreate", async interaction => {
