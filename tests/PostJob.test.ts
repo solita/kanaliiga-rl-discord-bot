@@ -3,7 +3,6 @@ import { PostJob } from "../src/PostJob";
 import log from "../src/log";
 import { DocumentProcessor } from "../src/DocumentProcessor";
 import { ACCEPTABLE_FILE_EXTENSION } from "../src/util";
-import * as BCAPI from "../src/ballchasingAPI";
 import { mockMessage } from "./testHelpers";
 
 describe("Each postjob contains an array of discords Message objects", () => {

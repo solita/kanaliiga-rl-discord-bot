@@ -1,4 +1,4 @@
-import { Attachment, Collection, Message, Role } from "discord.js";
+import { Attachment, Collection, Message } from "discord.js";
 
 const reFileExtension = /(?:\.([^.]+))?$/;
 export const ACCEPTABLE_FILE_EXTENSION = ".replay"
