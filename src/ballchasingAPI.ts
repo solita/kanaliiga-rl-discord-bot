@@ -13,13 +13,14 @@ export type TBallchasingGroup = {
 
 
 
-export const pingBCApi = (): Promise<string> => {
+const pingBCApi = (): Promise<Response> => {
 
     return fetch(BALLCHASING_BASEURL, {
         headers: {
             "Authorization": BALL_CHASING_API_KEY,
         },
-    }).then(resp => `Connection to Ballchasing API is ${resp.status}`).catch(err => `An error occured: ${err.message}`)
+
+    }).then(resp => resp).catch(err => err)
 
 }
 
@@ -36,6 +37,7 @@ export const fetchGroups = (): Promise<Array<TBallchasingGroup>> => {
         return resp.json()
     })
         .then(body => body.list)
+        .catch(err => err)
 
 }
 
@@ -46,8 +48,19 @@ export const searchGroupId = (name: string, groups: TBallchasingGroup[])
         groups.find(record => record.name === name)?.id,
         groups.map(record => record.name)
     ]
+}
+
+export const reportBcApiConnection = async () => {
 
 
+    const res = await pingBCApi()
+    if (res.status === 200){
+        return `Connection to Ballchasing.com api is OK! (${res.status})`
+    }
+
+    return `We encountered a problem with Ballchasin.com api. ${res.url} - ${res.status} - ${res.statusText}`
 
 
 }
+
+
