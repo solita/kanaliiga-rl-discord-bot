@@ -59,15 +59,21 @@ export class PostJob{
                     const response = await this.processor.upload(file, fileName)
                     await message.channel.sendTyping()
 
-                    
-                    message.channel.send(`Heres a link for you! ${response}`)
+                    //Timeout for the link to freshen up and discord embedded link preview to work
+                    setTimeout(() => {
+                        message.channel.send(`Heres a link for you! ${response}`)
+                    }, 3000);
                     
 
                 }
                 catch (err) {
                     await message.channel.sendTyping()
+
+                    //This timeout is for UX reasons
+                    setTimeout(() => {
+                        message.channel.send(`There was an error uploading file: ${fileName} \nError: ${err}`)
+                    }, 3000);
                     
-                    message.channel.send(`There was an error uploading file: ${fileName} \nError: ${err}`)
                     
                     await message.react('🚫')
                     arrayOfMultifileEmojies.shift()
