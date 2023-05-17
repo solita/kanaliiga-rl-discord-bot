@@ -16,7 +16,7 @@ describe("Content controller", () => {
         jest.spyOn(BCAPI, 'searchGroupId').mockImplementationOnce(()=> [ballchasingGroupId, []])
         return {
             id: id,
-            name: 'postTitle',
+            name: 'Solita Ninja vs Solita Herkku, Challengers, 1.5.2023',
             send: jest.fn(()=> Promise.resolve())
         } as unknown as ThreadChannel
 

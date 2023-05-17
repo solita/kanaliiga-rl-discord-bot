@@ -2,7 +2,7 @@ import { Message, ThreadChannel } from "discord.js"
 
 import { PostJob } from "./PostJob"
 import log from "./log"
-import { ACCEPTABLE_FILE_EXTENSION, allAttahcmentsAreCorrectType } from "./util"
+import { ACCEPTABLE_FILE_EXTENSION, allAttahcmentsAreCorrectType, checkRoleIsRLCaptain, getDivisionName } from "./util"
 import { fetchGroups, searchGroupId } from "./ballchasingAPI"
 
 
@@ -29,10 +29,11 @@ export class ContentController {
             return
         })
         if (response) {
-            const [groupId, allRecords] = searchGroupId(thread.name, response)
+            const groupName = getDivisionName(thread.name)
+            const [groupId, allRecords] = searchGroupId(groupName, response)
             if (!groupId) {
                 log.error(`Group ID for ${thread.name} not found`)
-                thread.send(`Your post did not make too much sense to me, maybe theres a typo?\n`+
+                await thread.send(`Your post did not make too much sense to me, maybe theres a typo?\n`+
                 `I tried with '${thread.name}'\n`+
                 `but only found groups named: \n${allRecords.join("\n")}`)
                 return
@@ -63,6 +64,10 @@ export class ContentController {
     }
 
     async addToPostQueue(message:Message) {
+        if (!checkRoleIsRLCaptain(message)) {
+            return
+        }
+
         if (allAttahcmentsAreCorrectType(message.attachments)){
             const task = await this.createNewTask(message.channel as ThreadChannel)
             if (task) task.addToQueue(message)
