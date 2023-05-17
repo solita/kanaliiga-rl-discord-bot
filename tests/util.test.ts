@@ -1,5 +1,5 @@
 import { Attachment, Collection } from "discord.js";
-import { parseFileExtension, allAttahcmentsAreCorrectType } from "../src/util";
+import { parseFileExtension, allAttahcmentsAreCorrectType, getDivisionName } from "../src/util";
 
 
 
@@ -42,5 +42,11 @@ describe("Utilities", ()=>{
 
     })
 
+    it("Checks that the division name can be parsed, and returns undefined if post title doesn't follow naming convention", () => {
+        const goodPostTitle = 'Solita Ninja vs Solita Herkku, Challengers, 1.5.2023';
+        const badPostTitle = 'replayfile for ballchasing';
 
+        expect(getDivisionName(goodPostTitle)).toBe('Challengers');
+        expect(getDivisionName(badPostTitle)).toBeUndefined();
+    })
 })
