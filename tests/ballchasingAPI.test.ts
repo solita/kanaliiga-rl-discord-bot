@@ -1,21 +1,7 @@
 import { fetchGroups } from "../src/ballchasingAPI";
+import { mockResponse } from "./testHelpers";
 
 
-export const mockResponse = {
-    status: 200,
-    json: jest.fn(()=> mockResponse),
-    list: [{
-        name: "league1",
-        id: "12345Test",
-        created: '2023-05-09T16:00:50.682781Z',
-        link: 'https://ballchasing.com/api/groups/xxxxy',
-    }, {
-        name: "league2",
-        id: "56789Test",
-        created: '2023-02-09T16:00:50.682781Z',
-        link: 'https://ballchasing.com/api/groups/yyyyyx',
-    }]
-} 
 
 describe("Ballchasing Api", () => {
 

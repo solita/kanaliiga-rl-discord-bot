@@ -10,12 +10,10 @@ export const mockMessage = (
     attchmntCount = 1, 
     channelID = 'channelId0', 
     faulExtension = false, 
-    ballchasingGroupId = 'group1', 
     isRLCaptain = true,) => {
 
     const files = new Map<string, object>()
-    jest.spyOn(BCAPI, 'searchGroupId').mockImplementationOnce(()=> [ballchasingGroupId, []])
-
+ 
     for (let j = 0; j < attchmntCount; j++) {
         files.set('File ' + j, { url: 'URL /' + j + (faulExtension ? '.test' : ACCEPTABLE_FILE_EXTENSION) })
     }
@@ -45,7 +43,6 @@ export const mockMessage = (
     } as unknown as Message
 }
 
-
 export const mockThread = (id: string, ballchasingGroupId = 'group1') => {
     jest.spyOn(BCAPI, 'searchGroupId').mockImplementationOnce(()=> [ballchasingGroupId, []])
     return {
@@ -55,3 +52,19 @@ export const mockThread = (id: string, ballchasingGroupId = 'group1') => {
     } as unknown as ThreadChannel
 
 }
+
+export const mockResponse = {
+    status: 200,
+    json: jest.fn(()=> mockResponse),
+    list: [{
+        name: "Challengers",
+        id: "12345Test",
+        created: '2023-05-09T16:00:50.682781Z',
+        link: 'https://ballchasing.com/api/groups/xxxxy',
+    }, {
+        name: "league2",
+        id: "56789Test",
+        created: '2023-02-09T16:00:50.682781Z',
+        link: 'https://ballchasing.com/api/groups/yyyyyx',
+    }]
+} 
