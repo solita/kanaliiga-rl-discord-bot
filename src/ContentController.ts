@@ -14,36 +14,43 @@ export class ContentController {
     constructor() {
         this.tasks = []
     }
+    
 
     async createNewTask(thread: ThreadChannel): Promise<PostJob> {
+
 
         const existingTask = this.tasks.find(th => th.thread.id === thread.id)
         if (existingTask) {
             log.info(`Content queue with an ID of ${thread.id} already exists.`)
             return existingTask
         }
-        
 
-        const response = await fetchGroups().then(data => data).catch(error =>{
+        const groupName = getDivisionName(thread.name)
+        if (!groupName){
+            thread.send('Your post seemed to be malformatted in some way. Check that your formatting is:\n{Team vs Team}, {Division name}, {DD.MM.YYYY}')
+            return
+        }
+
+        const response = await fetchGroups().then(data => data).catch(error => {
             thread.send(`Error with Ballchasing api! ${error.status} ${error.statusText}`)
             return
         })
         if (response) {
-            const groupName = getDivisionName(thread.name)
+
             const [groupId, allRecords] = searchGroupId(groupName, response)
             if (!groupId) {
-                log.error(`Group ID for ${thread.name} not found`)
-                await thread.send(`Your post did not make too much sense to me, maybe theres a typo?\n`+
-                `I tried with '${thread.name}'\n`+
-                `but only found groups named: \n${allRecords.join("\n")}`)
+                log.error(`Group ID for ${groupName} not found`)
+                await thread.send(`Your post did not make too much sense to me, maybe theres a typo?\n` +
+                    `I tried with '${groupName}'\n` +
+                    `but only found groups named: \n${allRecords.join("\n")}`)
                 return
             }
-            
+
             const task = new PostJob(thread, groupId)
             this.tasks.push(task)
             return task
         }
-        
+
     }
 
     // removeTask(threadId: string) {
@@ -63,12 +70,12 @@ export class ContentController {
         })
     }
 
-    async addToPostQueue(message:Message) {
+    async addToPostQueue(message: Message) {
         if (!checkRoleIsRLCaptain(message)) {
             return
         }
 
-        if (allAttahcmentsAreCorrectType(message.attachments)){
+        if (allAttahcmentsAreCorrectType(message.attachments)) {
             const task = await this.createNewTask(message.channel as ThreadChannel)
             if (task) task.addToQueue(message)
             return
