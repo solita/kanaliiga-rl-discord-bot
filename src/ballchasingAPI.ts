@@ -10,7 +10,7 @@ export type TBallchasingGroup = {
   [key: string]: string | object;
 };
 
-const pingBCApi = (): Promise<Response> => {
+export const pingBCApi = (): Promise<Response> => {
   return fetch(BALLCHASING_BASEURL, {
     headers: {
       Authorization: BALL_CHASING_API_KEY
