@@ -1,10 +1,9 @@
-import { ThreadChannel } from "discord.js";
 import { ContentController } from "../src/ContentController";
-import { mockMessage } from "./PostJob.test";
+import { mockMessage, mockThread } from "./testHelpers";
 import { ACCEPTABLE_FILE_EXTENSION } from "../src/util";
 import * as BCAPI from "../src/ballchasingAPI";
-import { mockResponse } from "./ballchasingAPI.test";
-
+import { mockResponse } from "./testHelpers";
+import { DocumentProcessor } from "../src/DocumentProcessor";
 
 
 
@@ -12,19 +11,10 @@ describe("Content controller", () => {
 
     const controller = new ContentController()
 
-    const mockThread = (id: string, ballchasingGroupId = 'group1') => {
-        jest.spyOn(BCAPI, 'searchGroupId').mockImplementationOnce(()=> [ballchasingGroupId, []])
-        return {
-            id: id,
-            name: 'Solita Ninja vs Solita Herkku, Challengers, 1.5.2023',
-            send: jest.fn(()=> Promise.resolve())
-        } as unknown as ThreadChannel
-
-    }
-
     
     jest.spyOn(BCAPI, 'fetchGroups').mockImplementation(()=> Promise.resolve(mockResponse.list))
-
+    jest.spyOn(DocumentProcessor.prototype, 'download').mockImplementation(() => Promise.resolve(Buffer.from([0])))
+    jest.spyOn(DocumentProcessor.prototype, 'upload').mockImplementation(() => Promise.resolve('url'))
 
     beforeEach(() => {
         controller.clearTasks()

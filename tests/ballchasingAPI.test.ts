@@ -1,25 +1,15 @@
-import { fetchGroups } from "../src/ballchasingAPI";
+import { fetchGroups, searchGroupId } from "../src/ballchasingAPI";
+import { mockResponse } from "./testHelpers";
 
 
-export const mockResponse = {
-    status: 200,
-    json: jest.fn(()=> mockResponse),
-    list: [{
-        name: "league1",
-        id: "12345Test",
-        created: '2023-05-09T16:00:50.682781Z',
-        link: 'https://ballchasing.com/api/groups/xxxxy',
-    }, {
-        name: "league2",
-        id: "56789Test",
-        created: '2023-02-09T16:00:50.682781Z',
-        link: 'https://ballchasing.com/api/groups/yyyyyx',
-    }]
-} 
 
 describe("Ballchasing Api", () => {
 
-    
+    /*
+    These tests depend on mockResponse from testHelpers.ts
+
+    Please see the mockresponse for more details on existing mocked groups
+    */
 
     it("Fetches the groups from ballchasing API", async () => {
 
@@ -35,7 +25,24 @@ describe("Ballchasing Api", () => {
 
     })
 
-    // TODO: more tests
+
+    it("Parses the group fetch response into: [possibleMatch, [other, results]]", async()=>{
+
+        global.fetch = jest.fn().mockImplementationOnce(() => {
+            return Promise.resolve(mockResponse)
+        })
+
+
+        const response = await fetchGroups()
+
+        const [matchId, allResults] = searchGroupId('Challengers',response)
+
+        expect(matchId).toBe('12345Test')
+        expect(allResults[0]).toBe('Challengers')
+        expect(allResults[1]).toBe('league2')
+
+
+    })
 
 
 })
