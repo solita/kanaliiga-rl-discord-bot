@@ -20,7 +20,7 @@ describe("Content controller", () => {
         controller.clearTasks()
     })
 
-    it("New instance of Controller and documentProcessor is defined", () => {
+    it("New instance of Controller is defined", () => {
         expect(controller).toBeDefined()
     })
 
@@ -47,7 +47,8 @@ describe("Content controller", () => {
     })
 
 
-    it("Add Messages to a specific PostJob's queue", async () => {
+
+    it("With sufficient role: Add Messages to a specific PostJob's queue", async () => {
 
 
         await controller.createNewTask(mockThread('mock1', 'Group1'))
@@ -64,6 +65,20 @@ describe("Content controller", () => {
         expect(controller.tasks[1].queue[2].attachments.get('File 2').url).toBe("URL /2" + ACCEPTABLE_FILE_EXTENSION)
 
     })
+
+    it("Without sufficient role: Add Messages to a specific PostJob's queue", async () => {
+
+
+        await controller.createNewTask(mockThread('mock1', 'Group1'))
+
+        for (let i = 0; i < 3; i++) {
+            await controller.addToPostQueue(mockMessage('first' + String(i), 3, 'mock1', false, false))
+        }
+
+        expect(controller.tasks[0].size()).toBe(0)
+   
+    })
+
 
     it("Does not add messages with wrong file extensions", async () => {
 
