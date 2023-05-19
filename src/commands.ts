@@ -1,4 +1,4 @@
-import { Client, REST, Routes } from 'discord.js';
+import { ApplicationCommandOptionType, Client, REST, Routes } from 'discord.js';
 import {
     CLIENT_ID,
     TOKEN,
@@ -18,6 +18,19 @@ const commands = [
     {
         name: 'divisionhelp',
         description: 'Replies with available subgroups in ballchasing.com'
+    },
+    {
+        name: 'setparent',
+        description: 'Set a new parent groupId',
+        options: [
+            {
+                type: ApplicationCommandOptionType.String,
+                name: 'id',
+                description:
+                    'string without spaces. Can be found from ballchasing.com/group/xxxxxxxxx',
+                required: true
+            }
+        ]
     }
 ];
 
@@ -37,18 +50,27 @@ export const divisionHelp = async () => {
     const embedContainer = new EmbedBuilder()
         .setColor('#22c9c9')
         .setTitle(`Sub groups under Ballchasing parent group`)
-        .setURL(`https://ballchasing.com/group/${ bcParentGroup()}`)
+        .setURL(`https://ballchasing.com/group/${bcParentGroup()}`)
         .setDescription(
             'These are the available divisions to upload replays to. They are case sensitive.'
         );
 
     return fetchGroups()
         .then((data) => {
-            embedContainer.addFields({ name: '\n', value: ' ' });
-            data.forEach((group) => {
-                embedContainer.addFields({ name: ' ', value: `${group.name}` });
-            });
-
+            if (data.length > 0) {
+                embedContainer.addFields({ name: '\n', value: ' ' });
+                data.forEach((group) => {
+                    embedContainer.addFields({
+                        name: ' ',
+                        value: `${group.name}`
+                    });
+                });
+            } else {
+                embedContainer.addFields({
+                    name: '\n',
+                    value: `No subgroups found for ${bcParentGroup()}`
+                });
+            }
             return embedContainer;
         })
         .catch((err) => {

@@ -21,18 +21,12 @@ export const pingBCApi = (): Promise<Response> => {
 };
 
 export const fetchGroups = async (): Promise<Array<TBallchasingGroup>> => {
-    
-
-    return fetch(
-        `${BALLCHASING_BASEURL}/groups?group=${bcParentGroup()}`,
-        {
-            headers: {
-                Authorization: BALL_CHASING_API_KEY
-            }
+    return fetch(`${BALLCHASING_BASEURL}/groups?group=${bcParentGroup()}`, {
+        headers: {
+            Authorization: BALL_CHASING_API_KEY
         }
-    )
+    })
         .then((resp) => {
-            
             if (resp.status !== 200) {
                 throw resp;
             }

@@ -28,6 +28,16 @@ client.on("interactionCreate", async interaction => {
         const divisionHelpEmbed = await divisionHelp()
         await interaction.reply({ embeds: [divisionHelpEmbed] });
     }
+    else if (interaction.commandName === 'setparent') {
+        
+        if(bcParentGroup(interaction.options.get('id').value.toString())){
+            interaction.reply(`Parent group set. New parent group is ${bcParentGroup()}`)
+            return
+        }
+        else{
+            interaction.reply('Something went wrong.')
+        }
+    }
 });
 
 

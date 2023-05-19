@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import fs from 'fs'
+import fs from 'fs';
 
 dotenv.config();
 
@@ -14,14 +14,20 @@ export const APPLICATION_VERSION =
 
 export const CAPTAIN_ROLE =
     process.env.CAPTAIN_ROLE || 'CAPTAIN ROLE NOT FOUND';
-    
-export const bcParentGroup = () => {
 
-    try {
-        return fs.readFileSync('parentGroup.txt').toString().trim();
-    } catch (error) {
-        return 'err'
+export const bcParentGroup = (newName = '') => {
+    if (!newName) {
+        try {
+            return fs.readFileSync('parentGroup.txt').toString().trim();
+        } catch (error) {
+            return 'err';
+        }
+    } else {
+        try {
+            fs.writeFileSync('parentGroup.txt', newName);
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
-
-}
-        
+};
