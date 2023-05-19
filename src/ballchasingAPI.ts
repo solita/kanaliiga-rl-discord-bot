@@ -35,8 +35,7 @@ export const fetchGroups = (): Promise<Array<TBallchasingGroup>> => {
             }
             return resp.json();
         })
-        .then((body) => body.list)
-        .catch((err) => err);
+        .then((body) => body.list);
 };
 
 export const searchGroupId = (
