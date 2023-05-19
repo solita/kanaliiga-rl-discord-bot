@@ -104,7 +104,7 @@ describe("Each postjob contains an array of discords Message objects", () => {
 
         postJob.process()
 
-        await new Promise((r) => setTimeout(r, 40))
+        await new Promise((r) => setTimeout(r, 20))
 
         expect(postJob.size()).toBe(0)
         expect(postJob.processor.download).toBeCalledTimes(9)

@@ -1,7 +1,8 @@
-import { Message, Role, ThreadChannel } from "discord.js"
+import { Attachment, Collection, Message, Role, ThreadChannel } from "discord.js"
 
 import * as BCAPI from "../src/ballchasingAPI";
 import { ACCEPTABLE_FILE_EXTENSION } from "../src/util";
+import { CAPTAIN_ROLE } from "../src/config";
 
 
 
@@ -12,16 +13,15 @@ export const mockMessage = (
     faulExtension = false, 
     isRLCaptain = true,) => {
 
-    const files = new Map<string, object>()
+    const files = new Collection<string, Attachment>()
  
     for (let j = 0; j < attchmntCount; j++) {
-        files.set('File ' + j, { url: 'URL /' + j + (faulExtension ? '.test' : ACCEPTABLE_FILE_EXTENSION) })
+        files.set('File ' + j, { url: 'URL /' + j + (faulExtension ? '.test' : ACCEPTABLE_FILE_EXTENSION) } as Attachment)
     }
 
-    const mockRole: Role = {
-        id: 'Test',
-        name: isRLCaptain ? 'RL Captain' : ''
-    } as unknown as Role
+    const mockRole = new Collection<string, Role>([
+        ['testRoleId', {name: isRLCaptain ? CAPTAIN_ROLE : ''} as Role]
+    ])
 
     return {
         id: messageId,
@@ -35,9 +35,7 @@ export const mockMessage = (
         react: jest.fn(() => Promise<void>),
         member: {
             roles: {
-                cache: [
-                    mockRole
-                ]
+                cache: mockRole
             }
         }
     } as unknown as Message

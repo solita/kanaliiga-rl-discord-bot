@@ -36,6 +36,7 @@ export const checkRoleIsRLCaptain = (message: Message) => {
 
     if (getRoles) {
         const roles = getRoles.roles;
+
         if (!roles.cache.some((role) => role.name === CAPTAIN_ROLE)) {
             message.channel.send(
                 `Only those with ${CAPTAIN_ROLE} as their role can upload replays.`
