@@ -32,6 +32,26 @@ describe("Each postjob contains an array of discords Message objects", () => {
 
     })
 
+    it("Adds new Messages to a queue", () => {
+
+        /*
+        Adding 3 mockMessages, attachments is a Map {attachments: {'File i':'URL i'}}
+        */
+
+        for (let i = 0; i < 3; i++) {
+            postJob.addToQueue(mockMessage(String(i), 3))
+        }
+
+        expect(postJob.size()).toBe(3)
+
+        expect(postJob.queue[0].id).toBe('0')
+        expect(postJob.queue[2].id).toBe('2')
+        expect(postJob.queue[0].attachments.get('File 0').url).toBe("URL /0" + ACCEPTABLE_FILE_EXTENSION)
+        expect(postJob.queue[2].attachments.get('File 2').url).toBe("URL /2" + ACCEPTABLE_FILE_EXTENSION)
+
+    })
+
+
     it("Adds new Messages to queue", () => {
 
         // Adding 3 mockMessages, attachments is a Map {attachments: {'File i':'URL i'}}
@@ -104,7 +124,7 @@ describe("Each postjob contains an array of discords Message objects", () => {
 
         postJob.process()
 
-        await new Promise((r) => setTimeout(r, 40))
+        await new Promise((r) => setTimeout(r, 20))
 
         expect(postJob.size()).toBe(0)
         expect(postJob.processor.download).toBeCalledTimes(9)

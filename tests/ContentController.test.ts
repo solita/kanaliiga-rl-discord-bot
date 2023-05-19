@@ -11,8 +11,8 @@ describe("Content controller", () => {
 
     const controller = new ContentController()
 
-    
-    jest.spyOn(BCAPI, 'fetchGroups').mockImplementation(()=> Promise.resolve(mockResponse.list))
+
+    jest.spyOn(BCAPI, 'fetchGroups').mockImplementation(() => Promise.resolve(mockResponse.list))
     jest.spyOn(DocumentProcessor.prototype, 'download').mockImplementation(() => Promise.resolve(Buffer.from([0])))
     jest.spyOn(DocumentProcessor.prototype, 'upload').mockImplementation(() => Promise.resolve('url'))
 
@@ -20,13 +20,13 @@ describe("Content controller", () => {
         controller.clearTasks()
     })
 
-    it("New instance of Controller and documentProcessor is defined", () => {
+    it("New instance of Controller is defined", () => {
         expect(controller).toBeDefined()
     })
 
 
     it("New PostJobs are created and added to controllers queue", async () => {
-        
+
 
         const TASK_COUNT = 4
 
@@ -47,10 +47,11 @@ describe("Content controller", () => {
     })
 
 
-    it("Add Messages to a specific PostJob's queue", async () => {
 
-        
-        await controller.createNewTask(mockThread('mock1','Group1'))
+    it("With sufficient role: Add Messages to a specific PostJob's queue", async () => {
+
+
+        await controller.createNewTask(mockThread('mock1', 'Group1'))
         await controller.createNewTask(mockThread('mock2', 'Group2'))
 
         for (let i = 0; i < 3; i++) {
@@ -60,10 +61,24 @@ describe("Content controller", () => {
 
         expect(controller.tasks[0].size()).toBe(3)
         expect(controller.tasks[1].size()).toBe(3)
-        expect(controller.tasks[0].queue[0].attachments.get('File 0').url).toBe("URL /0"+ACCEPTABLE_FILE_EXTENSION)
-        expect(controller.tasks[1].queue[2].attachments.get('File 2').url).toBe("URL /2"+ACCEPTABLE_FILE_EXTENSION)
+        expect(controller.tasks[0].queue[0].attachments.get('File 0').url).toBe("URL /0" + ACCEPTABLE_FILE_EXTENSION)
+        expect(controller.tasks[1].queue[2].attachments.get('File 2').url).toBe("URL /2" + ACCEPTABLE_FILE_EXTENSION)
 
     })
+
+    it("Without sufficient role: Add Messages to a specific PostJob's queue", async () => {
+
+
+        await controller.createNewTask(mockThread('mock1', 'Group1'))
+
+        for (let i = 0; i < 3; i++) {
+            await controller.addToPostQueue(mockMessage('first' + String(i), 3, 'mock1', false, false))
+        }
+
+        expect(controller.tasks[0].size()).toBe(0)
+   
+    })
+
 
     it("Does not add messages with wrong file extensions", async () => {
 
@@ -83,24 +98,23 @@ describe("Content controller", () => {
 
     it("New postjob is created if it doesnt exist when adding new new message to its queue", async () => {
 
-        await controller.addToPostQueue(mockMessage('messageid1', 2, 'channeldId1'))
-        // TODO: add comments of what these do
-        expect(controller.tasks.length).toBe(1)
-        expect(controller.tasks[0].size()).toBe(1)
-        expect(controller.tasks[0].thread.id).toBe('channeldId1')
-        expect(controller.tasks[0].queue[0].attachments.size).toBe(2)
-        expect(controller.tasks[0].queue[0].attachments.get('File 1').url).toBe("URL /1"+ACCEPTABLE_FILE_EXTENSION)
+        await controller.addToPostQueue(mockMessage('messageid1', 2, 'postId'))
+        expect(controller.tasks.length).toBe(1) // Task does not exist previously, so 1 was created
+        expect(controller.tasks[0].size()).toBe(1) // That created task has 1 message in its queue
+        expect(controller.tasks[0].thread.id).toBe('postId') // message objects channel object populates threadId correctly
+        expect(controller.tasks[0].queue[0].attachments.size).toBe(2) //The message we added to this newly created post, contains 2 attachments
+        expect(controller.tasks[0].queue[0].attachments.get('File 1').url).toBe("URL /1" + ACCEPTABLE_FILE_EXTENSION) // the second attch's both file name and its url are in correct sequence, (last of the 2)
 
 
     })
-    
+
 
     it("Processing of each PostJobs queue of URL's", async () => {
 
 
 
         await controller.createNewTask(mockThread('mock1', 'bcGroupId1'))
-        await controller.createNewTask(mockThread('mock2','bcGroupId2'))
+        await controller.createNewTask(mockThread('mock2', 'bcGroupId2'))
 
         for (let i = 0; i < 3; i++) {
             await controller.addToPostQueue(mockMessage('first' + String(i), 3, 'mock1'))
@@ -109,10 +123,12 @@ describe("Content controller", () => {
 
         controller.processQueue()
 
-        await new Promise((r) => setTimeout(r, 200));
+        await new Promise((r) => setTimeout(r, 20));
 
-        expect(controller.tasks.length).toBe(2)
-        expect(controller.tasks[0].size()).toBe(0)
+        expect(controller.tasks.length).toBe(2) //Thread itself does not get deleted
+
+        //processed messages are removed from queue
+        expect(controller.tasks[0].size()).toBe(0) 
         expect(controller.tasks[1].size()).toBe(0)
 
     })
