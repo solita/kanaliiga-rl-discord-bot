@@ -4,7 +4,7 @@ import {
     TOKEN,
     APPLICATION_VERSION,
     CAPTAIN_ROLE,
-    BC_SEASON_PARENT_GROUP_ID
+    bcParentGroup
 } from './config';
 import { ContentController } from './ContentController';
 import { fetchGroups, pingBCApi } from './ballchasingAPI';
@@ -37,7 +37,7 @@ export const divisionHelp = async () => {
     const embedContainer = new EmbedBuilder()
         .setColor('#22c9c9')
         .setTitle(`Sub groups under Ballchasing parent group`)
-        .setURL(`https://ballchasing.com/group/${BC_SEASON_PARENT_GROUP_ID}`)
+        .setURL(`https://ballchasing.com/group/${ bcParentGroup()}`)
         .setDescription(
             'These are the available divisions to upload replays to. They are case sensitive.'
         );
