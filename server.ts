@@ -1,6 +1,6 @@
 import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { TOKEN } from './src/config';
-import { getCommands, botHealth } from './src/commands';
+import { getCommands, botHealth, divisionHelp } from './src/commands';
 import { ContentController } from './src/ContentController';
 import { reportBcApiConnection } from './src/ballchasingAPI';
 
@@ -23,6 +23,10 @@ client.on("interactionCreate", async interaction => {
   if (interaction.commandName === 'health') {
     const infoEmbed = await botHealth(controller, client)
     await interaction.reply({ embeds: [infoEmbed] });
+  }
+  else if (interaction.commandName === 'divisionhelp') {
+    const divisionHelpEmbed = await divisionHelp()
+    await interaction.reply({ embeds: [divisionHelpEmbed] });
   }
 });
 

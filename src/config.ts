@@ -10,4 +10,5 @@ export const BC_SEASON_PARENT_GROUP_ID =
     process.env.BC_SEASON_PARENT_GROUP_ID || 'NO PARENT GROUP ID FOUND';
 export const APPLICATION_VERSION =
     process.env.npm_package_version || 'VERSION NOT FOUND';
-export const CAPTAIN_ROLE = process.env.CAPTAIN_ROLE || 'CAPTAIN ROLE NOT FOUND';
+export const CAPTAIN_ROLE =
+    process.env.CAPTAIN_ROLE || 'CAPTAIN ROLE NOT FOUND';

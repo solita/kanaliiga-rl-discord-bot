@@ -4,8 +4,6 @@ import { CAPTAIN_ROLE } from './config';
 const reFileExtension = /(?:\.([^.]+))?$/;
 export const ACCEPTABLE_FILE_EXTENSION = '.replay';
 
-console.log(CAPTAIN_ROLE)
-
 export const parseFileExtension = (fileName: string) => {
     return `.${reFileExtension.exec(fileName)[1]}`;
 };

@@ -1,13 +1,23 @@
 import { Client, REST, Routes } from 'discord.js';
-import { CLIENT_ID, TOKEN, APPLICATION_VERSION } from './config';
+import {
+    CLIENT_ID,
+    TOKEN,
+    APPLICATION_VERSION,
+    CAPTAIN_ROLE,
+    BC_SEASON_PARENT_GROUP_ID
+} from './config';
 import { ContentController } from './ContentController';
-import { pingBCApi } from './ballchasingAPI';
+import { fetchGroups, pingBCApi } from './ballchasingAPI';
 import { EmbedBuilder } from 'discord.js';
 
 const commands = [
     {
         name: 'health',
         description: 'Replies with bot health and status'
+    },
+    {
+        name: 'divisionhelp',
+        description: 'Replies with available subgroups in ballchasing.com'
     }
 ];
 
@@ -23,6 +33,32 @@ export const getCommands = async () => {
     }
 };
 
+export const divisionHelp = async () => {
+    const embedContainer = new EmbedBuilder()
+        .setColor('#22c9c9')
+        .setTitle(`Sub groups under Ballchasing parent group`)
+        .setURL(`https://ballchasing.com/group/${BC_SEASON_PARENT_GROUP_ID}`)
+        .setDescription(
+            'These are the available divisions to upload replays to. They are case sensitive.'
+        );
+
+    return fetchGroups()
+        .then((data) => {
+            embedContainer.addFields({ name: '\n', value: ' ' });
+            data.forEach((group) => {
+                embedContainer.addFields({ name: ' ', value: `${group.name}` });
+            });
+
+            return embedContainer;
+        })
+        .catch((err) => {
+            embedContainer.setDescription(
+                `An error occured while trying to find subgroups. ${err.status} - ${err.statusText}`
+            );
+            return embedContainer;
+        });
+};
+
 export const botHealth = async (
     controller: ContentController,
     client: Client
@@ -32,7 +68,6 @@ export const botHealth = async (
     const isBotHealthy = ballchasinStatus.status === 200;
 
     story.push(`Bot is ${isBotHealthy ? 'healthy 🫶' : 'not healthy 😮‍💨'} `);
-    story.push(`Uptime ${(client.uptime / 1000 / 86400).toFixed(2)} days`);
 
     if (!isBotHealthy) {
         story.push(
@@ -40,28 +75,39 @@ export const botHealth = async (
         );
     } else {
         story.push(
-            `Connection to Ballchasin.com is OK! - ${ballchasinStatus.status}`
+            `Connection to Ballchasing.com is Ok! - ${ballchasinStatus.status}`
         );
     }
-
-    story.push(`Bot has ${controller.tasks.length} posts stored in memory`);
-
-    controller.tasks.forEach((task) => {
-        story.push(
-            ` Post id ${task.thread.id} with ${task.queue.length} messages in queue`
-        );
-        task.queue.forEach((message) => {
-            message.attachments.forEach((r) => {
-                story.push(`   Attachment ${r.name}`);
-            });
-        });
-    });
+    story.push(`Captain role: ${CAPTAIN_ROLE}`);
 
     const embedContainer = new EmbedBuilder()
         .setColor(isBotHealthy ? '#53b33b' : '#d12020')
         .setTitle(`Kanaliiga RL Discord Bot ${APPLICATION_VERSION}`)
         .setURL('https://github.com/solita/kanaliiga-rl-discord-bot')
-        .setDescription(story.join('\n'));
+        .setDescription(story.join('\n'))
+        .addFields(
+            {
+                name: 'Health',
+                value: `${isBotHealthy ? 'OK' : 'Not OK'}`,
+                inline: true
+            },
+            {
+                name: 'In Memory',
+                value: `${controller.tasks.length}`,
+                inline: true
+            },
+            { name: '\n', value: ' ' },
+            {
+                name: 'Ballchasing',
+                value: `${ballchasinStatus.status}`,
+                inline: true
+            },
+            {
+                name: 'Uptime',
+                value: `${(client.uptime / 1000 / 86400).toFixed(2)} days`,
+                inline: true
+            }
+        );
 
     return embedContainer;
 };
