@@ -15,33 +15,31 @@ export class DocumentProcessor {
         fileName: string,
         groupId: string
     ): Promise<string> {
-        return new Promise(async (resolve, reject) => {
-            const BC_UPLOAD_URL = `https://ballchasing.com/api/v2/upload?group=${groupId}`;
-            const formData = new FormData();
-            const blob = new Blob([file]);
-            formData.append('file', blob, fileName);
+        const BC_UPLOAD_URL = `https://ballchasing.com/api/v2/upload?group=${groupId}`;
+        const formData = new FormData();
+        const blob = new Blob([file]);
+        formData.append('file', blob, fileName);
 
-            try {
-                const res = await fetch(BC_UPLOAD_URL, {
-                    method: 'POST',
-                    headers: {
-                        Authorization: BALL_CHASING_API_KEY,
-                        Accept: '*/*'
-                    },
-                    body: formData
-                });
+        try {
+            const res = await fetch(BC_UPLOAD_URL, {
+                method: 'POST',
+                headers: {
+                    Authorization: BALL_CHASING_API_KEY,
+                    Accept: '*/*'
+                },
+                body: formData
+            });
 
-                const data = await res.json();
+            const data = await res.json();
 
-                if (res.status === 201) {
-                    resolve(data.location);
-                } else {
-                    reject(`${data.error} ${data.location || ''}`);
-                }
-            } catch (error) {
-                error.error ? resolve(error.error) : resolve(error);
+            if (res.status === 201) {
+                return data.location;
+            } else {
+                return `${data.error} ${data.location || ''}`;
             }
-        });
+        } catch (error) {
+            return error?.error || error;
+        }
     }
 
     async download(url: string): Promise<Buffer> {
