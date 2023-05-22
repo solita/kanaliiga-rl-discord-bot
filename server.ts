@@ -1,8 +1,9 @@
-import { Client, GatewayIntentBits, Events } from 'discord.js';
-import { bcParentGroup, TOKEN } from './src/config';
+import { Client, GatewayIntentBits, Events, RoleManager } from 'discord.js';
+import { bcParentGroup, CAPTAIN_ROLE, TOKEN } from './src/config';
 import { getCommands, botHealth, divisionHelp } from './src/commands';
 import { ContentController } from './src/ContentController';
 import { reportBcApiConnection } from './src/ballchasingAPI';
+import { checkRoleIsRLCaptain } from './src/util';
 
 
 const client = new Client({
@@ -29,14 +30,24 @@ client.on("interactionCreate", async interaction => {
         await interaction.reply({ embeds: [divisionHelpEmbed] });
     }
     else if (interaction.commandName === 'setparent') {
+
+        const guild = client.guilds.cache.get(interaction.guild.id)
+        guild.members.fetch(interaction.user.id).then(member => {
+            if (member.roles.cache.some(role => role.name === CAPTAIN_ROLE)){
+                if (bcParentGroup(interaction.options.get('id').value.toString())){
+                    interaction.reply(`Parent group set. New parent group is ${bcParentGroup()}`)
+                    return
+                }
+                else{
+                    interaction.reply('Something went wrong.')
+                }
+            }
+            else{
+                interaction.reply('Only captains can update this')
+            }
+        })
         
-        if(bcParentGroup(interaction.options.get('id').value.toString())){
-            interaction.reply(`Parent group set. New parent group is ${bcParentGroup()}`)
-            return
-        }
-        else{
-            interaction.reply('Something went wrong.')
-        }
+    
     }
 });
 
