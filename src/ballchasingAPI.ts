@@ -1,4 +1,4 @@
-import { BALL_CHASING_API_KEY, BC_SEASON_PARENT_GROUP_ID } from './config';
+import { BALL_CHASING_API_KEY, bcParentGroup } from './config';
 
 const BALLCHASING_BASEURL = 'https://ballchasing.com/api';
 
@@ -20,15 +20,12 @@ export const pingBCApi = (): Promise<Response> => {
         .catch((err) => err);
 };
 
-export const fetchGroups = (): Promise<Array<TBallchasingGroup>> => {
-    return fetch(
-        `${BALLCHASING_BASEURL}/groups?group=${BC_SEASON_PARENT_GROUP_ID}`,
-        {
-            headers: {
-                Authorization: BALL_CHASING_API_KEY
-            }
+export const fetchGroups = async (): Promise<Array<TBallchasingGroup>> => {
+    return fetch(`${BALLCHASING_BASEURL}/groups?group=${bcParentGroup()}`, {
+        headers: {
+            Authorization: BALL_CHASING_API_KEY
         }
-    )
+    })
         .then((resp) => {
             if (resp.status !== 200) {
                 throw resp;
