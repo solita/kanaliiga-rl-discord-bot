@@ -8,7 +8,7 @@
     "start": "tsc && node dist/server.js",
     "lint": "eslint . --ext .ts",
     "dev": "nodemon server.ts",
-    "build:production": "tsc",
+    "build:production": "tsc --project tsconfig.build.json",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
   "keywords": [],
@@ -17,9 +17,7 @@
   "dependencies": {
     "discord-api-types": "^0.37.42",
     "discord.js": "^14.11.0",
-    "dotenv": "^16.0.3",
-    "eslint-config-prettier": "^8.8.0",
-    "form-data": "^4.0.0"
+    "dotenv": "^16.0.3"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",
@@ -30,7 +28,8 @@
     "nodemon": "^2.0.22",
     "prettier": "2.8.8",
     "ts-jest": "^29.1.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "eslint-config-prettier": "^8.8.0"
   },
   "jest": {
     "preset": "ts-jest",
