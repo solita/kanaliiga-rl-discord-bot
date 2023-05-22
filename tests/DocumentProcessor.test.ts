@@ -15,17 +15,18 @@ describe("Document processor", () => {
         })
 
         const res = await processor.upload(Buffer.from([]), 'test-replay.replay', 'test-group-ID')
-
         expect(res).toBe(mockResponseForUploadSuccess.location)
     })
 
     it('File uploads from buffer (status 500)', async() => {
         global.fetch = jest.fn().mockImplementationOnce(() => {
-            return Promise.reject(mockResponseForUploadFail)
+            return mockResponseForUploadFail
         })
 
-        const res = await processor.upload(Buffer.from([]), 'test-replay.replay', 'test-group-ID')
-        console.log(res)
-        expect(res).toBe(mockResponseForUploadFail.error);
+        try {
+            await processor.upload(Buffer.from([]), 'test-replay.replay', 'test-group-ID')
+        } catch (err) {
+            expect(err.message).toBe(mockResponseForUploadFail.error)
+        }
     })
 })

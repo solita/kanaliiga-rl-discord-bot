@@ -1,7 +1,6 @@
 import { BALL_CHASING_API_KEY } from './config';
 import log from './log';
 import https from 'https';
-//import FormData from 'form-data';
 
 export class DocumentProcessor {
     filePath: string;
@@ -35,10 +34,10 @@ export class DocumentProcessor {
             if (res.status === 201) {
                 return data.location;
             } else {
-                return `${data.error} ${data.location || ''}`;
+                throw new Error(`${data.error} ${data.location || ''}`);
             }
         } catch (error) {
-            return error?.error || error;
+            throw new Error(error.message.trim());
         }
     }
 

@@ -74,7 +74,7 @@ export class PostJob {
                     //This timeout is for UX reasons
                     setTimeout(() => {
                         message.channel.send(
-                            `There was an error uploading file: ${fileName} \nError: ${err}`
+                            `There was an error uploading file: ${fileName} \n${err}`
                         );
                     }, 3000);
 
