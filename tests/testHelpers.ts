@@ -51,9 +51,9 @@ export const mockThread = (id: string, ballchasingGroupId = 'group1') => {
 
 }
 
-export const mockResponse = {
+export const mockResponseForGroups = {
     status: 200,
-    json: jest.fn(()=> mockResponse),
+    json: jest.fn(()=> mockResponseForGroups),
     list: [{
         name: "Challengers",
         id: "12345Test",
@@ -65,4 +65,17 @@ export const mockResponse = {
         created: '2023-02-09T16:00:50.682781Z',
         link: 'https://ballchasing.com/api/groups/yyyyyx',
     }]
-} 
+}
+
+export const mockResponseForUploadSuccess = {
+    status: 201,
+    json: jest.fn(() => mockResponseForUploadSuccess),
+    id: '12345Test',
+    location: 'https://ballchasing.com/replay/test'
+}
+
+export const mockResponseForUploadFail = {
+    status: 500,
+    json: jest.fn(() => mockResponseForUploadFail),
+    error: 'Something went wrong!'
+}

@@ -2,7 +2,7 @@ import { ContentController } from "../src/ContentController";
 import { mockMessage, mockThread } from "./testHelpers";
 import { ACCEPTABLE_FILE_EXTENSION } from "../src/util";
 import * as BCAPI from "../src/ballchasingAPI";
-import { mockResponse } from "./testHelpers";
+import { mockResponseForGroups } from "./testHelpers";
 import { DocumentProcessor } from "../src/DocumentProcessor";
 
 
@@ -12,7 +12,7 @@ describe("Content controller", () => {
     const controller = new ContentController()
 
 
-    jest.spyOn(BCAPI, 'fetchGroups').mockImplementation(() => Promise.resolve(mockResponse.list))
+    jest.spyOn(BCAPI, 'fetchGroups').mockImplementation(() => Promise.resolve(mockResponseForGroups.list))
     jest.spyOn(DocumentProcessor.prototype, 'download').mockImplementation(() => Promise.resolve(Buffer.from([0])))
     jest.spyOn(DocumentProcessor.prototype, 'upload').mockImplementation(() => Promise.resolve('url'))
 

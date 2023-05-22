@@ -57,7 +57,8 @@ export class PostJob {
                 try {
                     const response = await this.processor.upload(
                         file,
-                        fileName
+                        fileName,
+                        this.groupId
                     );
                     await message.channel.sendTyping();
 

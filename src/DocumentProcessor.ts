@@ -1,7 +1,7 @@
 import { BALL_CHASING_API_KEY } from './config';
 import log from './log';
 import https from 'https';
-import FormData from 'form-data';
+//import FormData from 'form-data';
 
 export class DocumentProcessor {
     filePath: string;
@@ -10,49 +10,37 @@ export class DocumentProcessor {
         this.filePath = './temp';
     }
 
-    upload(file: Buffer, fileName: string): Promise<string> {
-        const BC_UPLOAD_URL =
-            'https://ballchasing.com/api/v2/upload?visibility=private';
+    async upload(
+        file: Buffer,
+        fileName: string,
+        groupId: string
+    ): Promise<string> {
+        return new Promise(async (resolve, reject) => {
+            const BC_UPLOAD_URL = `https://ballchasing.com/api/v2/upload?group=${groupId}`;
+            const formData = new FormData();
+            const blob = new Blob([file]);
+            formData.append('file', blob, fileName);
 
-        return new Promise((resolve, reject) => {
-            const form = new FormData();
-            form.append('name', 'file');
-            form.append('Content-Type', 'binary/octet-stream');
-            form.append('file', file, { filename: fileName });
-
-            const options = {
-                method: 'POST',
-                headers: {
-                    Authorization: BALL_CHASING_API_KEY,
-                    'Content-Type':
-                        'multipart/form-data; boundary=' + form.getBoundary()
-                },
-                timeout: 1000
-            };
-
-            const req = https.request(BC_UPLOAD_URL, options, (res) => {
-                let data = '';
-                res.on('data', (chunk) => {
-                    data = data + chunk.toString();
+            try {
+                const res = await fetch(BC_UPLOAD_URL, {
+                    method: 'POST',
+                    headers: {
+                        Authorization: BALL_CHASING_API_KEY,
+                        Accept: '*/*'
+                    },
+                    body: formData
                 });
 
-                res.on('end', () => {
-                    const body = JSON.parse(data);
+                const data = await res.json();
 
-                    if (res.statusCode === 201) {
-                        resolve(body.location);
-                    } else {
-                        reject(`${body.error}  ${body.location || ''}`);
-                    }
-                });
-            });
-
-            req.on('error', (err: { message: string }) => {
-                reject(err.message);
-            });
-
-            form.pipe(req);
-            req.end();
+                if (res.status === 201) {
+                    resolve(data.location);
+                } else {
+                    reject(`${data.error} ${data.location || ''}`);
+                }
+            } catch (error) {
+                error.error ? resolve(error.error) : resolve(error);
+            }
         });
     }
 

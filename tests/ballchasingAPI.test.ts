@@ -1,20 +1,20 @@
 import { fetchGroups, searchGroupId } from "../src/ballchasingAPI";
-import { mockResponse } from "./testHelpers";
+import { mockResponseForGroups } from "./testHelpers";
 
 
 
 describe("Ballchasing Api", () => {
 
     /*
-    These tests depend on mockResponse from testHelpers.ts
+    These tests depend on mockResponseForGroups from testHelpers.ts
 
-    Please see the mockresponse for more details on existing mocked groups
+    Please see the mockresponseFormockResponseForGroups for more details on existing mocked groups
     */
 
     it("Fetches the groups from ballchasing API", async () => {
 
         global.fetch = jest.fn().mockImplementationOnce(() => {
-            return Promise.resolve(mockResponse)
+            return Promise.resolve(mockResponseForGroups)
         })
 
 
@@ -29,7 +29,7 @@ describe("Ballchasing Api", () => {
     it("Parses the group fetch response into: [possibleMatch, [other, results]]", async()=>{
 
         global.fetch = jest.fn().mockImplementationOnce(() => {
-            return Promise.resolve(mockResponse)
+            return Promise.resolve(mockResponseForGroups)
         })
 
 

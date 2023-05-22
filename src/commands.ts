@@ -93,8 +93,8 @@ export const botHealth = async (
 
     if (!isBotHealthy) {
         story.push(
-            `Connection to ballchasing seems to have a problem: \n`+
-            `${ballchasinStatus.url} - ${ballchasinStatus.status} - ${ballchasinStatus.statusText}`
+            `Connection to ballchasing seems to have a problem: \n` +
+                `${ballchasinStatus.url} - ${ballchasinStatus.status} - ${ballchasinStatus.statusText}`
         );
     } else {
         story.push(
