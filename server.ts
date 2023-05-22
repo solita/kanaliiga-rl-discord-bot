@@ -32,8 +32,10 @@ client.on("interactionCreate", async interaction => {
     else if (interaction.commandName === 'setparent') {
 
         const guild = client.guilds.cache.get(interaction.guild.id)
+        const memb = await guild.members.fetch(interaction.user.id)
+        console.log(memb.roles.cache)
         guild.members.fetch(interaction.user.id).then(member => {
-            if (member.roles.cache.some(role => role.name === CAPTAIN_ROLE)){
+            if (!member.roles.cache.some((role) => role.name === CAPTAIN_ROLE)){
                 if (bcParentGroup(interaction.options.get('id').value.toString())){
                     interaction.reply(`Parent group set. New parent group is ${bcParentGroup()}`)
                     return

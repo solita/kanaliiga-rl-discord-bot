@@ -12,5 +12,6 @@ ENV NODE_ENV=production
 WORKDIR /bot
 COPY --from=build ./botBuild/dist ./dist
 COPY --from=build ./botBuild/node_modules ./node_modules
+COPY --from=build ./botBuild/parentGroup.txt .
 CMD [ "node", "dist/server.js" ]
 
