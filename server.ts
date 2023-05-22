@@ -1,9 +1,8 @@
-import { Client, GatewayIntentBits, Events, RoleManager } from 'discord.js';
+import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { bcParentGroup, CAPTAIN_ROLE, TOKEN } from './src/config';
 import { getCommands, botHealth, divisionHelp } from './src/commands';
 import { ContentController } from './src/ContentController';
 import { reportBcApiConnection } from './src/ballchasingAPI';
-import { checkRoleIsRLCaptain } from './src/util';
 
 
 const client = new Client({
