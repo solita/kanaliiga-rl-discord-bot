@@ -8,6 +8,7 @@
     "start": "tsc && node dist/server.js",
     "lint": "eslint . --ext .ts",
     "dev": "nodemon server.ts",
+    "prebuild" : "tsc",
     "build:production": "tsc --project tsconfig.build.json",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
   },
