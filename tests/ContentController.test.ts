@@ -133,8 +133,17 @@ describe("Content controller", () => {
 
     })
 
-    // // TODO: Test for removing a PostJob from tasks list if its empty and old enough
-    // TODO: Make tests where bad behaviour is being tested, "graceful error handling"
+    it("Removes a PostJob from tasks if it is old and empty", async () => {
+        for (let i = 0; i < 3; i++) {
+            await controller.addToPostQueue(mockMessage('first' + String(i), 3, 'mock1'))
+            await controller.addToPostQueue(mockMessage('second' + String(i), 0, 'mock2'))
+        }
+        controller.tasks[1].createdAt = new Date('2023-05-17T07:34:16.061Z').getMilliseconds()
+        controller.cleanUpTasks()
+        expect(controller.tasks.length).toBe(1);
+    })
+
+
 
 })
 

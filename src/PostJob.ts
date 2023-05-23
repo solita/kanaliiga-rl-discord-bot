@@ -7,12 +7,14 @@ export class PostJob {
     thread: ThreadChannel;
     queue: Message[]; // array of Messages's
     processor: DocumentProcessor;
+    createdAt: number;
 
     constructor(thread: ThreadChannel, groupId: string) {
         this.groupId = groupId;
         this.thread = thread;
         this.queue = [];
         this.processor = new DocumentProcessor();
+        this.createdAt = Date.now();
     }
 
     addToQueue(newMessage: Message) {

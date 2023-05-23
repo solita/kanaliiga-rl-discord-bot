@@ -48,3 +48,12 @@ export const checkRoleIsRLCaptain = (message: Message) => {
     }
     return false;
 };
+
+export const checkDateObject = (date: Date, milliseconds?: number) => {
+    const currentTime = new Date();
+    const targetDate = new Date(
+        currentTime.getTime() - milliseconds || 259200000
+    );
+    //default 3 days
+    return date < targetDate;
+};

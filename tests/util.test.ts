@@ -1,5 +1,5 @@
 import { Attachment, Collection } from "discord.js";
-import { parseFileExtension, allAttahcmentsAreCorrectType, getDivisionName } from "../src/util";
+import { parseFileExtension, allAttahcmentsAreCorrectType, getDivisionName, checkDateObject } from "../src/util";
 
 
 
@@ -48,5 +48,10 @@ describe("Utilities", ()=>{
 
         expect(getDivisionName(goodPostTitle)).toBe('Challengers');
         expect(getDivisionName(badPostTitle)).toBeUndefined();
+    })
+
+    it('Returns true if the given timestamp is older than 3 days (259200000 ms)', () => {
+        const dateToCheck = checkDateObject(new Date('2023-05-17T07:34:16.061Z'), 259200000);
+        expect(dateToCheck).toBe(true);
     })
 })
