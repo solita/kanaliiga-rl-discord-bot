@@ -29,4 +29,30 @@ describe("Document processor", () => {
             expect(err.message).toBe(mockResponseForUploadFail.error)
         }
     })
+
+    it("Downloads a file given an url (status 200)", async ()=>{
+
+        global.fetch = jest.fn().mockImplementationOnce(() => {
+            return Promise.resolve(new Response(Buffer.from([24]),{status:200}))
+        })
+
+        const file = await processor.download('url.com')
+        expect(file).toStrictEqual(Buffer.from([24]))
+    })
+
+    it("Downloads a file given an url (status != 200)", async ()=>{
+
+        global.fetch = jest.fn().mockImplementationOnce(() => {
+            return Promise.resolve(new Response(Buffer.from([24]),{status:404, statusText:'jep'}))
+        })
+
+        try {
+            await processor.download('url.com')
+            
+        } catch (error) {
+            expect(error.status).toBe(404)
+            expect(error.statusText).toBe('jep')
+        }
+    })
+
 })

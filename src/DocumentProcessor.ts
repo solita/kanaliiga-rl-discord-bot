@@ -1,13 +1,9 @@
 import { BALL_CHASING_API_KEY } from './config';
 import log from './log';
-import https from 'https';
+
 
 export class DocumentProcessor {
-    filePath: string;
 
-    constructor() {
-        this.filePath = './temp';
-    }
 
     async upload(
         file: Buffer,
@@ -42,29 +38,15 @@ export class DocumentProcessor {
     }
 
     async download(url: string): Promise<Buffer> {
-        log.info(`Downloading file ${url}....`);
-        return new Promise((resolve, reject) => {
-            https.get(url, (res) => {
-                if (res.statusCode !== 200) {
-                    reject(`Failed to download file from ${url}`);
-                    return;
-                }
+        log.info(`Attempting to download ${url}`)
 
-                const chunks = [];
+        return fetch(url).then(res =>{
+            if (res.status !== 200){
+                log.error(`Error downloading ${url}, ${res.status} - ${res.statusText}`)
+                throw res
+            }
+            return res.arrayBuffer()
+        }).then(file => Buffer.from(file))
 
-                res.on('data', (chunk) => {
-                    chunks.push(chunk);
-                });
-
-                res.on('end', () => {
-                    const buffer = Buffer.concat(chunks);
-                    resolve(buffer);
-                });
-
-                res.on('error', (err) => {
-                    reject(err);
-                });
-            });
-        });
     }
 }
