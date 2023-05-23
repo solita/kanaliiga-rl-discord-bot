@@ -68,10 +68,8 @@ client.on(Events.MessageCreate, async message => {
         await controller.addToPostQueue(message)
     }
 
-    console.log(controller.tasks.length);
     controller.cleanUpTasks();
     controller.processQueue();
-    console.log(controller.tasks.length);
 
 })
 
