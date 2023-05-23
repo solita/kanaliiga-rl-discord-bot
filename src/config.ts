@@ -36,3 +36,5 @@ export const clearCacheInterval =
     Number(process.env.CLEAR_CACHE_INTERVAL) * (24 * 60 * 60 * 1000) ||
     undefined;
 //convert to milliseconds for date objects
+
+export const ADMIN_ROLE = process.env.ADMIN_ROLE || 'ADMIN ROLE NOT FOUND';

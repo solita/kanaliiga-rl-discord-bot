@@ -30,9 +30,12 @@ export const getDivisionName = (postTitle: string) => {
     return postTitleDivisionName;
 };
 
-export const hasRole = (roles: Collection<string, Role>, roleToCompare: string) => {
-    return roles.some((role) => role.name === roleToCompare)
-}
+export const hasRole = (
+    roles: Collection<string, Role>,
+    roleToCompare: string
+) => {
+    return roles.some((role) => role.name === roleToCompare);
+};
 
 export const checkDateObject = (date: Date, milliseconds?: number) => {
     const currentTime = new Date();
