@@ -6,11 +6,11 @@ import {
     ACCEPTABLE_FILE_EXTENSION,
     allAttahcmentsAreCorrectType,
     checkDateObject,
-    checkRoleIsRLCaptain,
-    getDivisionName
+    getDivisionName,
+    hasRole
 } from './util';
 import { fetchGroups, searchGroupId } from './ballchasingAPI';
-import { clearCacheInterval } from './config';
+import { CAPTAIN_ROLE, clearCacheInterval } from './config';
 
 // const TIMELIMIT = 2000 //add this to .env
 
@@ -97,7 +97,11 @@ export class ContentController {
     }
 
     async addToPostQueue(message: Message) {
-        if (!checkRoleIsRLCaptain(message)) {
+        if (!hasRole(message.member.roles.cache, CAPTAIN_ROLE)) {
+            message.channel.send(
+                `Only those with ${CAPTAIN_ROLE} as their role can upload replays.`
+            );
+            message.react('🚫');
             return;
         }
 

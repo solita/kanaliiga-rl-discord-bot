@@ -1,5 +1,4 @@
-import { Attachment, Collection, Message } from 'discord.js';
-import { CAPTAIN_ROLE } from './config';
+import { Attachment, Collection, Role } from 'discord.js';
 
 const reFileExtension = /(?:\.([^.]+))?$/;
 export const ACCEPTABLE_FILE_EXTENSION = '.replay';
@@ -31,23 +30,9 @@ export const getDivisionName = (postTitle: string) => {
     return postTitleDivisionName;
 };
 
-export const checkRoleIsRLCaptain = (message: Message) => {
-    const getRoles = message.member;
-
-    if (getRoles) {
-        const roles = getRoles.roles;
-
-        if (!roles.cache.some((role) => role.name === CAPTAIN_ROLE)) {
-            message.channel.send(
-                `Only those with ${CAPTAIN_ROLE} as their role can upload replays.`
-            );
-            message.react('🚫');
-            return false;
-        }
-        return true;
-    }
-    return false;
-};
+export const hasRole = (roles: Collection<string, Role>, roleToCompare: string) => {
+    return roles.some((role) => role.name === roleToCompare)
+}
 
 export const checkDateObject = (date: Date, milliseconds?: number) => {
     const currentTime = new Date();
