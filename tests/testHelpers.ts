@@ -11,7 +11,7 @@ export const mockMessage = (
     attchmntCount = 1, 
     channelID = 'channelId0', 
     faulExtension = false, 
-    isRLCaptain = true,) => {
+    isRLCaptain = true) => {
 
     const files = new Collection<string, Attachment>()
  
@@ -26,12 +26,7 @@ export const mockMessage = (
     return {
         id: messageId,
         attachments: files,
-        channel: {
-            name: 'Solita Ninja vs Solita Herkku, Challengers, 1.5.2023',
-            id: channelID,
-            sendTyping: jest.fn(() => Promise<void>),
-            send: jest.fn(() => Promise<void>)
-        },
+        channel: mockThread(channelID),
         react: jest.fn(() => Promise<void>),
         member: {
             roles: {
@@ -46,6 +41,7 @@ export const mockThread = (id: string, ballchasingGroupId = 'group1') => {
     return {
         id: id,
         name: 'Solita Ninja vs Solita Herkku, Challengers, 1.5.2023',
+        sendTyping: jest.fn(() => Promise<void>),
         send: jest.fn(()=> Promise.resolve())
     } as unknown as ThreadChannel
 

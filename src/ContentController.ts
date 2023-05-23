@@ -5,10 +5,12 @@ import log from './log';
 import {
     ACCEPTABLE_FILE_EXTENSION,
     allAttahcmentsAreCorrectType,
+    checkDateObject,
     checkRoleIsRLCaptain,
     getDivisionName
 } from './util';
 import { fetchGroups, searchGroupId } from './ballchasingAPI';
+import { clearCacheInterval } from './config';
 
 // const TIMELIMIT = 2000 //add this to .env
 
@@ -66,11 +68,23 @@ export class ContentController {
         }
     }
 
-    // removeTask(threadId: string) {
-    //     this.tasks = this.tasks.filter(task => task.threadId !== threadId)
-    //     return
-    //     //todo: make task deleting work
-    // }
+    removeTask(threadId: string) {
+        this.tasks = this.tasks.filter((task) => task.thread.id !== threadId);
+        return;
+    }
+
+    cleanUpTasks() {
+        //checks if the postjob has an empty queue and that it is older than a given amount of time
+        this.tasks = this.tasks.filter((task) => {
+            const taskIsOld = checkDateObject(
+                new Date(task.createdAt),
+                clearCacheInterval
+            );
+            if (!taskIsOld && task.queue.length > 0) {
+                return task;
+            }
+        });
+    }
 
     clearTasks() {
         this.tasks = [];

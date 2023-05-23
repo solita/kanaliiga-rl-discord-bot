@@ -31,3 +31,8 @@ export const bcParentGroup = (newName = ''): string | boolean => {
         }
     }
 };
+
+export const clearCacheInterval =
+    Number(process.env.CLEAR_CACHE_INTERVAL) * (24 * 60 * 60 * 1000) ||
+    undefined;
+//convert to milliseconds for date objects
