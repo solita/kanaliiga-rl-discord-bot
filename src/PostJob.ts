@@ -51,7 +51,18 @@ export class PostJob {
             ];
 
             message.attachments.forEach(async (attachment) => {
-                const file = await this.processor.download(attachment.url);
+                const file = await this.processor
+                    .download(attachment.url)
+                    .catch(async (err) => {
+                        await message.channel.sendTyping();
+                        message.channel.send(
+                            `Error downloading a file. ${err.status} ${err.statusText}`
+                        );
+                        return;
+                    });
+
+                if (!file) return;
+
                 const fileName = attachment.url.split('/').at(-1);
 
                 try {
