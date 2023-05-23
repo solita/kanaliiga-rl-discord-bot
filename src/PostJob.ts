@@ -56,7 +56,7 @@ export class PostJob {
                     .catch(async (err) => {
                         await message.channel.sendTyping();
                         message.channel.send(
-                            `Error downloading files. ${err.status} ${err.statusText}`
+                            `Error downloading a file. ${err.status} ${err.statusText}`
                         );
                         return;
                     });
