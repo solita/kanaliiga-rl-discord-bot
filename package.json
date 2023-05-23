@@ -9,7 +9,7 @@
     "lint": "eslint . --ext .ts",
     "dev": "nodemon server.ts",
     "build:production": "esbuild server.ts --bundle --outfile=build/server.js --platform=node --main-fields=module,main",
-    "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write"
+    "prettier-format": "prettier --config .prettierrc '**/*.ts' --write"
   },
   "keywords": [],
   "author": "",

@@ -2,15 +2,11 @@ import { BALL_CHASING_API_KEY } from './config';
 import log from './log';
 
 export class DocumentProcessor {
-
-
     async upload(
         file: Buffer,
         fileName: string,
         groupId: string
     ): Promise<string> {
-
-
         const BC_UPLOAD_URL = `https://ballchasing.com/api/v2/upload?group=${groupId}`;
         const formData = new FormData();
         const blob = new Blob([file]);
@@ -42,19 +38,17 @@ export class DocumentProcessor {
         log.info(`Attempting to download ${url}`);
 
         try {
-            const res = await fetch(url)
+            const res = await fetch(url);
 
-            if (res.status !== 200){
-                throw res
+            if (res.status !== 200) {
+                throw res;
             }
 
-            const file = await res.arrayBuffer()
-            return Buffer.from(file)
-            
+            const file = await res.arrayBuffer();
+            return Buffer.from(file);
         } catch (error) {
-            if (error.status) throw error
-            throw new Error(error.message)
+            if (error.status) throw error;
+            throw new Error(error.message);
         }
-
     }
 }
