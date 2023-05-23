@@ -56,18 +56,5 @@ export class DocumentProcessor {
             throw new Error(error.message)
         }
 
-
-
-        // return fetch(url)
-        //     .then((res) => {
-        //         if (res.status !== 200) {
-        //             log.error(
-        //                 `Error downloading ${url}, ${res.status} - ${res.statusText}`
-        //             );
-        //             throw res;
-        //         }
-        //         return res.arrayBuffer();
-        //     })
-        //     .then((file) => Buffer.from(file));
     }
 }
