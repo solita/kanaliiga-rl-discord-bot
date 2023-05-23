@@ -1,5 +1,4 @@
-import { Attachment, Collection, Message, Role } from 'discord.js';
-import { CAPTAIN_ROLE } from './config';
+import { Attachment, Collection, Role } from 'discord.js';
 
 const reFileExtension = /(?:\.([^.]+))?$/;
 export const ACCEPTABLE_FILE_EXTENSION = '.replay';
