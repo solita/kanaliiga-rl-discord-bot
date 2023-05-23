@@ -50,7 +50,38 @@ client.on('interactionCreate', async (interaction) => {
                     `Only admins (${ADMIN_ROLE}) can update this.`
                 );
             }
-        });
+        })
+
+
+    }
+    else if (interaction.commandName === 'check') {
+
+        const channels = client.channels.cache
+
+        channels.forEach(async channel => {
+            if (!channel.isThread()) return
+
+            const messages = await channel.messages.fetch()
+
+            messages.forEach(message => {
+
+                if (message.attachments.size > 0){
+                    const usersInReactions = message.reactions.cache.map(user => user.users)
+
+                    if(!usersInReactions.some(usr => usr.cache.some(reaction => reaction.bot === true))){
+
+                        setTimeout(async () => {
+                            // await controller.addToPostQueue(message)
+                            message.reply('Ayay! Im on it').then(msg => {
+                                setTimeout(() => msg.delete(), 5000)
+                              })
+                        }, 3000);
+                    }
+                }
+            })
+        })
+        interaction.reply('ok')
+
     }
 });
 

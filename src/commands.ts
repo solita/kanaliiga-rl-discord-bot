@@ -31,6 +31,10 @@ const commands = [
                 required: true
             }
         ]
+    },
+    {
+        name: 'check',
+        description: 'Checks old posts and makes sure there are no missing posts while a bot was offline',
     }
 ];
 
