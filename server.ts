@@ -86,7 +86,7 @@ client.on('interactionCreate', async (interaction) => {
                         that is a bot, by using ReactionUsersManager
                         while preserving Discords Collection type
                         */
-                        const botUsersInThoseReaction =
+                        const botUsersInThoseReactions =
                             reactionsInThisMessage.filter((reaction) =>
                                 reaction.users
                                     .fetch()
@@ -95,7 +95,7 @@ client.on('interactionCreate', async (interaction) => {
                                     )
                             );
 
-                        if (botUsersInThoseReaction.size == 0) {
+                        if (botUsersInThoseReactions.size == 0) {
                             timercounter += 1;
 
                             /* 
