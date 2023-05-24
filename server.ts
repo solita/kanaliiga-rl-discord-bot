@@ -31,15 +31,17 @@ client.on('interactionCreate', async (interaction) => {
         await interaction.reply({ embeds: [divisionHelpEmbed] });
     } else if (interaction.commandName === 'setparent') {
         const guild = client.guilds.cache.get(interaction.guild.id);
-        guild.members.fetch(interaction.user.id).then((member) => {
+        guild.members.fetch(interaction.user.id).then(async (member) => {
             if (hasRole(member.roles.cache, ADMIN_ROLE)) {
+                console.log('checking.....');
                 if (
                     bcParentGroup(
-                        interaction.options.get('id').value.toString()
+                        interaction.options.get('id').value.toString(),
+                        interaction.channel
                     )
                 ) {
                     interaction.reply(
-                        `Parent group set. New parent group is ${bcParentGroup()}`
+                        `Parent group set. New parent group is \`${await bcParentGroup()}\`.`
                     );
                     return;
                 } else {

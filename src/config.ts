@@ -1,5 +1,7 @@
 import * as dotenv from 'dotenv';
 import fs from 'fs';
+import { fetchGroups } from './ballchasingAPI';
+import { GuildTextBasedChannel } from 'discord.js';
 
 dotenv.config();
 
@@ -15,7 +17,10 @@ export const APPLICATION_VERSION =
 export const CAPTAIN_ROLE =
     process.env.CAPTAIN_ROLE || 'CAPTAIN ROLE NOT FOUND';
 
-export const bcParentGroup = (newName = ''): string | boolean => {
+export const bcParentGroup = async (
+    newName?: string,
+    channel?: GuildTextBasedChannel
+): Promise<string | boolean> => {
     if (!newName) {
         try {
             return fs.readFileSync('parentGroup.txt').toString().trim();
@@ -25,6 +30,17 @@ export const bcParentGroup = (newName = ''): string | boolean => {
     } else {
         try {
             fs.writeFileSync('parentGroup.txt', newName);
+            try {
+                const list = await fetchGroups();
+                if (list?.length < 1) {
+                    channel.send(
+                        '⚠️**Warning:** Parent group might not exist or is empty.'
+                    );
+                    return true;
+                }
+            } catch {
+                return true;
+            }
             return true;
         } catch (error) {
             return false;
