@@ -101,7 +101,6 @@ export class ContentController {
             message.channel.send(
                 `Only those with ${CAPTAIN_ROLE} as their role can upload replays.`
             );
-            message.react('🚫');
             return;
         }
 
@@ -116,6 +115,5 @@ export class ContentController {
         message.channel.send(
             `Only acceptable filetype is ${ACCEPTABLE_FILE_EXTENSION}`
         );
-        message.react('🚫');
     }
 }

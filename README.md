@@ -71,7 +71,7 @@ Along with emojies, bot replies with a link to the replay in the ballchasing.com
 
 The following steps helps you to configure the bot into your discord channel. 
 
-- Log in to Discord Developer Portal with your discord credentials
+- Log in to [Discord Developer Portal](https://discord.com/developers/applications) with your discord credentials
 - Create a new application
 - Note the *APPLICATION ID*, this is the env `CLIENT_ID`
 - Navigate to Bot -tab, give your bot a username if needed
@@ -96,10 +96,12 @@ The following steps helps you to configure the bot into your discord channel.
 
 Bot is configurable with environment variables. Environment variables can be set into environment itsel, or by placing a `.env` -file into the root of the project. Please see `.env.example` for more information. 
 
-`TOKEN`
-`CLIENT_ID`
-`BALL_CHASING_API_KEY`
-`CAPTAIN_ROLE`
+`TOKEN`<br>
+`CLIENT_ID`<br>
+`BALL_CHASING_API_KEY`<br>
+`CAPTAIN_ROLE`<br>
+`ADMIN_ROLE`<br>
+`CLEAR_CACHE_INTERVAL`
 
 ## Running Tests
 
