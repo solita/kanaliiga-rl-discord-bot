@@ -50,38 +50,37 @@ client.on('interactionCreate', async (interaction) => {
                     `Only admins (${ADMIN_ROLE}) can update this.`
                 );
             }
-        })
+        });
+    } else if (interaction.commandName === 'check') {
+        const channels = client.channels.cache;
+        interaction.reply('on it!');
+        const promises = [];
 
+        let timercounter = 0;
 
-    }
-    else if (interaction.commandName === 'check') {
-
-        const channels = client.channels.cache
-
-        channels.forEach(async channel => {
-            if (!channel.isThread()) return
-
-            const messages = await channel.messages.fetch()
-
-            messages.forEach(message => {
-
-                if (message.attachments.size > 0){
-                    const usersInReactions = message.reactions.cache.map(user => user.users)
-
-                    if(!usersInReactions.some(usr => usr.cache.some(reaction => reaction.bot === true))){
-
-                        setTimeout(async () => {
-                            // await controller.addToPostQueue(message)
-                            message.reply('Ayay! Im on it').then(msg => {
-                                setTimeout(() => msg.delete(), 5000)
-                              })
-                        }, 3000);
+        for (const chan of channels) {
+            if (chan[1].isThread()) {
+                
+                const messages = await chan[1].messages.fetch();
+                for (const mes of messages) {
+                    if (mes[1].attachments.size > 0) {
+                        timercounter += 1;
+                        promises.push(
+                            new Promise((r) => {
+                                setTimeout(async () => {
+                                    await controller.addToPostQueue(mes[1]);
+                                    r('');
+                                }, 600 * timercounter);
+                            })
+                        );
                     }
                 }
-            })
-        })
-        interaction.reply('ok')
+            }
+        }
 
+        Promise.all(promises).then(() => {
+            controller.processQueue();
+        });
     }
 });
 
