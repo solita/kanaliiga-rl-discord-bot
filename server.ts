@@ -2,8 +2,9 @@ import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { ADMIN_ROLE, bcParentGroup, TOKEN } from './src/config';
 import { getCommands, botHealth, divisionHelp } from './src/commands';
 import { ContentController } from './src/ContentController';
-import { reportBcApiConnection } from './src/ballchasingAPI';
+import { fetchGroups, reportBcApiConnection } from './src/ballchasingAPI';
 import { hasRole } from './src/util';
+import log from './src/log';
 
 const client = new Client({
     intents: [
@@ -35,13 +36,23 @@ client.on('interactionCreate', async (interaction) => {
             if (hasRole(member.roles.cache, ADMIN_ROLE)) {
                 if (
                     bcParentGroup(
-                        interaction.options.get('id').value.toString(),
-                        interaction.channel
+                        interaction.options.get('id').value.toString()
                     )
                 ) {
                     interaction.reply(
-                        `Parent group set. New parent group is \`${await bcParentGroup()}\`.`
+                        `Parent group set. New parent group is \`${bcParentGroup()}\`.`
                     );
+                    try {
+                        const list = await fetchGroups();
+                        if (list.length < 1) {
+                            interaction.channel.send(
+                                '⚠️**Warning:** Parent group might not exist or is empty.'
+                            );
+                        }
+                    } catch (err) {
+                        //catch statement here if something goes wrong with bc api
+                        log.error(err);
+                    }
                     return;
                 } else {
                     interaction.reply('Something went wrong.');
