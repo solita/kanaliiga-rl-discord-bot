@@ -33,7 +33,6 @@ client.on('interactionCreate', async (interaction) => {
         const guild = client.guilds.cache.get(interaction.guild.id);
         guild.members.fetch(interaction.user.id).then(async (member) => {
             if (hasRole(member.roles.cache, ADMIN_ROLE)) {
-                console.log('checking.....');
                 if (
                     bcParentGroup(
                         interaction.options.get('id').value.toString(),
