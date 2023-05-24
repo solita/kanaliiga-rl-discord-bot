@@ -15,7 +15,7 @@ export const APPLICATION_VERSION =
 export const CAPTAIN_ROLE =
     process.env.CAPTAIN_ROLE || 'CAPTAIN ROLE NOT FOUND';
 
-export const bcParentGroup = (newName = ''): string | boolean => {
+export const bcParentGroup = (newName?: string): string | boolean => {
     if (!newName) {
         try {
             return fs.readFileSync('parentGroup.txt').toString().trim();
