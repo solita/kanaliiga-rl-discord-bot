@@ -92,9 +92,11 @@ The following steps helps you to configure the bot into your discord channel.
 - Note the *APPLICATION ID*, this is the env `CLIENT_ID`
 - Navigate to Bot -tab, give your bot a username if needed
 - Click *Reset Token* and take note of it, this is the env `TOKEN`
+- Toggle off *PUBLIC BOT* from Authorization Flow settings
 - Scroll down and toggle on slider *MESSAGE CONTENT INTENT* 
+- Navigate into *OAuth0 -> General* and make sure there are no redicrect links set and *AUTHORIZATION METHOD* is set to **None**
 - Navigate into *OAuth0 -> URL Generator*
-- Generate an invite URL with the scopes:
+- Generate an invite URL with:
 *Scopes* `bot`\
 *Bot Permissions* `Read Messages/View Channels`, `Send Messages`, `Add Reactions`
 - Copy and paste the URL into your browser, select server from the dropdown and accept the invitation. The bot has now joined into your server. 
@@ -105,7 +107,7 @@ The following steps helps you to configure the bot into your discord channel.
 
 - Clone the project `git clone`
 - Step into the dir `cd kanaliiga-rl-discrod-bot`
-- Create `.env` -file from `.env.example` 
+- Create `.env` -file from `.env.example` and fill it accordingly
 - - `ADMIN_ROLE` and `CAPTAIN_ROLE` are case-sensitive names of the role names used in the discord channel.
 - run the deploy bash script `sh deploy.sh`
 
