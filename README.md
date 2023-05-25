@@ -15,12 +15,14 @@ Bot's purpose is to fully automate uploading `.replay` -files into Ballchasing.c
 
 - Parses and finds correct division from a forum post title 
 - Download and upload .replay -files automatically to correct division
+- Add all the attachments in the same message, or one by one
 - File uploads only permitted with captain role
 - Report file processing for its success or failure into its discord post
-- Suggests for division names in case of misspelling or with /divisionhelp -command
-- Report bot and ballchasing API health with /health -commmand
-- Season change? No worries, set a new parent group with /setparent -command
-- Robust and easy to use
+- Suggests for division names in case of misspelling or with /rl_divisionhelp -command
+- Report bot and ballchasing API health with /rl_health -commmand
+- Season change? No worries, set a new parent group with /rl_setparent -command
+- Handle posts made when the bot was offline with /rl_check -command
+
 
 
 
@@ -29,23 +31,29 @@ Bot's purpose is to fully automate uploading `.replay` -files into Ballchasing.c
 
 |cmd| Parameter | Type     | Description                       | Restricted |
 |:---| :-------- | :------- | :-------------------------------- | :-----|
-|/health|      |  |  Bot and api health | no |
-|/divisionhelp|       |  | Subgroups (divisions) from parent | no |
-|/setparent| `id`      | `string` | **Required**. Id of the new parent group | yes |
+|/rl_health|      |  |  Bot and api health | no |
+|/rl_divisionhelp|       |  | Subgroups (divisions) from parent | no |
+|/rl_setparent| `id`      | `string` | **Required**. Id of the new parent group | `ADMIN_ROLE` |
+|/rl_check|       |  | Process posts made when bot was offline | `ADMIN_ROLE` |
 
-Ballchasing parent group id can be found from, for e.g. from groups home page url. 
+Ballchasing parent group id can be found, for e.g. from group home page url. 
 https://ballchasing.com/group/xxxxxxxxxxx
 ## Usage
 
 #### Rocket League Captains
 
-Users with captain role are the only ones who are able to use /setparent -command and give attachments for the bot.
+New posts can be made by anyone, but file attachments and uploads are permitted only for those with `CAPTAIN_ROLE`
 
 - Create a new post with a title following the naming convention (.... ... ..., division,......)
-- Either drag and drop .replay -attachmenst in to the starter message or
-- Drag and drop attachment files to a new message in the post
+
+e.g. 
+ABC vs DEF, Runkosarja Masters, 6.3.2023
 
 
+- Either drag and drop .replay -attachments in to the starter message or
+- Send a new message to the post with the attachments after.
+
+You may add additional information about the played rounds, e.g. if any issues were encountered. Messages without attachments are not affected by the bot. 
 ## Documentation
 
 Bot works by sniffing thread posts and messages sent to them. 
@@ -57,18 +65,26 @@ It is **case-sensitive.**
 
 Bot notifies you, if you mispelled the name, with the names it found from ballchasing. It will only search groups under a pre-defined parent group (see commands for more information). 
 
-Attachments can be added directly into the new post, or as messages after. They may be in the same message or added separately. 
+Attachments can be added directly into the new post, or as messages after. They may be in the same message or added one by one. 
 - Filenames do not matter. 
 - Only `.replay` -files are accepted. 
 
-Bot replies with emojies, first succesful upload sends ✅1️⃣ and consecutive ones after that 2️⃣,3️⃣ ... 
-In case of a failure, 🚫 is sent. Each attachment is handled separetly, therefore one failed upload does not automatically affect the others. Except if theres incorrect file-type. \
-Along with emojies, bot replies with a link to the replay in the ballchasing.com
+Bot replies with emojies, first succesful sends ✅1️⃣ and consecutive ones after that 2️⃣,3️⃣ ... 
+In case of a failure, the bot tells you about it. Each attachment is handled separetly, therefore one failed upload does not automatically affect the others. Except if theres incorrect file-type. \
+Along with emojies, bot replies with a link for the replay in the ballchasing.com
 
 
 
 ### Admins
 
+`ADMIN_ROLE` has two commmands in their toolbox to use. 
+
+**/rl_setparent** Sets a new parent group (season) where subgroups (divisions) are located.
+
+**/rl_check** The bot is unable to upload and handle new posts while it is offline. In case of such event, this command tells the bot to check all the posts, messages and their attachments in the channel and process them. The bot will not re-process posts it has already marked with ✅, only new posts are considered. Each post processed this way will also receive emoji-reactions once they are done. 
+
+
+#### Bot setup
 The following steps helps you to configure the bot into your discord channel. 
 
 - Log in to Discord Developer Portal with your discord credentials
@@ -79,17 +95,18 @@ The following steps helps you to configure the bot into your discord channel.
 - Scroll down and toggle on slider *MESSAGE CONTENT INTENT* 
 - Navigate into *OAuth0 -> URL Generator*
 - Generate an invite URL with the scopes:
-**Scopes** `bot`\
-**Bot Permissions** `Read Messages/View Channels`, `Send Messages`, `Add Reactions`
+*Scopes* `bot`\
+*Bot Permissions* `Read Messages/View Channels`, `Send Messages`, `Add Reactions`
 - Copy and paste the URL into your browser, select server from the dropdown and accept the invitation. The bot has now joined into your server. 
 
 
 
-### Bot server setup
+
 
 - Clone the project `git clone`
 - Step into the dir `cd kanaliiga-rl-discrod-bot`
-- Create `.env` -file from `.env.example`
+- Create `.env` -file from `.env.example` 
+- - `ADMIN_ROLE` and `CAPTAIN_ROLE` are case-sensitive names of the role names used in the discord channel.
 - run the deploy bash script `sh deploy.sh`
 
 ## Environment Variables
@@ -100,7 +117,8 @@ Bot is configurable with environment variables. Environment variables can be set
 `CLIENT_ID`
 `BALL_CHASING_API_KEY`
 `CAPTAIN_ROLE`
-
+`ADMIN_ROLE`
+`CLEAR_CACHE_INTERVAL`
 ## Running Tests
 
 To run tests
