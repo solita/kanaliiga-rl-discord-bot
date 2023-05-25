@@ -50,13 +50,19 @@ export class ContentController {
             const [groupId, allRecords] = searchGroupId(groupName, response);
             if (!groupId) {
                 log.error(`Group ID for ${groupName} not found`);
-                await thread.send(
-                    `Your post did not make too much sense to me, maybe theres a typo?\n` +
-                        `I tried with '${groupName}'\n` +
-                        `but only found groups named: \n${allRecords.join(
-                            '\n'
-                        )}`
-                );
+
+                await thread.sendTyping();
+
+                //This timeout is for UX reasons
+                setTimeout(async () => {
+                    await thread.send(
+                        `Your post did not make too much sense to me, maybe theres a typo?\n` +
+                            `I tried with '${groupName}'\n` +
+                            `but only found groups named: \n${allRecords.join(
+                                '\n'
+                            )}`
+                    );
+                }, 3000);
                 return;
             }
 
