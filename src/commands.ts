@@ -12,15 +12,15 @@ import { EmbedBuilder } from 'discord.js';
 
 const commands = [
     {
-        name: 'health',
+        name: 'rl_health',
         description: 'Replies with bot health and status'
     },
     {
-        name: 'divisionhelp',
+        name: 'rl_divisionhelp',
         description: 'Replies with available subgroups in ballchasing.com'
     },
     {
-        name: 'setparent',
+        name: 'rl_setparent',
         description: 'Set a new parent groupId',
         options: [
             {
@@ -33,7 +33,7 @@ const commands = [
         ]
     },
     {
-        name: 'check',
+        name: 'rl_check',
         description:
             'Checks old posts and makes sure there are no missing posts while a bot was offline'
     }

@@ -23,13 +23,13 @@ client.on(Events.ClientReady, async () => {
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
-    if (interaction.commandName === 'health') {
+    if (interaction.commandName === 'rl_health') {
         const infoEmbed = await botHealth(controller, client);
         await interaction.reply({ embeds: [infoEmbed] });
-    } else if (interaction.commandName === 'divisionhelp') {
+    } else if (interaction.commandName === 'rl_divisionhelp') {
         const divisionHelpEmbed = await divisionHelp();
         await interaction.reply({ embeds: [divisionHelpEmbed] });
-    } else if (interaction.commandName === 'setparent') {
+    } else if (interaction.commandName === 'rl_setparent') {
         const guild = client.guilds.cache.get(interaction.guild.id);
         guild.members.fetch(interaction.user.id).then((member) => {
             if (hasRole(member.roles.cache, ADMIN_ROLE)) {
@@ -51,7 +51,7 @@ client.on('interactionCreate', async (interaction) => {
                 );
             }
         });
-    } else if (interaction.commandName === 'check') {
+    } else if (interaction.commandName === 'rl_check') {
         const guild = client.guilds.cache.get(interaction.guild.id);
         const isRoleEnough = await guild.members
             .fetch(interaction.user.id)
