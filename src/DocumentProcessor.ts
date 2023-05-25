@@ -25,9 +25,12 @@ export class DocumentProcessor {
             const data = await res.json();
 
             if (res.status === 201) {
-                return data.location;
+                return `Here's a link for you! ${data.location}`;
+            } else if (res.status === 409) {
+                //handle duplicate replays
+                return `Looks like that's a duplicate replay, you can find it at ${data.location}`;
             } else {
-                throw new Error(`${data.error} ${data.location || ''}`);
+                throw new Error(data.error);
             }
         } catch (error) {
             throw new Error(error.message.trim());

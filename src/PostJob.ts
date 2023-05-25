@@ -77,9 +77,7 @@ export class PostJob {
 
                     //Timeout for the link to freshen up and discord embedded link preview to work
                     setTimeout(() => {
-                        message.channel.send(
-                            `Heres a link for you! ${response}`
-                        );
+                        message.channel.send(response);
                     }, 3000);
                 } catch (err) {
                     await message.channel.sendTyping();
@@ -91,7 +89,6 @@ export class PostJob {
                         );
                     }, 3000);
 
-                    await message.react('🚫');
                     arrayOfMultifileEmojies.shift();
                     return;
                 }

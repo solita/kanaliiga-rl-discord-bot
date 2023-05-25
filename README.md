@@ -87,7 +87,7 @@ Along with emojies, bot replies with a link for the replay in the ballchasing.co
 #### Bot setup
 The following steps helps you to configure the bot into your discord channel. 
 
-- Log in to Discord Developer Portal with your discord credentials
+- Log in to [Discord Developer Portal](https://discord.com/developers/applications) with your discord credentials
 - Create a new application
 - Note the *APPLICATION ID*, this is the env `CLIENT_ID`
 - Navigate to Bot -tab, give your bot a username if needed

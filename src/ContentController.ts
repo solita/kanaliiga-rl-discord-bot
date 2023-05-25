@@ -12,8 +12,6 @@ import {
 import { fetchGroups, searchGroupId } from './ballchasingAPI';
 import { CAPTAIN_ROLE, clearCacheInterval } from './config';
 
-// const TIMELIMIT = 2000 //add this to .env
-
 export class ContentController {
     tasks: PostJob[];
 
@@ -101,7 +99,6 @@ export class ContentController {
             message.channel.send(
                 `Only those with ${CAPTAIN_ROLE} as their role can upload replays.`
             );
-            message.react('🚫');
             return;
         }
 
@@ -116,6 +113,5 @@ export class ContentController {
         message.channel.send(
             `Only acceptable filetype is ${ACCEPTABLE_FILE_EXTENSION}`
         );
-        message.react('🚫');
     }
 }

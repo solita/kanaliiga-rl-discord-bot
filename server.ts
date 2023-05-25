@@ -2,8 +2,9 @@ import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { ADMIN_ROLE, bcParentGroup, TOKEN } from './src/config';
 import { getCommands, botHealth, divisionHelp } from './src/commands';
 import { ContentController } from './src/ContentController';
-import { reportBcApiConnection } from './src/ballchasingAPI';
+import { fetchGroups, reportBcApiConnection } from './src/ballchasingAPI';
 import { hasRole } from './src/util';
+import log from './src/log';
 
 const client = new Client({
     intents: [
@@ -31,7 +32,7 @@ client.on('interactionCreate', async (interaction) => {
         await interaction.reply({ embeds: [divisionHelpEmbed] });
     } else if (interaction.commandName === 'rl_setparent') {
         const guild = client.guilds.cache.get(interaction.guild.id);
-        guild.members.fetch(interaction.user.id).then((member) => {
+        guild.members.fetch(interaction.user.id).then(async (member) => {
             if (hasRole(member.roles.cache, ADMIN_ROLE)) {
                 if (
                     bcParentGroup(
@@ -39,8 +40,19 @@ client.on('interactionCreate', async (interaction) => {
                     )
                 ) {
                     interaction.reply(
-                        `Parent group set. New parent group is ${bcParentGroup()}`
+                        `Parent group set. New parent group is \`${bcParentGroup()}\`.`
                     );
+                    try {
+                        const list = await fetchGroups();
+                        if (list.length < 1) {
+                            interaction.channel.send(
+                                '⚠️**Warning:** Parent group might not exist or is empty.'
+                            );
+                        }
+                    } catch (err) {
+                        //catch statement here if something goes wrong with bc api
+                        log.error(err);
+                    }
                     return;
                 } else {
                     interaction.reply('Something went wrong.');
