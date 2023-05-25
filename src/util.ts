@@ -1,4 +1,4 @@
-import { Attachment, Channel, Collection, Role, TextChannel, ThreadChannel } from 'discord.js';
+import { Attachment, Collection, Role } from 'discord.js';
 
 const reFileExtension = /(?:\.([^.]+))?$/;
 export const ACCEPTABLE_FILE_EXTENSION = '.replay';
@@ -45,14 +45,3 @@ export const checkDateObject = (date: Date, milliseconds?: number) => {
     //default 3 days
     return date < targetDate;
 };
-
-export const previousMessageIsBot = async (channel: ThreadChannel): Promise<boolean> => {
-    if (channel.partial) {
-        await channel.fetch(true)
-    }
-    const messages = await channel.messages.fetch({ limit: 10, cache: true });
-    messages.map((msg) => console.log(msg.content))
-    const prevMessage = messages.first()
-    //console.log(prevMessage.content, prevMessage.author.bot)
-    return prevMessage.author.bot
-}
