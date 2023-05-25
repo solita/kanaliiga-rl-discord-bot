@@ -73,6 +73,7 @@ Bot replies with emojies, first succesful sends ✅1️⃣ and consecutive ones 
 In case of a failure, the bot tells you about it. Each attachment is handled separetly, therefore one failed upload does not automatically affect the others. Except if theres incorrect file-type. \
 Along with emojies, bot replies with a link for the replay in the ballchasing.com
 
+Bot keeps metadata of posts in memory for certain amount of time (`CLEAR_CACHE_INTERVAL`). This is for convienence reasons and does not affect bot usage. You can still add new messages and attachments to an old post even after the cache is cleared.
 
 
 ### Admins
@@ -87,7 +88,7 @@ Along with emojies, bot replies with a link for the replay in the ballchasing.co
 #### Bot setup
 The following steps helps you to configure the bot into your discord channel. 
 
-- Log in to [Discord Developer Portal](https://discord.com/developers/applications) with your discord credentials
+- Log in to Discord Developer Portal with your discord credentials
 - Create a new application
 - Note the *APPLICATION ID*, this is the env `CLIENT_ID`
 - Navigate to Bot -tab, give your bot a username if needed
@@ -99,7 +100,7 @@ The following steps helps you to configure the bot into your discord channel.
 - Generate an invite URL with:
 *Scopes* `bot`\
 *Bot Permissions* `Read Messages/View Channels`, `Send Messages`, `Add Reactions`
-- Copy and paste the URL into your browser, select server from the dropdown and accept the invitation. The bot has now joined into your server. 
+- Copy and paste the URL into your browser, select server from the dropdown and accept the invitation. The bot has now joined into your server. **Do not share the link with anyone**
 
 
 
@@ -115,12 +116,12 @@ The following steps helps you to configure the bot into your discord channel.
 
 Bot is configurable with environment variables. Environment variables can be set into environment itsel, or by placing a `.env` -file into the root of the project. Please see `.env.example` for more information. 
 
-`TOKEN`
-`CLIENT_ID`
-`BALL_CHASING_API_KEY`
-`CAPTAIN_ROLE`
-`ADMIN_ROLE`
-`CLEAR_CACHE_INTERVAL`
+`TOKEN`:String
+`CLIENT_ID`:Integer
+`BALL_CHASING_API_KEY`:String
+`CAPTAIN_ROLE`:String
+`ADMIN_ROLE`:String
+`CLEAR_CACHE_INTERVAL`:Integer
 ## Running Tests
 
 To run tests
