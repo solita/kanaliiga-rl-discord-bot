@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Events } from 'discord.js';
+import { Client, GatewayIntentBits, Events, Partials } from 'discord.js';
 import { ADMIN_ROLE, bcParentGroup, TOKEN } from './src/config';
 import { getCommands, botHealth, divisionHelp } from './src/commands';
 import { ContentController } from './src/ContentController';
@@ -10,7 +10,10 @@ const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent
+        GatewayIntentBits.MessageContent,
+    ],
+    partials: [
+        Partials.Message
     ]
 });
 
@@ -67,7 +70,7 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.on(Events.ThreadCreate, async (thrc) => {
-    await controller.createNewTask(thrc);
+        await controller.createNewTask(thrc);
 });
 
 client.on(Events.MessageCreate, async (message) => {
@@ -76,10 +79,15 @@ client.on(Events.MessageCreate, async (message) => {
         return;
     }
 
+    if (message.partial) {
+        await message.fetch()
+    }
+
     if (message.attachments.size > 0) {
         await controller.addToPostQueue(message);
     }
 
+    
     controller.cleanUpTasks();
     controller.processQueue();
 });
