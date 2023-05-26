@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction } from 'discord.js';
-import { ADMIN_ROLE, bcParentGroup } from '../../config';
+import { bcParentGroup } from '../../config';
 import { fetchGroups } from '../../ballchasingAPI';
 import log from '../../log';
 

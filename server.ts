@@ -26,19 +26,18 @@ client.on(Events.ClientReady, async () => {
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
-    switch (interaction.commandName){
-
-        case 'rl_health':
+    switch (interaction.commandName) {
+        case 'rl_health': {
             const infoEmbed = await botHealth(controller, client);
             await interaction.reply({ embeds: [infoEmbed] });
-            break
-
-        case 'rl_divisionhelp':
+            break;
+        }
+        case 'rl_divisionhelp': {
             const divisionHelpEmbed = await divisionHelp();
-            await interaction.reply({ embeds: [divisionHelpEmbed] });   
-            break
-
-        case 'rl_setparent':{
+            await interaction.reply({ embeds: [divisionHelpEmbed] });
+            break;
+        }
+        case 'rl_setparent': {
             const guild = client.guilds.cache.get(interaction.guild.id);
             guild.members.fetch(interaction.user.id).then(async (member) => {
                 if (hasRole(member.roles.cache, ADMIN_ROLE)) {
@@ -46,19 +45,21 @@ client.on('interactionCreate', async (interaction) => {
                 } else {
                     interaction.reply(
                         `Only admins (${ADMIN_ROLE}) can update this.`
-                    )}
+                    );
+                }
             });
-            break
+            break;
         }
-        
-        case 'rl_check':{
+        case 'rl_check': {
             const guild = client.guilds.cache.get(interaction.guild.id);
             const isRoleEnough = await guild.members
                 .fetch(interaction.user.id)
                 .then((member) => hasRole(member.roles.cache, ADMIN_ROLE));
 
             if (!isRoleEnough) {
-                interaction.reply(`Only admins (${ADMIN_ROLE}) can run checks.`);
+                interaction.reply(
+                    `Only admins (${ADMIN_ROLE}) can run checks.`
+                );
                 return;
             }
             interaction.reply('On it!');
@@ -71,7 +72,7 @@ client.on('interactionCreate', async (interaction) => {
             Promise.all(jobAddTasks).then(() => {
                 controller.processQueue();
             });
-            break
+            break;
         }
     }
 });

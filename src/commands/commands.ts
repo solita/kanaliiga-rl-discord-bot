@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, Client, REST, Routes } from 'discord.js';
+import { ApplicationCommandOptionType, REST, Routes } from 'discord.js';
 import { CLIENT_ID, TOKEN } from '../config';
 
 const rest = new REST({ version: '10' }).setToken(TOKEN);

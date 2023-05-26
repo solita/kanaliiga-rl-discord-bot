@@ -1,7 +1,8 @@
 import { Message, ThreadChannel } from 'discord.js';
-
 import { PostJob } from './PostJob';
 import log from './log';
+import { fetchGroups, searchGroupId } from './ballchasingAPI';
+import { CAPTAIN_ROLE, clearCacheInterval } from './config';
 import {
     ACCEPTABLE_FILE_EXTENSION,
     allAttahcmentsAreCorrectType,
@@ -9,8 +10,6 @@ import {
     getDivisionName,
     hasRole
 } from './util';
-import { fetchGroups, searchGroupId } from './ballchasingAPI';
-import { CAPTAIN_ROLE, clearCacheInterval } from './config';
 
 export class ContentController {
     tasks: PostJob[];
