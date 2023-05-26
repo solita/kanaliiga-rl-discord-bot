@@ -1,10 +1,13 @@
 import { Client, GatewayIntentBits, Events } from 'discord.js';
 import { ADMIN_ROLE, bcParentGroup, TOKEN } from './src/config';
-import { getCommands, botHealth, divisionHelp } from './src/commands';
+import { getCommands } from './src/commands/commands';
 import { ContentController } from './src/ContentController';
 import { fetchGroups, reportBcApiConnection } from './src/ballchasingAPI';
 import { hasRole } from './src/util';
 import log from './src/log';
+import { botHealth, divisionHelp } from './src/commands/interactions/util';
+import { handleParentSetCommand } from './src/commands/interactions/rl_setparent';
+import { handleCheckCommand } from './src/commands/interactions/rl_check';
 
 const client = new Client({
     intents: [
@@ -34,29 +37,7 @@ client.on('interactionCreate', async (interaction) => {
         const guild = client.guilds.cache.get(interaction.guild.id);
         guild.members.fetch(interaction.user.id).then(async (member) => {
             if (hasRole(member.roles.cache, ADMIN_ROLE)) {
-                if (
-                    bcParentGroup(
-                        interaction.options.get('id').value.toString()
-                    )
-                ) {
-                    interaction.reply(
-                        `Parent group set. New parent group is \`${bcParentGroup()}\`.`
-                    );
-                    try {
-                        const list = await fetchGroups();
-                        if (list.length < 1) {
-                            interaction.channel.send(
-                                '⚠️**Warning:** Parent group might not exist or is empty.'
-                            );
-                        }
-                    } catch (err) {
-                        //catch statement here if something goes wrong with bc api
-                        log.error(err);
-                    }
-                    return;
-                } else {
-                    interaction.reply('Something went wrong.');
-                }
+                handleParentSetCommand(interaction);
             } else {
                 interaction.reply(
                     `Only admins (${ADMIN_ROLE}) can update this.`
@@ -73,65 +54,13 @@ client.on('interactionCreate', async (interaction) => {
             interaction.reply(`Only admins (${ADMIN_ROLE}) can run checks.`);
             return;
         }
-
         interaction.reply('On it!');
+
         //From ChannelManager, fetch all channels
         const channels = client.channels.cache;
 
-        const promises = [];
-        let timercounter = 0;
+        const promises = await handleCheckCommand(channels, controller);
 
-        for (const chan of channels) {
-            //excluding admin channels, voicechannels etc..
-            if (chan[1].isThread()) {
-                // From MessageManager, fetch all messages in that channel
-                const messages = await chan[1].messages.fetch();
-
-                for (const mes of messages) {
-                    //If the message from the channel contains attachments
-                    if (mes[1].attachments.size > 0) {
-                        // From ReactionManager, fetch all reactions in that message
-                        const reactionsInThisMessage = mes[1].reactions.cache;
-
-                        /* 
-                        From a list of reactions, filter only users
-                        that is a bot, by using ReactionUsersManager
-                        while preserving Discords Collection type
-                        */
-                        const botUsersInThoseReactions =
-                            reactionsInThisMessage.filter((reaction) =>
-                                reaction.users
-                                    .fetch()
-                                    .then((usr) =>
-                                        usr.filter((user) => user.bot === true)
-                                    )
-                            );
-
-                        if (botUsersInThoseReactions.size == 0) {
-                            timercounter += 1;
-
-                            /* 
-                            add a new promise to array of promises being waited later, 
-                            will resolve itself after postjob has been created 
-                            */
-                            promises.push(
-                                new Promise<void>((r) => {
-                                    // to introduce delay for Ballchasings api (for fetching froup ids)
-                                    setTimeout(async () => {
-                                        await controller.addToPostQueue(mes[1]);
-                                        r();
-                                    }, 600 * timercounter);
-                                })
-                            );
-                        }
-                    }
-                }
-            }
-        }
-        /* 
-        wait for all postjobs to be created before 
-        telling controller to process them all
-        */
         Promise.all(promises).then(() => {
             controller.processQueue();
         });
@@ -139,7 +68,11 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.on(Events.ThreadCreate, async (thrc) => {
-    await controller.createNewTask(thrc);
+    const messagesInThread = await thrc.messages.fetch();
+
+    if (messagesInThread.some((mes) => mes.attachments.size === 0)) {
+        await controller.createNewTask(thrc);
+    }
 });
 
 client.on(Events.MessageCreate, async (message) => {
