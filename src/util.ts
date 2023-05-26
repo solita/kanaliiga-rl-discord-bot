@@ -1,4 +1,12 @@
-import { Attachment, Collection, Role } from 'discord.js';
+import {
+    Attachment,
+    Channel,
+    Client,
+    Collection,
+    ForumChannel,
+    Role
+} from 'discord.js';
+import { TARGET_CHANNEL_NAME } from './config';
 
 const reFileExtension = /(?:\.([^.]+))?$/;
 export const ACCEPTABLE_FILE_EXTENSION = '.replay';
@@ -44,4 +52,16 @@ export const checkDateObject = (date: Date, milliseconds?: number) => {
     );
     //default 3 days
     return date < targetDate;
+};
+
+export const isInCorrectForum = async (
+    client: Client,
+    channel: Channel
+): Promise<boolean> => {
+    if (!channel.isThread()) return false;
+
+    const parent = await client.channels.fetch(channel.parentId);
+    if ((parent as ForumChannel).name === TARGET_CHANNEL_NAME) return true;
+
+    return false;
 };
