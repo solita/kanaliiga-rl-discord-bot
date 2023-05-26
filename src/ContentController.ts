@@ -22,12 +22,7 @@ export class ContentController {
         const existingTask = this.tasks.find(
             (th) => th.thread.id === thread.id
         );
-        if (existingTask) {
-            log.info(
-                `Content queue with an ID of ${thread.id} already exists.`
-            );
-            return existingTask;
-        }
+        if (existingTask) return existingTask;
 
         const groupName = getDivisionName(thread.name);
         if (!groupName) {

@@ -3,7 +3,7 @@ import { ADMIN_ROLE, TOKEN } from './src/config';
 import { getCommands } from './src/commands/commands';
 import { ContentController } from './src/ContentController';
 import { reportBcApiConnection } from './src/ballchasingAPI';
-import { hasRole } from './src/util';
+import { hasRole, isInCorrectForum } from './src/util';
 import { botHealth, divisionHelp } from './src/commands/interactions/embeds';
 import { handleParentSetCommand } from './src/commands/interactions/rl_setparent';
 import { handleCheckCommand } from './src/commands/interactions/rl_check';
@@ -79,15 +79,17 @@ client.on('interactionCreate', async (interaction) => {
 
 client.on(Events.ThreadCreate, async (thrc) => {
     const messagesInThread = await thrc.messages.fetch();
-
     if (messagesInThread.some((mes) => mes.attachments.size === 0)) {
         await controller.createNewTask(thrc);
     }
 });
 
 client.on(Events.MessageCreate, async (message) => {
-    if (message.author.bot || !message.channel.isThread()) {
-        //do nothing if the message is from a bot, or is outside a thread
+    if (
+        message.author.bot ||
+        !(await isInCorrectForum(client, message.channel))
+    ) {
+        //do nothing if the message is from a bot, or in a wrong forum
         return;
     }
 

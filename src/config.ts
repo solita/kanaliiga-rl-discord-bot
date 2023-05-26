@@ -3,17 +3,19 @@ import fs from 'fs';
 
 dotenv.config();
 
-export const TOKEN = process.env.TOKEN || 'NO TOKEN FOUND';
-export const CLIENT_ID = process.env.CLIENT_ID || 'NO CLIENT ID FOUND';
+export const TOKEN = process.env.TOKEN || 'NO TOKEN SET';
+export const CLIENT_ID = process.env.CLIENT_ID || 'NO CLIENT ID SET';
 
 export const BALL_CHASING_API_KEY =
-    process.env.BALL_CHASING_API_KEY || 'NO CLIENT ID FOUND';
+    process.env.BALL_CHASING_API_KEY || 'NO CLIENT ID SET';
+
+export const TARGET_CHANNEL_NAME =
+    process.env.TARGET_CHANNEL_NAME || 'NO TARGET CHANNEL SET';
 
 export const APPLICATION_VERSION =
-    process.env.npm_package_version || 'VERSION NOT FOUND';
+    process.env.npm_package_version || 'VERSION NOT SET';
 
-export const CAPTAIN_ROLE =
-    process.env.CAPTAIN_ROLE || 'CAPTAIN ROLE NOT FOUND';
+export const CAPTAIN_ROLE = process.env.CAPTAIN_ROLE || 'CAPTAIN ROLE NOT SET';
 
 export const bcParentGroup = (newName?: string): string | boolean => {
     if (!newName) {
