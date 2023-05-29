@@ -4,7 +4,8 @@ import {
     Client,
     Collection,
     ForumChannel,
-    Role
+    Message,
+    Role,
 } from 'discord.js';
 import { TARGET_CHANNEL_NAME } from './config';
 
@@ -64,4 +65,12 @@ export const isInCorrectForum = async (
     if ((parent as ForumChannel).name === TARGET_CHANNEL_NAME) return true;
 
     return false;
+};
+
+export const getAttachmentCount = (
+    threadMessages: Collection<string, Message>
+): number => {
+    return threadMessages.reduce((acc: number, msg: Message) => {
+        return acc + msg.attachments.size;
+    }, 0);
 };

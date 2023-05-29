@@ -54,7 +54,10 @@ export const mockThread = (id: string, ballchasingGroupId = 'group1') => {
         id: id,
         name: 'Solita Ninja vs Solita Herkku, Challengers, 1.5.2023',
         sendTyping: jest.fn(() => Promise<void>),
-        send: jest.fn(() => Promise.resolve())
+        send: jest.fn(() => Promise.resolve()),
+        messages: {
+            fetch: jest.fn(() => new Collection<string, Message>([]))
+        }
     } as unknown as ThreadChannel;
 };
 
