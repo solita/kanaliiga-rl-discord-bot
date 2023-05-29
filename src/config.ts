@@ -40,3 +40,5 @@ export const clearCacheInterval =
 //convert to milliseconds for date objects
 
 export const ADMIN_ROLE = process.env.ADMIN_ROLE || 'ADMIN ROLE NOT FOUND';
+
+export const MAX_NUM_POSTS = Number(process.env.MAX_NUM_POSTS) || 7;

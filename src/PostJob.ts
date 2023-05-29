@@ -1,6 +1,8 @@
 import { ThreadChannel, Message } from 'discord.js';
 import { DocumentProcessor } from './DocumentProcessor';
 import log from './log';
+import { getAttachmentCount } from './util';
+import { MAX_NUM_POSTS } from './config';
 
 export class PostJob {
     groupId: string; // Ballchasing groupID
@@ -17,13 +19,22 @@ export class PostJob {
         this.createdAt = Date.now();
     }
 
-    addToQueue(newMessage: Message) {
+    async addToQueue(newMessage: Message) {
         if (this.queue.find((mes) => mes.id === newMessage.id)) {
             log.error('Message exists in queue already: ' + newMessage.id);
             return;
         }
+        const messages = await this.thread.messages.fetch();
+        if (getAttachmentCount(messages) > MAX_NUM_POSTS) {
+            this.thread.send(
+                'Your intended number of attachments exceeds the limit of this post'
+            );
+            return;
+        }
+
         log.info(`A new message was added to task ${this.thread.id}`);
         this.queue.push(newMessage);
+        return;
     }
 
     removeFromQueue(): Message | undefined {
