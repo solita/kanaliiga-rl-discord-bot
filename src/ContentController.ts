@@ -91,6 +91,9 @@ export class ContentController {
     processQueue() {
         this.tasks.forEach((task) => {
             task.process();
+            // setTimeout(() => {
+            //     task.sendCloseReminder()
+            // }, 6000);
         });
     }
 
