@@ -35,6 +35,9 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
+    "testEnvironmentOptions": {
+      "MAX_NUM_POSTS": 7
+    },
     "transform": {
       "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
     },
