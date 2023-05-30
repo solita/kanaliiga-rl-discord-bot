@@ -5,7 +5,7 @@ import {
     Collection,
     ForumChannel,
     Message,
-    Role,
+    Role
 } from 'discord.js';
 import { TARGET_CHANNEL_NAME } from './config';
 

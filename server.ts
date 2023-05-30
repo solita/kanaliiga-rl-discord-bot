@@ -101,5 +101,21 @@ client.on(Events.MessageCreate, async (message) => {
     controller.processQueue();
 });
 
+client.on(Events.ShardError, (err) => {
+    console.error(`Error with Discord: ${err}`);
+});
+
+client.on(Events.ShardDisconnect, (event) => {
+    console.warn(`Disconnected from Discord: ${event}`);
+});
+
+client.on(Events.ShardReconnecting, () => {
+    console.log('Reconnecting to Discord....');
+});
+
+client.on(Events.ShardResume, () => {
+    console.log('Reconnected to Discord');
+});
+
 client.login(TOKEN);
 getCommands();
