@@ -110,7 +110,7 @@ export class ContentController {
             return;
         }
 
-        message.channel.send(
+        await message.channel.send(
             `Only acceptable filetype is ${ACCEPTABLE_FILE_EXTENSION}`
         );
     }
