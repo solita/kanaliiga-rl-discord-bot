@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv';
 import fs from 'fs';
+import log from './log';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ export const bcParentGroup = (newName?: string): string | boolean => {
         try {
             return fs.readFileSync('parentGroup.txt').toString().trim();
         } catch (error) {
+            log.error(error);
             return 'err';
         }
     } else {
@@ -29,6 +31,7 @@ export const bcParentGroup = (newName?: string): string | boolean => {
             fs.writeFileSync('parentGroup.txt', newName);
             return true;
         } catch (error) {
+            log.error(error);
             return false;
         }
     }

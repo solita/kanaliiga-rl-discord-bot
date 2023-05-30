@@ -7,6 +7,8 @@ export class DocumentProcessor {
         fileName: string,
         groupId: string
     ): Promise<string> {
+        log.info(`Attempting to upload ${fileName}`);
+
         const BC_UPLOAD_URL = `https://ballchasing.com/api/v2/upload?group=${groupId}`;
         const formData = new FormData();
         const blob = new Blob([file]);
@@ -27,7 +29,6 @@ export class DocumentProcessor {
             if (res.status === 201) {
                 return `Here's a link for you! ${data.location}`;
             } else if (res.status === 409) {
-                //handle duplicate replays
                 return `Looks like that's a duplicate replay, you can find it at ${data.location}`;
             } else {
                 throw new Error(data.error);
