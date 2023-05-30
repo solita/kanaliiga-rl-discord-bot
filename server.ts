@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Events } from 'discord.js';
+import { Client, GatewayIntentBits, Events, ActivityType } from 'discord.js';
 import { ADMIN_ROLE, TOKEN } from './src/config';
 import { getCommands } from './src/commands/commands';
 import { ContentController } from './src/ContentController';
@@ -21,6 +21,16 @@ const controller = new ContentController();
 client.on(Events.ClientReady, async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
     console.log(await reportBcApiConnection());
+
+    client.user.setActivity('for replay files....', { type: ActivityType.Watching });
+
+    client.user.setUsername('KANALIIGAAAAAAAaa')
+
+    try {
+        client.user.setAvatar('./src/media/pfp.webp')
+    } catch (err) {
+        console.error(`Unable to set avatar! ${err}`)
+    }
 });
 
 client.on('interactionCreate', async (interaction) => {
