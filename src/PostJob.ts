@@ -4,12 +4,13 @@ import log from './log';
 import { getAttachmentCount } from './util';
 import { MAX_NUM_POSTS } from './config';
 
-export class PostJob {
+export default class PostJob {
     groupId: string; // Ballchasing groupID
     thread: ThreadChannel;
     queue: Message[]; // array of Messages's
     processor: DocumentProcessor;
     createdAt: number;
+    closeReminderSent: boolean;
 
     constructor(thread: ThreadChannel, groupId: string) {
         this.groupId = groupId;
@@ -17,6 +18,7 @@ export class PostJob {
         this.queue = [];
         this.processor = new DocumentProcessor();
         this.createdAt = Date.now();
+        this.closeReminderSent = false;
     }
 
     async addToQueue(newMessage: Message) {
@@ -47,6 +49,37 @@ export class PostJob {
 
     size(): number {
         return this.queue.length;
+    }
+
+    async sendCloseReminder() {
+        if (!this.closeReminderSent) {
+            const messages = await this.thread.messages
+                .fetch()
+                .then((msgs) => msgs.filter((msg) => msg.attachments.size > 0));
+
+            const firsMessageWithFiles = messages.last();
+            const botReactionsInThat =
+                firsMessageWithFiles.reactions.cache.filter((rct) =>
+                    rct.users
+                        .fetch()
+                        .then((usr) =>
+                            usr.filter((reaction) => reaction.bot === true)
+                        )
+                );
+            if (botReactionsInThat.size > 0 && messages.size === 1) {
+                //Timeouts are for UX reasons
+                setTimeout(async () => {
+                    await this.thread.sendTyping();
+                    setTimeout(() => {
+                        this.thread.send(
+                            'Remember to close the post once youre ready! ❤️'
+                        );
+                    }, 2500);
+                }, 2500);
+            }
+            this.closeReminderSent = true;
+        }
+        return;
     }
 
     process() {
@@ -87,8 +120,11 @@ export class PostJob {
                     await message.channel.sendTyping();
 
                     //Timeout for the link to freshen up and discord embedded link preview to work
-                    setTimeout(() => {
-                        message.channel.send(response);
+                    setTimeout(async () => {
+                        await message.channel.send(response);
+                        if (message.attachments.last().id === attachment.id) {
+                            this.sendCloseReminder();
+                        }
                     }, 3000);
                 } catch (err) {
                     await message.channel.sendTyping();
