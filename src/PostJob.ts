@@ -4,7 +4,7 @@ import log from './log';
 import { getAttachmentCount } from './util';
 import { MAX_NUM_POSTS } from './config';
 
-export class PostJob {
+export default class PostJob {
     groupId: string; // Ballchasing groupID
     thread: ThreadChannel;
     queue: Message[]; // array of Messages's
@@ -79,6 +79,7 @@ export class PostJob {
             }
             this.closeReminderSent = true;
         }
+        return;
     }
 
     process() {

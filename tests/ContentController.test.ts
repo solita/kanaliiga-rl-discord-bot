@@ -4,22 +4,30 @@ import { ACCEPTABLE_FILE_EXTENSION } from '../src/util';
 import * as BCAPI from '../src/ballchasingAPI';
 import { mockResponseForGroups } from './testHelpers';
 import { DocumentProcessor } from '../src/DocumentProcessor';
+import PostJob from '../src/PostJob';
 
 describe('Content controller', () => {
     const controller = new ContentController();
 
-    jest.spyOn(BCAPI, 'fetchGroups').mockImplementation(() =>
-        Promise.resolve(mockResponseForGroups.list)
-    );
-    jest.spyOn(DocumentProcessor.prototype, 'download').mockImplementation(() =>
-        Promise.resolve(Buffer.from([0]))
-    );
-    jest.spyOn(DocumentProcessor.prototype, 'upload').mockImplementation(() =>
-        Promise.resolve('url')
-    );
-
     beforeEach(() => {
         controller.clearTasks();
+        jest.spyOn(PostJob.prototype, 'sendCloseReminder').mockImplementation(
+            async () => {
+                Promise.resolve();
+            }
+        );
+        jest.spyOn(BCAPI, 'fetchGroups').mockImplementation(() =>
+            Promise.resolve(mockResponseForGroups.list)
+        );
+        jest.spyOn(DocumentProcessor.prototype, 'download').mockImplementation(
+            () => Promise.resolve(Buffer.from([0]))
+        );
+        jest.spyOn(DocumentProcessor.prototype, 'upload').mockImplementation(
+            () => Promise.resolve('url')
+        );
+    });
+    afterAll(() => {
+        jest.clearAllMocks();
     });
 
     it('New instance of Controller is defined', () => {

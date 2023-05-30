@@ -1,5 +1,5 @@
 import { Message, ThreadChannel } from 'discord.js';
-import { PostJob } from './PostJob';
+import PostJob from './PostJob';
 import log from './log';
 import { fetchGroups, searchGroupId } from './ballchasingAPI';
 import { CAPTAIN_ROLE, clearCacheInterval } from './config';

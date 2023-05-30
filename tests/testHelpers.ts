@@ -45,18 +45,30 @@ export const mockMessage = (
     } as unknown as Message;
 };
 
-export const mockThread = (id: string, ballchasingGroupId = 'group1') => {
+export const mockThread = (
+    id: string,
+    ballchasingGroupId = 'group1',
+    hasMessages = false
+) => {
     jest.spyOn(BCAPI, 'searchGroupId').mockImplementationOnce(() => [
         ballchasingGroupId,
         []
     ]);
+
+    const msgs = hasMessages
+        ? new Collection<string, Message>([
+              ['msgid1', mockMessage('1', 1)],
+              ['msgid2', mockMessage('2', 1)]
+          ])
+        : new Collection<string, Message>([]);
+
     return {
         id: id,
         name: 'Solita Ninja vs Solita Herkku, Challengers, 1.5.2023',
         sendTyping: jest.fn(() => Promise<void>),
         send: jest.fn(() => Promise.resolve()),
         messages: {
-            fetch: jest.fn(() => new Collection<string, Message>([]))
+            fetch: jest.fn(() => new Promise((r) => r(msgs)))
         }
     } as unknown as ThreadChannel;
 };
