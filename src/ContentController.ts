@@ -95,7 +95,7 @@ export class ContentController {
     }
 
     async addToPostQueue(message: Message) {
-        if (!hasRole(message.member.roles.cache, CAPTAIN_ROLE)) {
+        if (!hasRole(message.member?.roles.cache, CAPTAIN_ROLE)) {
             message.channel.send(
                 `Only those with ${CAPTAIN_ROLE} as their role can upload replays.`
             );
@@ -106,7 +106,7 @@ export class ContentController {
             const task = await this.createNewTask(
                 message.channel as ThreadChannel
             );
-            if (task) task.addToQueue(message);
+            if (task) await task.addToQueue(message);
             return;
         }
 

@@ -1,10 +1,12 @@
-import { Attachment, Collection } from 'discord.js';
+import { Attachment, Collection, Message } from 'discord.js';
 import {
     parseFileExtension,
     allAttahcmentsAreCorrectType,
     getDivisionName,
-    checkDateObject
+    checkDateObject,
+    getAttachmentCount
 } from '../src/util';
+import { mockMessage } from './testHelpers';
 
 describe('Utilities', () => {
     const testURLs = [
@@ -81,5 +83,15 @@ describe('Utilities', () => {
             259200000
         );
         expect(dateToCheck).toBe(true);
+    });
+
+    it('Returns the correct amount of attachments in a collection of messages', () => {
+        const mockMessages = new Collection<string, Message>([
+            ['msg', mockMessage('test', 3)],
+            ['msg1', mockMessage('test1', 4)]
+        ]);
+        const numOfAttachments = getAttachmentCount(mockMessages);
+
+        expect(numOfAttachments).toBe(7);
     });
 });
