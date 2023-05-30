@@ -53,9 +53,10 @@ export class PostJob {
 
     async sendCloseReminder() {
         if (!this.closeReminderSent) {
-            const messages = (await this.thread.messages.fetch()).filter(
-                (msg) => msg.attachments.size > 0
-            );
+            const messages = await this.thread.messages
+                .fetch()
+                .then((msgs) => msgs.filter((msg) => msg.attachments.size > 0));
+
             const firsMessageWithFiles = messages.last();
             const botReactionsInThat =
                 firsMessageWithFiles.reactions.cache.filter((rct) =>
