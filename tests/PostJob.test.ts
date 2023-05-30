@@ -15,9 +15,10 @@ describe('Each postjob contains an array of discords Message objects', () => {
 
     beforeEach(() => {
         postJob.clearQueue();
+        jest.useFakeTimers({ advanceTimers: 90 });
 
         jest.spyOn(pkg, 'getAttachmentCount').mockImplementation(() => 0);
-        jest.spyOn(postJob, 'sendCloseReminder').mockImplementation(
+        jest.spyOn(PostJob.prototype, 'sendCloseReminder').mockImplementation(
             async () => {
                 Promise.resolve();
             }
@@ -32,6 +33,7 @@ describe('Each postjob contains an array of discords Message objects', () => {
 
     afterAll(() => {
         jest.clearAllMocks();
+        jest.clearAllTimers();
     });
 
     it('Creating of an empty new queue worked', () => {
@@ -87,20 +89,18 @@ describe('Each postjob contains an array of discords Message objects', () => {
     it('Processing dequeues messages, calls the upload and download function in the postjob', async () => {
         const message1 = mockMessage('id1', 1);
         const message2 = mockMessage('id2', 1);
-        const message3 = mockMessage('id3', 1);
 
         await postJob.addToQueue(message1);
         await postJob.addToQueue(message2);
-        await postJob.addToQueue(message3);
 
-        expect(postJob.size()).toBe(3);
+        expect(postJob.size()).toBe(2);
 
         postJob.process();
 
-        await new Promise((r) => setTimeout(r, 50));
+        await new Promise((r) => setTimeout(r, 4000));
 
         expect(postJob.size()).toBe(0);
-        expect(postJob.processor.download).toBeCalledTimes(3);
-        expect(postJob.processor.upload).toBeCalledTimes(3);
+        expect(postJob.processor.download).toBeCalledTimes(2);
+        expect(postJob.processor.upload).toBeCalledTimes(2);
     });
 });

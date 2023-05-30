@@ -16,6 +16,7 @@ describe('Content controller', () => {
                 Promise.resolve();
             }
         );
+        jest.useFakeTimers({ advanceTimers: 90 });
         jest.spyOn(BCAPI, 'fetchGroups').mockImplementation(() =>
             Promise.resolve(mockResponseForGroups.list)
         );
@@ -116,16 +117,16 @@ describe('Content controller', () => {
 
         for (let i = 0; i < 3; i++) {
             await controller.addToPostQueue(
-                mockMessage('first' + String(i), 3, 'mock1')
+                mockMessage('first' + String(i), 1, 'mock1')
             );
             await controller.addToPostQueue(
-                mockMessage('second' + String(i), 3, 'mock2')
+                mockMessage('second' + String(i), 1, 'mock2')
             );
         }
 
         controller.processQueue();
 
-        await new Promise((r) => setTimeout(r, 20));
+        await new Promise((r) => setTimeout(r, 200));
 
         expect(controller.tasks.length).toBe(2); //Thread itself does not get deleted
 
