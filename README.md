@@ -114,14 +114,16 @@ The following steps helps you to configure the bot into your discord channel.
 
 ## Environment Variables
 
-Bot is configurable with environment variables. Environment variables can be set into environment itsel, or by placing a `.env` -file into the root of the project. Please see `.env.example` for more information. 
+Bot is configurable with environment variables. Environment variables can be set into environment itsel, or by placing a `.env` -file into the root of the project. Please see [`.env.example`](/.env.example) for more information.
 
-`TOKEN`:String
-`CLIENT_ID`:Integer
-`BALL_CHASING_API_KEY`:String
-`CAPTAIN_ROLE`:String
-`ADMIN_ROLE`:String
-`CLEAR_CACHE_INTERVAL`:Integer
+`TOKEN`:String <br>
+`CLIENT_ID`:Integer<br>
+`BALL_CHASING_API_KEY`:String<br>
+`CAPTAIN_ROLE`:String<br>
+`ADMIN_ROLE`:String<br>
+`CLEAR_CACHE_INTERVAL`:Integer<br>
+`TARGET_CHANNEL_NAME`:String<br>
+`MAX_NUM_POSTS`:Integer _(Defaults to 7 if left omitted)_<br>
 ## Running Tests
 
 To run tests
