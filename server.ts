@@ -1,4 +1,10 @@
-import { Client, GatewayIntentBits, Events } from 'discord.js';
+import {
+    Client,
+    GatewayIntentBits,
+    Events,
+    Collection,
+    Channel
+} from 'discord.js';
 import { ADMIN_ROLE, TOKEN } from './src/config';
 import { getCommands } from './src/commands/commands';
 import { ContentController } from './src/ContentController';
@@ -6,7 +12,7 @@ import { reportBcApiConnection } from './src/ballchasingAPI';
 import { hasRole, isInCorrectForum } from './src/util';
 import { botHealth, divisionHelp } from './src/commands/interactions/embeds';
 import { handleParentSetCommand } from './src/commands/interactions/rl_setparent';
-import { handleCheckCommand } from './src/commands/interactions/rl_check';
+import { processThreadsNotDoneYet } from './src/commands/interactions/rl_check';
 
 const client = new Client({
     intents: [
@@ -67,9 +73,9 @@ client.on('interactionCreate', async (interaction) => {
             //From ChannelManager, fetch all channels
             const channels = client.channels.cache;
 
-            const jobAddTasks = await handleCheckCommand(channels, controller);
+            const tasks = await processThreadsNotDoneYet(channels, controller);
 
-            Promise.all(jobAddTasks).then(() => {
+            Promise.all(tasks).then(() => {
                 controller.processQueue();
             });
             break;
@@ -82,6 +88,22 @@ client.on(Events.ThreadCreate, async (thrc) => {
     if (messagesInThread.some((mes) => mes.attachments.size === 0)) {
         await controller.createNewTask(thrc);
     }
+});
+
+client.on(Events.ThreadUpdate, async (updt) => {
+    const updatedThread = await client.channels.fetch(updt.id);
+    if (!(await isInCorrectForum(client, updatedThread))) {
+        //do nothing if the message is from a bot, or in a wrong forum
+        return;
+    }
+    const tasks = await processThreadsNotDoneYet(
+        new Collection<string, Channel>([[updatedThread.id, updatedThread]]),
+        controller
+    );
+
+    Promise.all(tasks).then(() => {
+        controller.processQueue();
+    });
 });
 
 client.on(Events.MessageCreate, async (message) => {
