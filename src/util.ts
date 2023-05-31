@@ -74,3 +74,15 @@ export const getAttachmentCount = (
         return acc + msg.attachments.size;
     }, 0);
 };
+
+export const pruneThreadFromGroupNameWarning = async (channel: Channel) => {
+    if (!channel.isThread()) return;
+
+    const messages = await channel.messages.fetch();
+
+    for (const mes of messages) {
+        if (mes[1].content.includes('post did not make too much sense')) {
+            await mes[1].delete();
+        }
+    }
+};

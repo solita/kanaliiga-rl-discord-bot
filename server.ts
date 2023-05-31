@@ -9,7 +9,11 @@ import { ADMIN_ROLE, TOKEN } from './src/config';
 import { getCommands } from './src/commands/commands';
 import { ContentController } from './src/ContentController';
 import { reportBcApiConnection } from './src/ballchasingAPI';
-import { hasRole, isInCorrectForum } from './src/util';
+import {
+    hasRole,
+    isInCorrectForum,
+    pruneThreadFromGroupNameWarning
+} from './src/util';
 import { botHealth, divisionHelp } from './src/commands/interactions/embeds';
 import { handleParentSetCommand } from './src/commands/interactions/rl_setparent';
 import { processThreadsNotDoneYet } from './src/commands/interactions/rl_check';
@@ -103,6 +107,7 @@ client.on(Events.ThreadUpdate, async (updt) => {
 
     Promise.all(tasks).then(() => {
         controller.processQueue();
+        pruneThreadFromGroupNameWarning(updatedThread);
     });
 });
 
