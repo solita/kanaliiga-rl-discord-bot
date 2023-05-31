@@ -46,7 +46,7 @@ export const ADMIN_ROLE = process.env.ADMIN_ROLE || 'ADMIN ROLE NOT FOUND';
 
 export const MAX_NUM_POSTS = Number(process.env.MAX_NUM_POSTS) || 7;
 
-export const BOT_NAME = String(process.env.BOT_NAME) || 'Kanaliiga RL Bot';
+export const BOT_NAME = process.env.BOT_NAME || 'Kanaliiga RL Bot';
 
 export const BOT_ACTIVITY =
     process.env.BOT_ACTIVITY || 'for RL replays to upload...';
