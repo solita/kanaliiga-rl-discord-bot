@@ -1,4 +1,11 @@
-import { Client, GatewayIntentBits, Events, ActivityType, Collection, Channel } from 'discord.js';
+import {
+    Client,
+    GatewayIntentBits,
+    Events,
+    ActivityType,
+    Collection,
+    Channel
+} from 'discord.js';
 import { ADMIN_ROLE, BOT_ACTIVITY, BOT_NAME, TOKEN } from './src/config';
 import { getCommands } from './src/commands/commands';
 import { ContentController } from './src/ContentController';
@@ -104,9 +111,9 @@ client.on(Events.ThreadCreate, async (thrc) => {
 
 client.on(Events.ThreadUpdate, async (updt) => {
     const updatedThread = await client.channels.fetch(updt.id);
-    
+
     if (!(await isInCorrectForum(client, updatedThread))) return;
-    
+
     const tasks = await processThreadsNotDoneYet(
         new Collection<string, Channel>([[updatedThread.id, updatedThread]]),
         controller
@@ -122,8 +129,8 @@ client.on(Events.MessageCreate, async (message) => {
     if (
         message.author.bot ||
         !(await isInCorrectForum(client, message.channel))
-    ) return;
-
+    )
+        return;
 
     if (message.attachments.size > 0) {
         await controller.addToPostQueue(message);
