@@ -52,7 +52,12 @@ export class DocumentProcessor {
             return Buffer.from(file);
         } catch (error) {
             if (error.status) throw error;
-            throw new Error(error.message);
+
+            if (error instanceof TypeError) {
+                throw new Error('Url is not reachable');
+            }
+
+            throw new Error(error);
         }
     }
 }
