@@ -101,15 +101,18 @@ export default class PostJob {
                     .download(attachment.url)
                     .catch(async (err) => {
                         await message.channel.sendTyping();
+                        console.log(err);
                         message.channel.send(
-                            `Error downloading a file. ${err.status} ${err.statusText}`
+                            `Error downloading a file. \n${attachment.name} \n${
+                                err.status ? err.status : err
+                            } ` + `${err.statusText ? err.statusText : ''}`
                         );
                         return;
                     });
 
                 if (!file) return;
 
-                const fileName = attachment.url.split('/').at(-1);
+                const fileName = attachment.name;
 
                 try {
                     const response = await this.processor.upload(

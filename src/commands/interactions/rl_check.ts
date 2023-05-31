@@ -32,7 +32,8 @@ export const processThreadsNotDoneYet = async (
                         .then((usr) => usr.filter((user) => user.bot === true))
             );
 
-            if (botUsersInThoseReactions.size > 0) continue;
+            if (botUsersInThoseReactions.size !== mes[1].attachments.size - 1)
+                continue;
 
             timercounter += 1;
             /* 
