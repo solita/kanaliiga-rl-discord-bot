@@ -6,7 +6,7 @@ import { ContentController } from '../../ContentController';
 export const divisionHelp = async () => {
     const embedContainer = new EmbedBuilder()
         .setColor('#22c9c9')
-        .setTitle(`Sub groups under Ballchasing parent group`)
+        .setTitle(`${bcParentGroup()}`)
         .setURL(`https://ballchasing.com/group/${bcParentGroup()}`)
         .setDescription(
             'These are the available divisions to upload replays to. They are case sensitive.'
