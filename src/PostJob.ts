@@ -29,7 +29,7 @@ export default class PostJob {
         const messages = await this.thread.messages.fetch();
         if (getAttachmentCount(messages) > MAX_NUM_POSTS) {
             this.thread.send(
-                'Your intended number of attachments exceeds the limit of this post'
+                `Your intended number of attachments exceeds the limit (${MAX_NUM_POSTS}) of this post`
             );
             return;
         }
