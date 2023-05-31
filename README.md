@@ -124,6 +124,8 @@ Bot is configurable with environment variables. Environment variables can be set
 `CLEAR_CACHE_INTERVAL`:Integer<br>
 `TARGET_CHANNEL_NAME`:String<br>
 `MAX_NUM_POSTS`:Integer _(Defaults to 7 if left omitted)_<br>
+`BOT_NAME`:String _(Defaults to 'Kanaliiga RL Bot' if left omitted)_<br>
+`BOT_ACTIVITY`:String _(Defaults to 'for RL replays to upload...' if left omitted)_<br>
 ## Running Tests
 
 To run tests

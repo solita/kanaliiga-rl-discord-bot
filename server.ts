@@ -1,11 +1,5 @@
-import {
-    Client,
-    GatewayIntentBits,
-    Events,
-    Collection,
-    Channel
-} from 'discord.js';
-import { ADMIN_ROLE, TOKEN } from './src/config';
+import { Client, GatewayIntentBits, Events, ActivityType, Collection, Channel } from 'discord.js';
+import { ADMIN_ROLE, BOT_ACTIVITY, BOT_NAME, TOKEN } from './src/config';
 import { getCommands } from './src/commands/commands';
 import { ContentController } from './src/ContentController';
 import { reportBcApiConnection } from './src/ballchasingAPI';
@@ -31,6 +25,20 @@ const controller = new ContentController();
 client.on(Events.ClientReady, async () => {
     console.log(`Logged in as ${client.user?.tag}!`);
     console.log(await reportBcApiConnection());
+
+    client.user.setPresence({
+        activities: [{ name: BOT_ACTIVITY, type: ActivityType.Watching }]
+    });
+
+    client.user.setUsername(BOT_NAME);
+
+    if (!client.user.avatar) {
+        try {
+            client.user.setAvatar('./src/media/pfp.webp');
+        } catch (err) {
+            console.error(`Unable to set avatar! ${err}`);
+        }
+    }
 });
 
 client.on('interactionCreate', async (interaction) => {
