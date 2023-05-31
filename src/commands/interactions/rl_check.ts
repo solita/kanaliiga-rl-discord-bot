@@ -1,7 +1,7 @@
 import { Channel, Collection } from 'discord.js';
 import { ContentController } from '../../ContentController';
 
-export const handleCheckCommand = async (
+export const processThreadsNotDoneYet = async (
     channels: Collection<string, Channel>,
     controller: ContentController
 ) => {
