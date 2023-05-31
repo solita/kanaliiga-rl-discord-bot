@@ -2,7 +2,7 @@ import { ThreadChannel, Message } from 'discord.js';
 import { DocumentProcessor } from './DocumentProcessor';
 import log from './log';
 import { getAttachmentCount } from './util';
-import { MAX_NUM_POSTS } from './config';
+import { FILE_LIMIT } from './config';
 
 export default class PostJob {
     groupId: string; // Ballchasing groupID
@@ -27,9 +27,9 @@ export default class PostJob {
             return;
         }
         const messages = await this.thread.messages.fetch();
-        if (getAttachmentCount(messages) > MAX_NUM_POSTS) {
+        if (getAttachmentCount(messages) > FILE_LIMIT) {
             this.thread.send(
-                `Your intended number of attachments exceeds the limit (${MAX_NUM_POSTS}) of this post`
+                `Your intended number of attachments exceeds the limit (${FILE_LIMIT}) of this post`
             );
             return;
         }

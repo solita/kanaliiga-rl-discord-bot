@@ -44,7 +44,7 @@ export const clearCacheInterval =
 
 export const ADMIN_ROLE = process.env.ADMIN_ROLE || 'ADMIN ROLE NOT FOUND';
 
-export const MAX_NUM_POSTS = Number(process.env.MAX_NUM_POSTS) || 7;
+export const FILE_LIMIT = Number(process.env.FILE_LIMIT) || 7;
 
 export const BOT_NAME = process.env.BOT_NAME || 'Kanaliiga RL Bot';
 
