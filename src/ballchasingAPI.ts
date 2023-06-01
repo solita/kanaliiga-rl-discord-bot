@@ -48,8 +48,8 @@ export const searchGroupId = (
 export const reportBcApiConnection = async () => {
     const res = await pingBCApi();
     if (res.status === 200) {
-        return `Connection to Ballchasing.com api is OK! (${res.status})`;
+        return `Connection to Ballchasing API is OK! (${res.status})`;
     }
 
-    return `We encountered a problem with Ballchasin.com api. ${res.url} - ${res.status} - ${res.statusText}`;
+    return `We encountered a problem with Ballchasing API. ${res.url} - ${res.status} - ${res.statusText}`;
 };

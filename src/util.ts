@@ -43,7 +43,7 @@ export const hasRole = (
     roles: Collection<string, Role>,
     roleToCompare: string
 ) => {
-    if (!roles) return false; 
+    if (!roles) return false;
     return roles.some((role) => role.name === roleToCompare);
 };
 
