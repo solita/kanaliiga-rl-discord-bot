@@ -1,12 +1,12 @@
 echo "Removing old bot containers and images if there are any"
-docker stop bot 2> /dev/null && docker rm bot 2> /dev/null
+docker stop solita-rl-bot 2> /dev/null && docker rm solita-rl-bot 2> /dev/null
 
 if [[ -f .env ]]; then
     echo "Building an image"
     docker build -t solita/rl-bot:1.0.0 .
 
     echo "Starting the bot"
-    docker run --env-file .env --name bot -t solita/rl-bot:1.0.0
+    docker run --env-file .env --name solita-rl-bot -t solita/rl-bot:1.0.0
 
 
 
