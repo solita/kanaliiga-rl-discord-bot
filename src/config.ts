@@ -4,6 +4,7 @@ import log from './log';
 
 dotenv.config();
 
+export const APPLICATION_VERSION = '1.0.0';
 export const TOKEN = process.env.TOKEN || 'NO TOKEN SET';
 export const CLIENT_ID = process.env.CLIENT_ID || 'NO CLIENT ID SET';
 
@@ -13,8 +14,6 @@ export const BALL_CHASING_API_KEY =
 export const TARGET_CHANNEL_NAME =
     process.env.TARGET_CHANNEL_NAME || 'NO TARGET CHANNEL SET';
 
-export const APPLICATION_VERSION =
-    process.env.npm_package_version || 'VERSION NOT SET';
 
 export const CAPTAIN_ROLE = process.env.CAPTAIN_ROLE || 'CAPTAIN ROLE NOT SET';
 
