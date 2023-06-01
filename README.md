@@ -32,7 +32,7 @@ The bot keeps metadata of posts in memory for certain amount of time (`CLEAR_CAC
 - [Environment Variables](#environment-variables)
 - [Testing](#running-tests)
 - [FAQ](#faq)
-<br>
+
 ## Tech Stack
 
 
