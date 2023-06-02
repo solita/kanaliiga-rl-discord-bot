@@ -19,7 +19,7 @@ import { botHealth, divisionHelp } from './src/commands/interactions/embeds';
 import { handleParentSetCommand } from './src/commands/interactions/rl_setparent';
 import { processThreadsNotDoneYet } from './src/commands/interactions/rl_check';
 
-const client = new Client({
+export const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
@@ -50,6 +50,14 @@ client.on(Events.ClientReady, async () => {
 
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
+
+    if (!(await isInCorrectForum(client, interaction.channel))) {
+        interaction.reply({
+            content: "Youre're in a wrong channel, mate.",
+            ephemeral: true
+        });
+        return;
+    }
 
     switch (interaction.commandName) {
         case 'rl_health': {
@@ -100,7 +108,11 @@ client.on('interactionCreate', async (interaction) => {
             //From ChannelManager, get the channels
             const channels = client.channels.cache;
 
-            const tasks = await processThreadsNotDoneYet(channels, controller);
+            const tasks = await processThreadsNotDoneYet(
+                channels,
+                controller,
+                client
+            );
 
             Promise.all(tasks).then(() => {
                 controller.processQueue();
@@ -130,7 +142,8 @@ client.on(Events.ThreadUpdate, async (updt) => {
 
     const tasks = await processThreadsNotDoneYet(
         new Collection<string, Channel>([[updatedThread.id, updatedThread]]),
-        controller
+        controller,
+        client
     );
 
     Promise.all(tasks).then(() => {
