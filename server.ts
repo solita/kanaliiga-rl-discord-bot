@@ -103,6 +103,7 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.on(Events.ThreadCreate, async (thrc) => {
+    console.log(thrc.name);
     const messagesInThread = await thrc.messages.fetch();
     if (messagesInThread.some((mes) => mes.attachments.size === 0)) {
         await controller.createNewTask(thrc);
@@ -111,6 +112,12 @@ client.on(Events.ThreadCreate, async (thrc) => {
 
 client.on(Events.ThreadUpdate, async (updt) => {
     const updatedThread = await client.channels.fetch(updt.id);
+
+    if (
+        (updt.isThread() && updt.archived) ||
+        (updatedThread.isThread() && updatedThread.archived)
+    )
+        return;
 
     if (!(await isInCorrectForum(client, updatedThread))) return;
 
