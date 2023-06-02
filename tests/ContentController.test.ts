@@ -26,13 +26,6 @@ describe('Content controller', () => {
         jest.spyOn(DocumentProcessor.prototype, 'upload').mockImplementation(
             () => Promise.resolve('url')
         );
-
-        // jest.spyOn(util, 'isInCorrectForum').mockImplementation(()=>Promise.resolve(true))
-
-
-
-        
-
     });
     afterAll(() => {
         jest.clearAllMocks();

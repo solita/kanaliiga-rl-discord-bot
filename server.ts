@@ -108,7 +108,11 @@ client.on('interactionCreate', async (interaction) => {
             //From ChannelManager, get the channels
             const channels = client.channels.cache;
 
-            const tasks = await processThreadsNotDoneYet(channels, controller);
+            const tasks = await processThreadsNotDoneYet(
+                channels,
+                controller,
+                client
+            );
 
             Promise.all(tasks).then(() => {
                 controller.processQueue();
@@ -138,7 +142,8 @@ client.on(Events.ThreadUpdate, async (updt) => {
 
     const tasks = await processThreadsNotDoneYet(
         new Collection<string, Channel>([[updatedThread.id, updatedThread]]),
-        controller
+        controller,
+        client
     );
 
     Promise.all(tasks).then(() => {
@@ -148,7 +153,11 @@ client.on(Events.ThreadUpdate, async (updt) => {
 });
 
 client.on(Events.MessageCreate, async (message) => {
-    if (message.author.bot) return;
+    if (
+        message.author.bot ||
+        !(await isInCorrectForum(client, message.channel))
+    )
+        return;
 
     if (message.attachments.size > 0) {
         await controller.addToPostQueue(message);

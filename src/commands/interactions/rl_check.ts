@@ -1,9 +1,11 @@
-import { Channel, Collection } from 'discord.js';
+import { Channel, Client, Collection } from 'discord.js';
 import { ContentController } from '../../ContentController';
+import { isInCorrectForum } from '../../util';
 
 export const processThreadsNotDoneYet = async (
     channels: Collection<string, Channel>,
-    controller: ContentController
+    controller: ContentController,
+    client: Client
 ) => {
     const promises = [];
     let timercounter = 0;
@@ -12,13 +14,14 @@ export const processThreadsNotDoneYet = async (
         //excluding admin channels, voicechannels etc..
         if (!chan[1].isThread()) continue;
         if (chan[1].archived) continue;
-
+        if (!(await isInCorrectForum(client, chan[1]))) continue;
         // From MessageManager, fetch all messages in that channel
         const messages = await chan[1].messages.fetch();
 
         for (const mes of messages) {
             //If the message from the channel contains attachments
             if (mes[1].attachments.size === 0) continue;
+
             // From ReactionManager, fetch all reactions in that message
             const reactionsInThisMessage = mes[1].reactions.cache;
 
