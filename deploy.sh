@@ -6,7 +6,7 @@ if [[ -f .env ]]; then
     docker build -t solita/rl-bot:1.0.0 .
 
     echo "Starting the bot"
-    docker run --env-file .env --name solita-rl-bot -t solita/rl-bot:1.0.0
+    docker run --env-file .env --restart always --name solita-rl-bot -t solita/rl-bot:1.0.0
 
 
 
