@@ -1,6 +1,6 @@
 import { ContentController } from '../src/ContentController';
 import { mockMessage, mockThread } from './testHelpers';
-import { ACCEPTABLE_FILE_EXTENSION } from '../src/util';
+import * as util from '../src/util';
 import * as BCAPI from '../src/ballchasingAPI';
 import { mockResponseForGroups } from './testHelpers';
 import { DocumentProcessor } from '../src/DocumentProcessor';
@@ -26,6 +26,13 @@ describe('Content controller', () => {
         jest.spyOn(DocumentProcessor.prototype, 'upload').mockImplementation(
             () => Promise.resolve('url')
         );
+
+        // jest.spyOn(util, 'isInCorrectForum').mockImplementation(()=>Promise.resolve(true))
+
+
+
+        
+
     });
     afterAll(() => {
         jest.clearAllMocks();
@@ -69,10 +76,10 @@ describe('Content controller', () => {
         expect(controller.tasks[0].size()).toBe(3);
         expect(controller.tasks[1].size()).toBe(3);
         expect(controller.tasks[0].queue[0].attachments.get('File 0').url).toBe(
-            'URL /0' + ACCEPTABLE_FILE_EXTENSION
+            'URL /0' + util.ACCEPTABLE_FILE_EXTENSION
         );
         expect(controller.tasks[1].queue[2].attachments.get('File 2').url).toBe(
-            'URL /2' + ACCEPTABLE_FILE_EXTENSION
+            'URL /2' + util.ACCEPTABLE_FILE_EXTENSION
         );
     });
 
@@ -107,7 +114,7 @@ describe('Content controller', () => {
         expect(controller.tasks[0].thread.id).toBe('postId'); // message objects channel object populates threadId correctly
         expect(controller.tasks[0].queue[0].attachments.size).toBe(2); //The message we added to this newly created post, contains 2 attachments
         expect(controller.tasks[0].queue[0].attachments.get('File 1').url).toBe(
-            'URL /1' + ACCEPTABLE_FILE_EXTENSION
+            'URL /1' + util.ACCEPTABLE_FILE_EXTENSION
         ); // the second attch's both file name and its url are in correct sequence, (last of the 2)
     });
 

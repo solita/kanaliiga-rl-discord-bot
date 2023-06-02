@@ -19,7 +19,7 @@ import { botHealth, divisionHelp } from './src/commands/interactions/embeds';
 import { handleParentSetCommand } from './src/commands/interactions/rl_setparent';
 import { processThreadsNotDoneYet } from './src/commands/interactions/rl_check';
 
-const client = new Client({
+export const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
@@ -50,6 +50,14 @@ client.on(Events.ClientReady, async () => {
 
 client.on('interactionCreate', async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
+
+    if (!(await isInCorrectForum(client, interaction.channel))) {
+        interaction.reply({
+            content: "Youre're in a wrong channel, mate.",
+            ephemeral: true
+        });
+        return;
+    }
 
     switch (interaction.commandName) {
         case 'rl_health': {
@@ -140,11 +148,7 @@ client.on(Events.ThreadUpdate, async (updt) => {
 });
 
 client.on(Events.MessageCreate, async (message) => {
-    if (
-        message.author.bot ||
-        !(await isInCorrectForum(client, message.channel))
-    )
-        return;
+    if (message.author.bot) return;
 
     if (message.attachments.size > 0) {
         await controller.addToPostQueue(message);

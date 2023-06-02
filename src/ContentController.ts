@@ -8,8 +8,10 @@ import {
     allAttahcmentsAreCorrectType,
     checkDateObject,
     getDivisionName,
-    hasRole
+    hasRole,
+    isInCorrectForum
 } from './util';
+import { client } from '../server';
 
 export class ContentController {
     tasks: PostJob[];
@@ -95,6 +97,10 @@ export class ContentController {
     }
 
     async addToPostQueue(message: Message) {
+        // if(!await isInCorrectForum(client, message.channel)){
+        //     return
+        // }
+
         if (!hasRole(message.member?.roles.cache, CAPTAIN_ROLE)) {
             message.channel.send(
                 `Only those with ${CAPTAIN_ROLE} as their role can upload replays.`
