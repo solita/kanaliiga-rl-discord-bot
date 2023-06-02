@@ -11,6 +11,8 @@ export const processThreadsNotDoneYet = async (
     for (const chan of channels) {
         //excluding admin channels, voicechannels etc..
         if (!chan[1].isThread()) continue;
+        if (chan[1].archived) continue;
+
         // From MessageManager, fetch all messages in that channel
         const messages = await chan[1].messages.fetch();
 
