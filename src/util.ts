@@ -83,7 +83,13 @@ export const pruneThreadFromGroupNameWarning = async (channel: Channel) => {
 
     for (const mes of messages) {
         if (mes[1].content.includes('post did not make too much sense')) {
-            await mes[1].delete();
+            try {
+                await mes[1].delete();
+            } catch (error) {
+                console.log(
+                    `Error deleting a group name warning message ${error}`
+                );
+            }
         }
     }
 };

@@ -14,7 +14,6 @@ export const BALL_CHASING_API_KEY =
 export const TARGET_CHANNEL_NAME =
     process.env.TARGET_CHANNEL_NAME || 'NO TARGET CHANNEL SET';
 
-
 export const CAPTAIN_ROLE = process.env.CAPTAIN_ROLE || 'CAPTAIN ROLE NOT SET';
 
 export const bcParentGroup = (newName?: string): string | boolean => {
