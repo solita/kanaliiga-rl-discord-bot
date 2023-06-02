@@ -6,23 +6,29 @@ import log from '../../log';
 export const handleParentSetCommand = async (
     interaction: ChatInputCommandInteraction
 ) => {
+    let parentGroupMaybeEmpty = false;
     if (!bcParentGroup(interaction.options.get('id').value.toString())) {
-        interaction.reply('Something went wrong.');
+        interaction.reply({
+            content: 'Something went wrong.',
+            ephemeral: true
+        });
         return;
     }
-
-    interaction.reply(
-        `Parent group set. New parent group is \`${bcParentGroup()}\`.`
-    );
     try {
         const list = await fetchGroups();
         if (list.length < 1) {
-            interaction.channel.send(
-                '⚠️**Warning:** Parent group might not exist or is empty.'
-            );
+            parentGroupMaybeEmpty = true;
         }
     } catch (err) {
         log.error(err);
     }
+    interaction.reply({
+        content: `Parent group set. New parent group is \`${bcParentGroup()}\`.${
+            parentGroupMaybeEmpty
+                ? '\n⚠️ **Warning**: Parent group might not exist or is empty.'
+                : ''
+        }`,
+        ephemeral: true
+    });
     return;
 };
