@@ -85,7 +85,6 @@ export default class PostJob {
     process() {
         while (this.size() > 0) {
             const message = this.removeFromQueue();
-
             const arrayOfMultifileEmojies = [
                 '1️⃣',
                 '2️⃣',

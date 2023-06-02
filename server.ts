@@ -111,7 +111,6 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 client.on(Events.ThreadCreate, async (thrc) => {
-    console.log(thrc.name);
     const messagesInThread = await thrc.messages.fetch();
     if (messagesInThread.some((mes) => mes.attachments.size === 0)) {
         await controller.createNewTask(thrc);
