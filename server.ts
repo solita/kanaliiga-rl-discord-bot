@@ -54,12 +54,15 @@ client.on('interactionCreate', async (interaction) => {
     switch (interaction.commandName) {
         case 'rl_health': {
             const infoEmbed = await botHealth(controller, client);
-            await interaction.reply({ embeds: [infoEmbed] });
+            await interaction.reply({ embeds: [infoEmbed], ephemeral: true });
             break;
         }
         case 'rl_divisionhelp': {
             const divisionHelpEmbed = await divisionHelp();
-            await interaction.reply({ embeds: [divisionHelpEmbed] });
+            await interaction.reply({
+                embeds: [divisionHelpEmbed],
+                ephemeral: true
+            });
             break;
         }
         case 'rl_setparent': {
@@ -68,9 +71,10 @@ client.on('interactionCreate', async (interaction) => {
                 if (hasRole(member.roles.cache, ADMIN_ROLE)) {
                     handleParentSetCommand(interaction);
                 } else {
-                    interaction.reply(
-                        `Only admins (${ADMIN_ROLE}) can update this.`
-                    );
+                    interaction.reply({
+                        content: `Only admins (${ADMIN_ROLE}) can update this.`,
+                        ephemeral: true
+                    });
                 }
             });
             break;
@@ -82,12 +86,16 @@ client.on('interactionCreate', async (interaction) => {
                 .then((member) => hasRole(member.roles.cache, ADMIN_ROLE));
 
             if (!isRoleEnough) {
-                interaction.reply(
-                    `Only admins (${ADMIN_ROLE}) can run checks.`
-                );
+                interaction.reply({
+                    content: `Only admins (${ADMIN_ROLE}) can run checks.`,
+                    ephemeral: true
+                });
                 return;
             }
-            interaction.reply('On it!');
+            interaction.reply({
+                content: 'On it!',
+                ephemeral: true
+            });
 
             //From ChannelManager, get the channels
             const channels = client.channels.cache;
