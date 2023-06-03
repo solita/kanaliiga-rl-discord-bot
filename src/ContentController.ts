@@ -111,7 +111,7 @@ export class ContentController {
         }
 
         await message.channel.send(
-            `Only acceptable filetype is ${ACCEPTABLE_FILE_EXTENSION}`
+            `This isn't Rocket League! Only acceptable filetype is ${ACCEPTABLE_FILE_EXTENSION}`
         );
     }
 }
