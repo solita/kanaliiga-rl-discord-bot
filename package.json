@@ -9,7 +9,8 @@
     "lint": "eslint . --ext .ts",
     "dev": "nodemon server.ts",
     "build:production": "esbuild server.ts --bundle --outfile=build/server.js --platform=node --main-fields=module,main",
-    "prettier-format": "prettier --config .prettierrc '**/*.ts' --write"
+    "format:fix": "prettier --config .prettierrc '**/*.ts' --write",
+    "format:check": "prettier --config .prettierrc '**/*.ts' --check"
   },
   "keywords": [],
   "author": "",
@@ -44,5 +45,9 @@
     "transformIgnorePatterns": [
       "node_modules/(?!variables/.*)"
     ]
+  },
+  "engines" : {
+    "npm" : ">=9.0.0 <10.0.0",
+    "node" : ">=18.0.0 <19.0.0"
   }
 }

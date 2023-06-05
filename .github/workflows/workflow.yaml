@@ -29,8 +29,18 @@ jobs:
     - name: Run linter upon push or pull requests
       run: |
           npm ci
-          npm run prettier-format
           npm run lint
+
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Check formatting
+      run: |
+          npm ci
+          npm run format:check
 
   build:
     runs-on: ubuntu-latest
@@ -42,5 +52,3 @@ jobs:
       run: |
           npm ci
           npm run build:production
-
-#Add prettier scripts
