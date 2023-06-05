@@ -142,7 +142,7 @@ The bot is configurable with environment variables. Environment variables should
 | CLEAR_CACHE_INTERVAL | 3                           | Integer | Number of days           |
 | FILE_LIMIT        | 7                           | Integer |  Number of attachements in total for one post  |
 | BOT_NAME             | Kanaliiga RL Bot            | String  | Max length 32 characters |
-| BOT_ACTIVITY         | for RL replays to upload... | String  |                          |
+| BOT_ACTIVITY         | for RL replays to upload... | String  | Will always be prefixed with 'Watching'|
 
 ## Running Tests
 
