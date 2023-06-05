@@ -1,4 +1,5 @@
 import { fetchGroups, searchGroupId } from '../src/ballchasingAPI';
+import { bcParentGroup } from '../src/config';
 import { mockResponseForGroups } from './testHelpers';
 
 describe('Ballchasing Api', () => {
@@ -13,7 +14,7 @@ describe('Ballchasing Api', () => {
             return Promise.resolve(mockResponseForGroups);
         });
 
-        const response = await fetchGroups();
+        const response = await fetchGroups(bcParentGroup());
 
         expect(response).toBeDefined();
         expect(response[0].id).toBe('12345Test');
@@ -24,11 +25,11 @@ describe('Ballchasing Api', () => {
             return Promise.resolve(mockResponseForGroups);
         });
 
-        const response = await fetchGroups();
+        const response = await fetchGroups(bcParentGroup());
 
-        const [matchId, allResults] = searchGroupId('Challengers', response);
+        const [match, allResults] = searchGroupId('Challengers', response);
 
-        expect(matchId).toBe('12345Test');
+        expect(match.id).toBe('12345Test');
         expect(allResults[0]).toBe('Challengers');
         expect(allResults[1]).toBe('league2');
     });

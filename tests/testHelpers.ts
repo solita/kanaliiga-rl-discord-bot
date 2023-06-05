@@ -45,13 +45,19 @@ export const mockMessage = (
     } as unknown as Message;
 };
 
+
 export const mockThread = (
     id: string,
     ballchasingGroupId = 'group1',
     hasMessages = false
 ) => {
     jest.spyOn(BCAPI, 'searchGroupId').mockImplementationOnce(() => [
-        ballchasingGroupId,
+        {
+            name: 'mockName',
+            id: ballchasingGroupId,
+            link: 'link.com',
+     
+    } as BCAPI.TBallchasingGroup,
         []
     ]);
 
