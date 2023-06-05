@@ -15,7 +15,7 @@ export const handleParentSetCommand = async (
         return;
     }
     try {
-        const list = await fetchGroups();
+        const list = await fetchGroups(bcParentGroup());
         if (list.length < 1) {
             parentGroupMaybeEmpty = true;
         }

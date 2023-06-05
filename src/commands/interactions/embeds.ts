@@ -12,7 +12,7 @@ export const divisionHelp = async () => {
             'These are the available divisions to upload replays to. They are case sensitive.'
         );
 
-    return fetchGroups()
+    return fetchGroups(bcParentGroup())
         .then((data) => {
             if (data.length > 0) {
                 embedContainer.addFields({ name: '\n', value: ' ' });

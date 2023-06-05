@@ -2,7 +2,7 @@ import { Message, ThreadChannel } from 'discord.js';
 import PostJob from './PostJob';
 import log from './log';
 import { fetchGroups, searchGroupId } from './ballchasingAPI';
-import { CAPTAIN_ROLE, clearCacheInterval } from './config';
+import { CAPTAIN_ROLE, bcParentGroup, clearCacheInterval } from './config';
 import {
     ACCEPTABLE_FILE_EXTENSION,
     allAttahcmentsAreCorrectType,
@@ -32,7 +32,7 @@ export class ContentController {
             return;
         }
 
-        const response = await fetchGroups()
+        const response = await fetchGroups(bcParentGroup())
             .then((data) => data)
             .catch((error) => {
                 thread.send(
@@ -60,7 +60,7 @@ export class ContentController {
                 return;
             }
 
-            const task = new PostJob(thread, groupId);
+            const task = new PostJob(thread, groupId.id);
             this.tasks.push(task);
             return task;
         }

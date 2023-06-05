@@ -16,7 +16,7 @@ export const TARGET_CHANNEL_NAME =
 
 export const CAPTAIN_ROLE = process.env.CAPTAIN_ROLE || 'CAPTAIN ROLE NOT SET';
 
-export const bcParentGroup = (newName?: string): string | boolean => {
+export const bcParentGroup = (newName?: string): string => {
     if (!newName) {
         try {
             return fs.readFileSync('parentGroup.txt').toString().trim();
@@ -27,10 +27,10 @@ export const bcParentGroup = (newName?: string): string | boolean => {
     } else {
         try {
             fs.writeFileSync('parentGroup.txt', newName);
-            return true;
+            return newName;
         } catch (error) {
             log.error(error);
-            return false;
+            return 'err';
         }
     }
 };
