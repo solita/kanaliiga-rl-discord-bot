@@ -1,4 +1,4 @@
-import { BALL_CHASING_API_KEY, bcParentGroup } from './config';
+import { BALL_CHASING_API_KEY } from './config';
 
 const BALLCHASING_BASEURL = 'https://ballchasing.com/api';
 
@@ -10,8 +10,6 @@ export type TBallchasingGroup = {
     [key: string]: string | object;
 };
 
-
-
 export const pingBCApi = (): Promise<Response> => {
     return fetch(BALLCHASING_BASEURL, {
         headers: {
@@ -22,7 +20,9 @@ export const pingBCApi = (): Promise<Response> => {
         .catch((err) => err);
 };
 
-export const fetchGroups = (parentGroup:string): Promise<Array<TBallchasingGroup>> => {
+export const fetchGroups = (
+    parentGroup: string
+): Promise<Array<TBallchasingGroup>> => {
     return fetch(`${BALLCHASING_BASEURL}/groups?group=${parentGroup}`, {
         headers: {
             Authorization: BALL_CHASING_API_KEY
@@ -47,49 +47,30 @@ export const searchGroupId = (
     ];
 };
 
-
-const createNewSubgroup = (parentId: string, groupName: string):Promise<TBallchasingGroup> =>{
-
+export const createNewSubgroup = (
+    parentGroup: string,
+    groupName: string
+): Promise<TBallchasingGroup> => {
     const payload = {
         name: groupName,
-        parent: parentId,
-        player_identification: "by-id",
-        team_identification: "by-player-clusters"
-    }
+        parent: parentGroup,
+        player_identification: 'by-id',
+        team_identification: 'by-player-clusters'
+    };
 
-
-    return fetch(BALLCHASING_BASEURL+'/groups', {
-        method: "POST",
+    return fetch(BALLCHASING_BASEURL + '/groups', {
+        method: 'POST',
         headers: {
             Authorization: BALL_CHASING_API_KEY
         },
-        body: JSON.stringify(payload),
-    }).then(resp =>{
-        if(resp.status !== 201){
-            throw resp
+        body: JSON.stringify(payload)
+    }).then((resp) => {
+        if (resp.status !== 201) {
+            throw resp;
         }
-        return resp.json()
-    })
-
-}
-
-export const checkOrCreateSubgroup = async (parentGroup: string, groupName: string):
- Promise<TBallchasingGroup> => {
-
-    try {
-        const data = await createNewSubgroup(parentGroup, groupName)
-        return data
-    } catch (error) {
-        
-        if (error.status && error.status === 400){
-            const existingGroups = await fetchGroups(parentGroup)
-            return searchGroupId(groupName, existingGroups)[0]
-        }
-        throw error
-    }
-}
-
-
+        return resp.json();
+    });
+};
 
 export const reportBcApiConnection = async () => {
     const res = await pingBCApi();

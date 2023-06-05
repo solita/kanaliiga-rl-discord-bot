@@ -45,7 +45,6 @@ export const mockMessage = (
     } as unknown as Message;
 };
 
-
 export const mockThread = (
     id: string,
     ballchasingGroupId = 'group1',
@@ -55,9 +54,8 @@ export const mockThread = (
         {
             name: 'mockName',
             id: ballchasingGroupId,
-            link: 'link.com',
-     
-    } as BCAPI.TBallchasingGroup,
+            link: 'link.com'
+        } as BCAPI.TBallchasingGroup,
         []
     ]);
 

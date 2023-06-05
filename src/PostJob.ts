@@ -3,7 +3,11 @@ import { DocumentProcessor } from './DocumentProcessor';
 import log from './log';
 import { getAttachmentCount } from './util';
 import { FILE_LIMIT } from './config';
-import { checkOrCreateSubgroup } from './ballchasingAPI';
+import {
+    createNewSubgroup,
+    fetchGroups,
+    searchGroupId
+} from './ballchasingAPI';
 
 export default class PostJob {
     groupId: string; // Ballchasing groupID
@@ -84,14 +88,17 @@ export default class PostJob {
     }
 
     async process() {
-        try {
-            const newGroup = await checkOrCreateSubgroup(this.groupId, this.thread.name)
-            console.log("New created group",newGroup)
-            
-            
-        } catch (error) {
-            console.log(error)
-        }
+        // try {
+        //     const newGroup = await createNewSubgroup(this.groupId, this.thread.name)
+        //     console.log("New created group",newGroup)
+        // } catch (error) {
+        //     if (error.status && error.status === 400){
+        //         const existingGroups = await fetchGroups(this.groupId)
+        //         const targetGroup = searchGroupId(this.thread.name, existingGroups)[0]
+        //         console.log('New existing group: ', targetGroup)
+        //     }
+        // }
+
         while (this.size() > 0) {
             const message = this.removeFromQueue();
             const arrayOfMultifileEmojies = [
