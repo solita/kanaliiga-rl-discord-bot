@@ -116,10 +116,12 @@ export default class PostJob {
                     this.groupId,
                     subGroupNameWithoutDivision
                 );*/
-                this.setSubGroup(await createNewSubgroup(
-                    this.groupId,
-                    subGroupNameWithoutDivision
-                ))
+                this.setSubGroup(
+                    await createNewSubgroup(
+                        this.groupId,
+                        subGroupNameWithoutDivision
+                    )
+                );
                 console.log('New created group', this.subGroup);
             } catch (error) {
                 if (error.status && error.status === 400) {
@@ -129,7 +131,7 @@ export default class PostJob {
                         existingGroups
                     )[0];
                     console.log('New existing group: ', targetGroup);
-                    this.setSubGroup(targetGroup)
+                    this.setSubGroup(targetGroup);
                 }
             }
         }
