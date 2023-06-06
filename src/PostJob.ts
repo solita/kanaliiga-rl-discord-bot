@@ -29,6 +29,14 @@ export default class PostJob {
         this.subGroup;
     }
 
+    getSubGroup() {
+        return this.subGroup;
+    }
+
+    setSubGroup(subGroup: TBallchasingGroup) {
+        this.subGroup = subGroup;
+    }
+
     async addToQueue(newMessage: Message) {
         if (this.queue.find((mes) => mes.id === newMessage.id)) {
             log.error('Message exists in queue already: ' + newMessage.id);
@@ -104,10 +112,14 @@ export default class PostJob {
             );
             //removes division name from subgroup to avoid repeating itself
             try {
-                this.subGroup = await createNewSubgroup(
+                /*this.subGroup = await createNewSubgroup(
                     this.groupId,
                     subGroupNameWithoutDivision
-                );
+                );*/
+                this.setSubGroup(await createNewSubgroup(
+                    this.groupId,
+                    subGroupNameWithoutDivision
+                ))
                 console.log('New created group', this.subGroup);
             } catch (error) {
                 if (error.status && error.status === 400) {
@@ -117,7 +129,7 @@ export default class PostJob {
                         existingGroups
                     )[0];
                     console.log('New existing group: ', targetGroup);
-                    this.subGroup = targetGroup;
+                    this.setSubGroup(targetGroup)
                 }
             }
         }

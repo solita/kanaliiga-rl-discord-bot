@@ -16,6 +16,10 @@ describe('Content controller', () => {
                 Promise.resolve();
             }
         );
+        PostJob.prototype.setSubGroup({
+            name: 'test',
+            id: '123'
+        } as unknown as BCAPI.TBallchasingGroup)
         jest.useFakeTimers({ advanceTimers: 90 });
         jest.spyOn(BCAPI, 'fetchGroups').mockImplementation(() =>
             Promise.resolve(mockResponseForGroups.list)
