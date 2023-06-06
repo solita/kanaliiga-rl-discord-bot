@@ -1,6 +1,5 @@
 import { Message, ThreadChannel } from 'discord.js';
 import PostJob from './PostJob';
-import log from './log';
 import { fetchGroups, searchGroupId } from './ballchasingAPI';
 import { CAPTAIN_ROLE, bcParentGroup, clearCacheInterval } from './config';
 import {
@@ -43,7 +42,7 @@ export class ContentController {
         if (response) {
             const [groupId, allRecords] = searchGroupId(groupName, response);
             if (!groupId) {
-                log.error(`Group ID for ${groupName} not found`);
+                console.error(`Group ID for ${groupName} not found`);
 
                 await thread.sendTyping();
 

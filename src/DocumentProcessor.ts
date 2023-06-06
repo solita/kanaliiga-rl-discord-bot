@@ -1,5 +1,4 @@
 import { BALL_CHASING_API_KEY } from './config';
-import log from './log';
 
 export class DocumentProcessor {
     async upload(
@@ -7,7 +6,7 @@ export class DocumentProcessor {
         fileName: string,
         groupId: string
     ): Promise<string> {
-        log.info(`Attempting to upload ${fileName}`);
+        console.log(`Attempting to upload ${fileName}`);
 
         const BC_UPLOAD_URL = `https://ballchasing.com/api/v2/upload?group=${groupId}`;
         const formData = new FormData();
@@ -40,7 +39,7 @@ export class DocumentProcessor {
     }
 
     async download(url: string): Promise<Buffer> {
-        log.info(`Attempting to download ${url}`);
+        console.log(`Attempting to download ${url}`);
 
         try {
             const res = await fetch(url);
