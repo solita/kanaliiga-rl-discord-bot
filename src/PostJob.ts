@@ -112,10 +112,6 @@ export default class PostJob {
             );
             //removes division name from subgroup to avoid repeating itself
             try {
-                /*this.subGroup = await createNewSubgroup(
-                    this.groupId,
-                    subGroupNameWithoutDivision
-                );*/
                 this.setSubGroup(
                     await createNewSubgroup(
                         this.groupId,
@@ -125,81 +121,95 @@ export default class PostJob {
                 console.log('New created group', this.subGroup);
             } catch (error) {
                 if (error.status && error.status === 400) {
-                    const existingGroups = await fetchGroups(this.groupId);
-                    const targetGroup = searchGroupId(
-                        subGroupNameWithoutDivision,
-                        existingGroups
-                    )[0];
-                    console.log('New existing group: ', targetGroup);
-                    this.setSubGroup(targetGroup);
+                    try {
+                        const existingGroups = await fetchGroups(this.groupId);
+                        const targetGroup = searchGroupId(
+                            subGroupNameWithoutDivision,
+                            existingGroups
+                        )[0];
+                        console.log('New existing group: ', targetGroup);
+                        this.setSubGroup(targetGroup);
+                    } catch (err) {
+                        console.error(err);
+                        this.thread.send(
+                            'Something went wrong. 🙁 I could not process your request. Please try again in another thread.'
+                        );
+                    }
+                } else {
+                    this.thread.send(
+                        'Something went wrong. 🙁 I could not process your request. Please try again in another thread.'
+                    );
                 }
             }
-        }
+        } else {
+            while (this.size() > 0) {
+                const message = this.removeFromQueue();
+                const arrayOfMultifileEmojies = [
+                    '1️⃣',
+                    '2️⃣',
+                    '3️⃣',
+                    '4️⃣',
+                    '5️⃣',
+                    '6️⃣',
+                    '7️⃣'
+                ];
 
-        while (this.size() > 0) {
-            const message = this.removeFromQueue();
-            const arrayOfMultifileEmojies = [
-                '1️⃣',
-                '2️⃣',
-                '3️⃣',
-                '4️⃣',
-                '5️⃣',
-                '6️⃣',
-                '7️⃣'
-            ];
+                message.attachments.forEach(async (attachment) => {
+                    const file = await this.processor
+                        .download(attachment.url)
+                        .catch(async (err) => {
+                            await message.channel.sendTyping();
+                            console.log(err);
+                            message.channel.send(
+                                `Error downloading a file. \n${
+                                    attachment.name
+                                } \n${err.status ? err.status : err} ` +
+                                    `${err.statusText ? err.statusText : ''}`
+                            );
+                            return;
+                        });
 
-            message.attachments.forEach(async (attachment) => {
-                const file = await this.processor
-                    .download(attachment.url)
-                    .catch(async (err) => {
+                    if (!file) return;
+
+                    const fileName = attachment.name;
+
+                    try {
+                        const response = await this.processor.upload(
+                            file,
+                            fileName,
+                            this.subGroup.id
+                        );
                         await message.channel.sendTyping();
-                        console.log(err);
-                        message.channel.send(
-                            `Error downloading a file. \n${attachment.name} \n${
-                                err.status ? err.status : err
-                            } ` + `${err.statusText ? err.statusText : ''}`
-                        );
+
+                        //Timeout for the link to freshen up and discord embedded link preview to work
+                        setTimeout(async () => {
+                            if (response) {
+                                await message.channel.send(response);
+                            }
+                            if (
+                                message.attachments.last().id === attachment.id
+                            ) {
+                                this.sendLinkAndReminder();
+                            }
+                        }, 3000);
+                    } catch (err) {
+                        await message.channel.sendTyping();
+
+                        //This timeout is for UX reasons
+                        setTimeout(() => {
+                            message.channel.send(
+                                `There was an error uploading file: ${fileName} \n${err}`
+                            );
+                        }, 3000);
+
+                        arrayOfMultifileEmojies.shift();
                         return;
-                    });
+                    }
 
-                if (!file) return;
-
-                const fileName = attachment.name;
-
-                try {
-                    const response = await this.processor.upload(
-                        file,
-                        fileName,
-                        this.subGroup.id
-                    );
-                    await message.channel.sendTyping();
-
-                    //Timeout for the link to freshen up and discord embedded link preview to work
-                    setTimeout(async () => {
-                        if (response) {
-                            await message.channel.send(response);
-                        }
-                        if (message.attachments.last().id === attachment.id) {
-                            this.sendLinkAndReminder();
-                        }
-                    }, 3000);
-                } catch (err) {
-                    await message.channel.sendTyping();
-
-                    //This timeout is for UX reasons
-                    setTimeout(() => {
-                        message.channel.send(
-                            `There was an error uploading file: ${fileName} \n${err}`
-                        );
-                    }, 3000);
-
-                    arrayOfMultifileEmojies.shift();
-                    return;
-                }
-
-                await message.react('✅');
-                await message.react(arrayOfMultifileEmojies.shift());
-            });
+                    await message.react('✅');
+                    await message.react(arrayOfMultifileEmojies.shift());
+                });
+            }
         }
     }
 }
