@@ -27,9 +27,10 @@ export class DocumentProcessor {
             const data = await res.json();
 
             if (res.status === 201) {
-                return `Here's a link for you! ${data.location}`;
+                console.log(`Upload success! ${data.location}`);
+                return undefined;
             } else if (res.status === 409) {
-                return `Looks like that's a duplicate replay, you can find it at ${data.location}`;
+                return `Looks like ${fileName} a duplicate replay, you can find it at ${data.location}`;
             } else {
                 throw new Error(data.error);
             }

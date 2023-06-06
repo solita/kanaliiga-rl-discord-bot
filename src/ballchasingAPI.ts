@@ -1,11 +1,11 @@
-import { BALL_CHASING_API_KEY, bcParentGroup } from './config';
+import { BALL_CHASING_API_KEY } from './config';
 
 const BALLCHASING_BASEURL = 'https://ballchasing.com/api';
 
 export type TBallchasingGroup = {
-    name: string;
+    name?: string;
     id: string;
-    created: string;
+    created?: string;
     link: string;
     [key: string]: string | object;
 };
@@ -20,8 +20,10 @@ export const pingBCApi = (): Promise<Response> => {
         .catch((err) => err);
 };
 
-export const fetchGroups = (): Promise<Array<TBallchasingGroup>> => {
-    return fetch(`${BALLCHASING_BASEURL}/groups?group=${bcParentGroup()}`, {
+export const fetchGroups = (
+    parentGroup: string
+): Promise<Array<TBallchasingGroup>> => {
+    return fetch(`${BALLCHASING_BASEURL}/groups?group=${parentGroup}`, {
         headers: {
             Authorization: BALL_CHASING_API_KEY
         }
@@ -38,11 +40,36 @@ export const fetchGroups = (): Promise<Array<TBallchasingGroup>> => {
 export const searchGroupId = (
     name: string,
     groups: TBallchasingGroup[]
-): [string | undefined, string[]] => {
+): [TBallchasingGroup | undefined, string[]] => {
     return [
-        groups.find((record) => record.name === name)?.id,
+        groups.find((record) => record.name === name),
         groups.map((record) => record.name)
     ];
+};
+
+export const createNewSubgroup = (
+    parentGroup: string,
+    groupName: string
+): Promise<TBallchasingGroup> => {
+    const payload = {
+        name: groupName,
+        parent: parentGroup,
+        player_identification: 'by-id',
+        team_identification: 'by-player-clusters'
+    };
+
+    return fetch(BALLCHASING_BASEURL + '/groups', {
+        method: 'POST',
+        headers: {
+            Authorization: BALL_CHASING_API_KEY
+        },
+        body: JSON.stringify(payload)
+    }).then((resp) => {
+        if (resp.status !== 201) {
+            throw resp;
+        }
+        return resp.json();
+    });
 };
 
 export const reportBcApiConnection = async () => {

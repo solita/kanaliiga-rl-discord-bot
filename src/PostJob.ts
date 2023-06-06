@@ -1,8 +1,14 @@
 import { ThreadChannel, Message } from 'discord.js';
 import { DocumentProcessor } from './DocumentProcessor';
 import log from './log';
-import { getAttachmentCount } from './util';
+import { getAttachmentCount, getDivisionName } from './util';
 import { FILE_LIMIT } from './config';
+import {
+    TBallchasingGroup,
+    createNewSubgroup,
+    fetchGroups,
+    searchGroupId
+} from './ballchasingAPI';
 
 export default class PostJob {
     groupId: string; // Ballchasing groupID
@@ -11,6 +17,7 @@ export default class PostJob {
     processor: DocumentProcessor;
     createdAt: number;
     closeReminderSent: boolean;
+    subGroup: TBallchasingGroup | undefined;
 
     constructor(thread: ThreadChannel, groupId: string) {
         this.groupId = groupId;
@@ -19,6 +26,15 @@ export default class PostJob {
         this.processor = new DocumentProcessor();
         this.createdAt = Date.now();
         this.closeReminderSent = false;
+        this.subGroup;
+    }
+
+    getSubGroup() {
+        return this.subGroup;
+    }
+
+    setSubGroup(subGroup: TBallchasingGroup) {
+        this.subGroup = subGroup;
     }
 
     async addToQueue(newMessage: Message) {
@@ -51,7 +67,7 @@ export default class PostJob {
         return this.queue.length;
     }
 
-    async sendCloseReminder() {
+    async sendLinkAndReminder() {
         if (!this.closeReminderSent) {
             const messages = await this.thread.messages
                 .fetch()
@@ -67,6 +83,12 @@ export default class PostJob {
                         )
                 );
             if (botReactionsInThat.size > 0 && messages.size === 1) {
+                this.thread.send(
+                    `🔗 Here's where your replays are going: ${this.subGroup.link.replace(
+                        '/api/groups',
+                        '/group'
+                    )}`
+                );
                 //Timeouts are for UX reasons
                 setTimeout(async () => {
                     await this.thread.sendTyping();
@@ -82,7 +104,44 @@ export default class PostJob {
         return;
     }
 
-    process() {
+    async process() {
+        if (!this.subGroup) {
+            const subGroupNameWithoutDivision = this.thread.name.replace(
+                `, ${getDivisionName(this.thread.name)},`,
+                ' '
+            );
+            //removes division name from subgroup to avoid repeating itself
+            try {
+                this.setSubGroup(
+                    await createNewSubgroup(
+                        this.groupId,
+                        subGroupNameWithoutDivision
+                    )
+                );
+                console.log('New created group', this.subGroup);
+            } catch (error) {
+                if (error.status && error.status === 400) {
+                    try {
+                        const existingGroups = await fetchGroups(this.groupId);
+                        const targetGroup = searchGroupId(
+                            subGroupNameWithoutDivision,
+                            existingGroups
+                        )[0];
+                        console.log('New existing group: ', targetGroup);
+                        this.setSubGroup(targetGroup);
+                    } catch (err) {
+                        console.error(err);
+                        this.thread.send(
+                            'Something went wrong. 🙁 I could not process your request. Please try again in another thread.'
+                        );
+                    }
+                } else {
+                    this.thread.send(
+                        'Something went wrong. 🙁 I could not process your request. Please try again in another thread.'
+                    );
+                }
+            }
+        }
         while (this.size() > 0) {
             const message = this.removeFromQueue();
             const arrayOfMultifileEmojies = [
@@ -117,15 +176,17 @@ export default class PostJob {
                     const response = await this.processor.upload(
                         file,
                         fileName,
-                        this.groupId
+                        this.subGroup.id
                     );
                     await message.channel.sendTyping();
 
                     //Timeout for the link to freshen up and discord embedded link preview to work
                     setTimeout(async () => {
-                        await message.channel.send(response);
+                        if (response) {
+                            await message.channel.send(response);
+                        }
                         if (message.attachments.last().id === attachment.id) {
-                            this.sendCloseReminder();
+                            this.sendLinkAndReminder();
                         }
                     }, 3000);
                 } catch (err) {

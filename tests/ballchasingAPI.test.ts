@@ -1,4 +1,10 @@
-import { fetchGroups, searchGroupId } from '../src/ballchasingAPI';
+import {
+    TBallchasingGroup,
+    createNewSubgroup,
+    fetchGroups,
+    searchGroupId
+} from '../src/ballchasingAPI';
+import { bcParentGroup } from '../src/config';
 import { mockResponseForGroups } from './testHelpers';
 
 describe('Ballchasing Api', () => {
@@ -13,7 +19,7 @@ describe('Ballchasing Api', () => {
             return Promise.resolve(mockResponseForGroups);
         });
 
-        const response = await fetchGroups();
+        const response = await fetchGroups(bcParentGroup());
 
         expect(response).toBeDefined();
         expect(response[0].id).toBe('12345Test');
@@ -24,12 +30,28 @@ describe('Ballchasing Api', () => {
             return Promise.resolve(mockResponseForGroups);
         });
 
-        const response = await fetchGroups();
+        const response = await fetchGroups(bcParentGroup());
 
-        const [matchId, allResults] = searchGroupId('Challengers', response);
+        const [match, allResults] = searchGroupId('Challengers', response);
 
-        expect(matchId).toBe('12345Test');
+        expect(match.id).toBe('12345Test');
         expect(allResults[0]).toBe('Challengers');
         expect(allResults[1]).toBe('league2');
+    });
+
+    it('Creates a new subgroup under specified parent, 201 response', async () => {
+        const newGroup = {
+            id: '12345Test',
+            link: 'https://ballchasing.com/replay/test'
+        } as TBallchasingGroup;
+
+        global.fetch = jest.fn().mockImplementationOnce(() => {
+            return Promise.resolve({ status: 201, json: () => newGroup });
+        });
+
+        const response = await createNewSubgroup('id22', 'testname');
+
+        expect(response.id).toBe('12345Test');
+        expect(response.link).toBe('https://ballchasing.com/replay/test');
     });
 });

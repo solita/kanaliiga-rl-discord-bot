@@ -3,6 +3,7 @@ import log from '../src/log';
 import { DocumentProcessor } from '../src/DocumentProcessor';
 import * as pkg from '../src/util';
 import { mockMessage, mockThread } from './testHelpers';
+import { TBallchasingGroup } from '../src/ballchasingAPI';
 
 describe('Each postjob contains an array of discords Message objects', () => {
     const groupId_Test = 'Test_groupId';
@@ -18,7 +19,7 @@ describe('Each postjob contains an array of discords Message objects', () => {
         jest.useFakeTimers({ advanceTimers: 90 });
 
         jest.spyOn(pkg, 'getAttachmentCount').mockImplementation(() => 0);
-        jest.spyOn(PostJob.prototype, 'sendCloseReminder').mockImplementation(
+        jest.spyOn(PostJob.prototype, 'sendLinkAndReminder').mockImplementation(
             async () => {
                 Promise.resolve();
             }
@@ -89,6 +90,10 @@ describe('Each postjob contains an array of discords Message objects', () => {
     it('Processing dequeues messages, calls the upload and download function in the postjob', async () => {
         const message1 = mockMessage('id1', 1);
         const message2 = mockMessage('id2', 1);
+        postJob.subGroup = {
+            name: 'Subgroup',
+            id: '123'
+        } as unknown as TBallchasingGroup;
 
         await postJob.addToQueue(message1);
         await postJob.addToQueue(message2);
