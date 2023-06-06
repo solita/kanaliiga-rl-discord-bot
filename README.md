@@ -43,7 +43,8 @@ The bot keeps metadata of posts in memory for certain amount of time (`CLEAR_CAC
 ## Features
 
 - Parses and finds correct division from a forum post title.
-- Download and upload `.replay` -files automatically to correct division.
+- Creates a new subgroup for each post.
+- Download and upload `.replay` -files automatically to subgroup in correct division.
 - Add all the attachments in the same message, or one by one.
 - File uploads only permitted with captain role.
 - Report file processing for its success or failure into its Discord post.
