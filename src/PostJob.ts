@@ -93,7 +93,7 @@ export default class PostJob {
                     await this.thread.sendTyping();
                     setTimeout(() => {
                         this.thread.send(
-                            'Remember to close the post once youre ready! ❤️'
+                            'Remember to close this post once youre ready! ❤️'
                         );
                     }, 2500);
                 }, 2500);

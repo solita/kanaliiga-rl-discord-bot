@@ -49,8 +49,8 @@ export class ContentController {
                 //This timeout is for UX reasons
                 setTimeout(async () => {
                     await thread.send(
-                        `Your post did not make too much sense to me, maybe theres a typo?\n` +
-                            `I tried with '${groupName}'\n` +
+                        `Your post did not make too much sense to me. Maybe theres a typo?\n` +
+                            `I tried with '${groupName}',\n` +
                             `but only found groups named: \n${allRecords.join(
                                 '\n'
                             )}`

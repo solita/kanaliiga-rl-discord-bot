@@ -29,7 +29,7 @@ export class DocumentProcessor {
                 console.log(`Upload success! ${data.location}`);
                 return undefined;
             } else if (res.status === 409) {
-                return `Looks like ${fileName} a duplicate replay, you can find it at ${data.location}`;
+                return `Looks like ${fileName} is a duplicate replay, you can find it at ${data.location}`;
             } else {
                 throw new Error(data.error);
             }
