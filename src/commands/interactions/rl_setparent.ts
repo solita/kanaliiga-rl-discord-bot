@@ -1,7 +1,6 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { bcParentGroup } from '../../config';
 import { fetchGroups } from '../../ballchasingAPI';
-import log from '../../log';
 
 export const handleParentSetCommand = async (
     interaction: ChatInputCommandInteraction
@@ -20,7 +19,7 @@ export const handleParentSetCommand = async (
             parentGroupMaybeEmpty = true;
         }
     } catch (err) {
-        log.error(err);
+        console.error(err);
     }
     interaction.reply({
         content: `Parent group set. New parent group is \`${bcParentGroup()}\`.${

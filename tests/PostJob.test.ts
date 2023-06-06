@@ -1,5 +1,4 @@
 import PostJob from '../src/PostJob';
-import log from '../src/log';
 import { DocumentProcessor } from '../src/DocumentProcessor';
 import * as pkg from '../src/util';
 import { mockMessage, mockThread } from './testHelpers';
@@ -65,7 +64,7 @@ describe('Each postjob contains an array of discords Message objects', () => {
     });
 
     it('Does not add a new Message to the queue if one already exists, and logs it', async () => {
-        const errorSpy = jest.spyOn(log, 'error');
+        const errorSpy = jest.spyOn(console, 'error');
         await postJob.addToQueue(mockMessage('messageId'));
         expect(postJob.size()).toBe(1);
         await postJob.addToQueue(mockMessage('messageId'));

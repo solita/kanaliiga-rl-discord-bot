@@ -1,6 +1,5 @@
 import { ThreadChannel, Message } from 'discord.js';
 import { DocumentProcessor } from './DocumentProcessor';
-import log from './log';
 import { getAttachmentCount, getDivisionName } from './util';
 import { FILE_LIMIT } from './config';
 import {
@@ -39,7 +38,7 @@ export default class PostJob {
 
     async addToQueue(newMessage: Message) {
         if (this.queue.find((mes) => mes.id === newMessage.id)) {
-            log.error('Message exists in queue already: ' + newMessage.id);
+            console.error('Message exists in queue already: ' + newMessage.id);
             return;
         }
         const messages = await this.thread.messages.fetch();
@@ -50,7 +49,7 @@ export default class PostJob {
             return;
         }
 
-        log.info(`A new message was added to task ${this.thread.id}`);
+        console.log(`A new message was added to task ${this.thread.id}`);
         this.queue.push(newMessage);
         return;
     }
@@ -118,7 +117,9 @@ export default class PostJob {
                         subGroupNameWithoutDivision
                     )
                 );
-                console.log('New created group', this.subGroup);
+                console.log(
+                    `New group created: ${this.subGroup.name} with ID ${this.subGroup.id}`
+                );
             } catch (error) {
                 if (error.status && error.status === 400) {
                     try {
@@ -132,13 +133,23 @@ export default class PostJob {
                     } catch (err) {
                         console.error(err);
                         this.thread.send(
-                            'Something went wrong. 🙁 I could not process your request. Please try again in another thread.'
+                            `Something went wrong. 🙁 I could not process your request. Error: ${
+                                err.status && err.statusText
+                                    ? err.status + err.statusText
+                                    : err
+                            }`
                         );
+                        return;
                     }
                 } else {
                     this.thread.send(
-                        'Something went wrong. 🙁 I could not process your request. Please try again in another thread.'
+                        `Something went wrong. 🙁 I could not process your request. Error: ${
+                            error.status && error.statusText
+                                ? error.status + error.statusText
+                                : error
+                        }`
                     );
+                    return;
                 }
             }
         }
