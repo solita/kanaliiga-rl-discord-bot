@@ -27,8 +27,8 @@ export class DocumentProcessor {
             const data = await res.json();
 
             if (res.status === 201) {
-                console.log(`Upload success! ${data.location}`)
-                return undefined
+                console.log(`Upload success! ${data.location}`);
+                return undefined;
             } else if (res.status === 409) {
                 return `Looks like ${fileName} a duplicate replay, you can find it at ${data.location}`;
             } else {
