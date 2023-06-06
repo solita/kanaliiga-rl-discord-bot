@@ -84,7 +84,7 @@ export default class PostJob {
                 );
             if (botReactionsInThat.size > 0 && messages.size === 1) {
                 this.thread.send(
-                    `Here's where your replays are going: ${this.subGroup.link.replace(
+                    `🔗 Here's where your replays are going: ${this.subGroup.link.replace(
                         '/api/groups',
                         '/group'
                     )}`
@@ -141,7 +141,7 @@ export default class PostJob {
                     );
                 }
             }
-        } else {
+        }
             while (this.size() > 0) {
                 const message = this.removeFromQueue();
                 const arrayOfMultifileEmojies = [
@@ -212,4 +212,4 @@ export default class PostJob {
             }
         }
     }
-}
+
