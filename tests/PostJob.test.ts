@@ -18,7 +18,7 @@ describe('Each postjob contains an array of discords Message objects', () => {
         jest.useFakeTimers({ advanceTimers: 90 });
 
         jest.spyOn(pkg, 'getAttachmentCount').mockImplementation(() => 0);
-        jest.spyOn(PostJob.prototype, 'sendCloseReminder').mockImplementation(
+        jest.spyOn(PostJob.prototype, 'sendLinkAndReminder').mockImplementation(
             async () => {
                 Promise.resolve();
             }

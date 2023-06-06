@@ -11,7 +11,7 @@ describe('Content controller', () => {
 
     beforeEach(() => {
         controller.clearTasks();
-        jest.spyOn(PostJob.prototype, 'sendCloseReminder').mockImplementation(
+        jest.spyOn(PostJob.prototype, 'sendLinkAndReminder').mockImplementation(
             async () => {
                 Promise.resolve();
             }

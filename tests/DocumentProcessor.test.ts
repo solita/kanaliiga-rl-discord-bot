@@ -21,9 +21,7 @@ describe('Document processor', () => {
             'test-replay.replay',
             'test-group-ID'
         );
-        expect(res).toBe(
-            `Here's a link for you! ${mockResponseForUploadSuccess.location}`
-        );
+        expect(res).toBeUndefined();
     });
 
     it('File uploads from buffer (status 500)', async () => {

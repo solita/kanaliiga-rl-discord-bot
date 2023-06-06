@@ -1,7 +1,7 @@
 import { ThreadChannel, Message } from 'discord.js';
 import { DocumentProcessor } from './DocumentProcessor';
 import log from './log';
-import { getAttachmentCount } from './util';
+import { getAttachmentCount, getDivisionName } from './util';
 import { FILE_LIMIT } from './config';
 import {
     TBallchasingGroup,
@@ -26,7 +26,7 @@ export default class PostJob {
         this.processor = new DocumentProcessor();
         this.createdAt = Date.now();
         this.closeReminderSent = false;
-        this.subGroup
+        this.subGroup;
     }
 
     async addToQueue(newMessage: Message) {
@@ -59,7 +59,7 @@ export default class PostJob {
         return this.queue.length;
     }
 
-    async sendCloseReminder() {
+    async sendLinkAndReminder() {
         if (!this.closeReminderSent) {
             const messages = await this.thread.messages
                 .fetch()
@@ -75,6 +75,12 @@ export default class PostJob {
                         )
                 );
             if (botReactionsInThat.size > 0 && messages.size === 1) {
+                this.thread.send(
+                    `Here's where your replays are going: ${this.subGroup.link.replace(
+                        '/api/groups',
+                        '/group'
+                    )}`
+                );
                 //Timeouts are for UX reasons
                 setTimeout(async () => {
                     await this.thread.sendTyping();
@@ -91,16 +97,30 @@ export default class PostJob {
     }
 
     async process() {
-        try {
-             this.subGroup = await createNewSubgroup(this.groupId, this.thread.name)
-             console.log("New created group",this.subGroup)
-         } catch (error) {
-             if (error.status && error.status === 400){
-                 const existingGroups = await fetchGroups(this.groupId)
-                 const targetGroup = searchGroupId(this.thread.name, existingGroups)[0]
-                 console.log('New existing group: ', targetGroup)
-             }
-         }
+        if (!this.subGroup) {
+            const subGroupNameWithoutDivision = this.thread.name.replace(
+                `, ${getDivisionName(this.thread.name)},`,
+                ' '
+            );
+            //removes division name from subgroup to avoid repeating itself
+            try {
+                this.subGroup = await createNewSubgroup(
+                    this.groupId,
+                    subGroupNameWithoutDivision
+                );
+                console.log('New created group', this.subGroup);
+            } catch (error) {
+                if (error.status && error.status === 400) {
+                    const existingGroups = await fetchGroups(this.groupId);
+                    const targetGroup = searchGroupId(
+                        subGroupNameWithoutDivision,
+                        existingGroups
+                    )[0];
+                    console.log('New existing group: ', targetGroup);
+                    this.subGroup = targetGroup;
+                }
+            }
+        }
 
         while (this.size() > 0) {
             const message = this.removeFromQueue();
@@ -142,9 +162,11 @@ export default class PostJob {
 
                     //Timeout for the link to freshen up and discord embedded link preview to work
                     setTimeout(async () => {
-                        await message.channel.send(response);
+                        if (response) {
+                            await message.channel.send(response);
+                        }
                         if (message.attachments.last().id === attachment.id) {
-                            this.sendCloseReminder();
+                            this.sendLinkAndReminder();
                         }
                     }, 3000);
                 } catch (err) {
