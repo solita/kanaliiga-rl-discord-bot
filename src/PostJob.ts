@@ -142,74 +142,70 @@ export default class PostJob {
                 }
             }
         }
-            while (this.size() > 0) {
-                const message = this.removeFromQueue();
-                const arrayOfMultifileEmojies = [
-                    '1️⃣',
-                    '2️⃣',
-                    '3️⃣',
-                    '4️⃣',
-                    '5️⃣',
-                    '6️⃣',
-                    '7️⃣'
-                ];
+        while (this.size() > 0) {
+            const message = this.removeFromQueue();
+            const arrayOfMultifileEmojies = [
+                '1️⃣',
+                '2️⃣',
+                '3️⃣',
+                '4️⃣',
+                '5️⃣',
+                '6️⃣',
+                '7️⃣'
+            ];
 
-                message.attachments.forEach(async (attachment) => {
-                    const file = await this.processor
-                        .download(attachment.url)
-                        .catch(async (err) => {
-                            await message.channel.sendTyping();
-                            console.log(err);
-                            message.channel.send(
-                                `Error downloading a file. \n${
-                                    attachment.name
-                                } \n${err.status ? err.status : err} ` +
-                                    `${err.statusText ? err.statusText : ''}`
-                            );
-                            return;
-                        });
-
-                    if (!file) return;
-
-                    const fileName = attachment.name;
-
-                    try {
-                        const response = await this.processor.upload(
-                            file,
-                            fileName,
-                            this.subGroup.id
+            message.attachments.forEach(async (attachment) => {
+                const file = await this.processor
+                    .download(attachment.url)
+                    .catch(async (err) => {
+                        await message.channel.sendTyping();
+                        console.log(err);
+                        message.channel.send(
+                            `Error downloading a file. \n${attachment.name} \n${
+                                err.status ? err.status : err
+                            } ` + `${err.statusText ? err.statusText : ''}`
                         );
-                        await message.channel.sendTyping();
-
-                        //Timeout for the link to freshen up and discord embedded link preview to work
-                        setTimeout(async () => {
-                            if (response) {
-                                await message.channel.send(response);
-                            }
-                            if (
-                                message.attachments.last().id === attachment.id
-                            ) {
-                                this.sendLinkAndReminder();
-                            }
-                        }, 3000);
-                    } catch (err) {
-                        await message.channel.sendTyping();
-
-                        //This timeout is for UX reasons
-                        setTimeout(() => {
-                            message.channel.send(
-                                `There was an error uploading file: ${fileName} \n${err}`
-                            );
-                        }, 3000);
-
-                        arrayOfMultifileEmojies.shift();
                         return;
-                    }
+                    });
 
-                    await message.react('✅');
-                    await message.react(arrayOfMultifileEmojies.shift());
-                });
-            }
+                if (!file) return;
+
+                const fileName = attachment.name;
+
+                try {
+                    const response = await this.processor.upload(
+                        file,
+                        fileName,
+                        this.subGroup.id
+                    );
+                    await message.channel.sendTyping();
+
+                    //Timeout for the link to freshen up and discord embedded link preview to work
+                    setTimeout(async () => {
+                        if (response) {
+                            await message.channel.send(response);
+                        }
+                        if (message.attachments.last().id === attachment.id) {
+                            this.sendLinkAndReminder();
+                        }
+                    }, 3000);
+                } catch (err) {
+                    await message.channel.sendTyping();
+
+                    //This timeout is for UX reasons
+                    setTimeout(() => {
+                        message.channel.send(
+                            `There was an error uploading file: ${fileName} \n${err}`
+                        );
+                    }, 3000);
+
+                    arrayOfMultifileEmojies.shift();
+                    return;
+                }
+
+                await message.react('✅');
+                await message.react(arrayOfMultifileEmojies.shift());
+            });
         }
     }
-
+}
