@@ -93,7 +93,7 @@ describe('Each postjob contains an array of discords Message objects', () => {
         postJob.subGroup = {
             name: 'Subgroup',
             id: '123'
-        } as unknown as TBallchasingGroup
+        } as unknown as TBallchasingGroup;
 
         await postJob.addToQueue(message1);
         await postJob.addToQueue(message2);
