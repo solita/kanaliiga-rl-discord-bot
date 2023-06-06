@@ -134,11 +134,13 @@ export default class PostJob {
                         this.thread.send(
                             'Something went wrong. 🙁 I could not process your request. Please try again in another thread.'
                         );
+                        return;
                     }
                 } else {
                     this.thread.send(
                         'Something went wrong. 🙁 I could not process your request. Please try again in another thread.'
                     );
+                    return;
                 }
             }
         }
