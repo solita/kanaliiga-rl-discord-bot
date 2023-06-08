@@ -41,10 +41,14 @@ export const getDivisionName = (postTitle: string) => {
 
 export const hasRole = (
     roles: Collection<string, Role>,
-    roleToCompare: string
+    roleToCompare: string,
+    secondRoleToCompare?: string
 ) => {
     if (!roles) return false;
-    return roles.some((role) => role.name === roleToCompare);
+    return roles.some(
+        (role) =>
+            role.name === roleToCompare || role.name === secondRoleToCompare
+    );
 };
 
 export const checkDateObject = (date: Date, milliseconds?: number) => {
