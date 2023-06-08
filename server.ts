@@ -41,7 +41,8 @@ client.on(Events.ClientReady, async () => {
 
     if (!client.user.avatar) {
         try {
-            client.user.setAvatar('./src/media/pfp.webp');
+            client.user.setAvatar('./media/pfp.webp');
+            console.log('Avatar updated!')
         } catch (err) {
             console.error(`Unable to set avatar! ${err}`);
         }
