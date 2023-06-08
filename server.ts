@@ -6,7 +6,13 @@ import {
     Collection,
     Channel
 } from 'discord.js';
-import { ADMIN_ROLE, BOT_ACTIVITY, BOT_NAME, TOKEN } from './src/config';
+import {
+    ADMIN_ROLE,
+    BOT_ACTIVITY,
+    BOT_NAME,
+    CAPTAIN_ROLE,
+    TOKEN
+} from './src/config';
 import { getCommands } from './src/commands/commands';
 import { ContentController } from './src/ContentController';
 import { reportBcApiConnection } from './src/ballchasingAPI';
@@ -52,21 +58,41 @@ client.on(Events.ClientReady, async () => {
 client.on(Events.InteractionCreate, async (interaction) => {
     if (!interaction.isChatInputCommand()) return;
 
-    if (!(await isInCorrectForum(client, interaction.channel))) {
-        interaction.reply({
-            content: "Youre're in a wrong channel, mate.",
-            ephemeral: true
-        });
-        return;
-    }
-
     switch (interaction.commandName) {
         case 'rl_health': {
+            const guild = client.guilds.cache.get(interaction.guild.id);
+            const isRoleEnough = await guild.members
+                .fetch(interaction.user.id)
+                .then((member) =>
+                    hasRole(member.roles.cache, ADMIN_ROLE, CAPTAIN_ROLE)
+                );
+
+            if (!isRoleEnough) {
+                interaction.reply({
+                    content: `Only admins (\`${ADMIN_ROLE}\`) or replay captains (\`${CAPTAIN_ROLE}\`) can check bot health.`,
+                    ephemeral: true
+                });
+                return;
+            }
             const infoEmbed = await botHealth(controller, client);
             await interaction.reply({ embeds: [infoEmbed], ephemeral: true });
             break;
         }
         case 'rl_divisionhelp': {
+            const guild = client.guilds.cache.get(interaction.guild.id);
+            const isRoleEnough = await guild.members
+                .fetch(interaction.user.id)
+                .then((member) =>
+                    hasRole(member.roles.cache, ADMIN_ROLE, CAPTAIN_ROLE)
+                );
+
+            if (!isRoleEnough) {
+                interaction.reply({
+                    content: `Only admins (\`${ADMIN_ROLE}\`) or replay captains (\`${CAPTAIN_ROLE}\`) can check divisions.`,
+                    ephemeral: true
+                });
+                return;
+            }
             const divisionHelpEmbed = await divisionHelp();
             await interaction.reply({
                 embeds: [divisionHelpEmbed],
