@@ -172,6 +172,10 @@ _Delete your message and add the attachments again and not go over the limit, or
 
 _The bot might be offline. Don't worry though, your post or files are not lost. Ask Admin to run `/rl_check` for you once the bot is back online._
 
+## Acknowledgements
+
+Bot profile picture is based on: <a href="https://www.flaticon.com/free-icons/insect" title="insect icons">Insect icons created by Freepik - Flaticon</a>
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
