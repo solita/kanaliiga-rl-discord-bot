@@ -182,7 +182,7 @@ client.on(Events.ThreadUpdate, async (updt) => {
 client.on(Events.MessageCreate, async (message) => {
     if (
         message.author.bot ||
-        !message.system ||
+        message.system ||
         !(await isInCorrectForum(client, message.channel))
     )
         return;
